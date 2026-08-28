@@ -296,7 +296,7 @@ def bible_quiz():
 @app.route('/counselling')
 @app.route('/counselling-care')
 def counselling():
-    return render_template('counselling.html', images=get_images_dict(), holiday=get_holiday_info(), next_sunday=get_next_sunday_8am())
+    return render_template('counselling-care.html', images=get_images_dict(), holiday=get_holiday_info(), next_sunday=get_next_sunday_8am())
 
 @app.route('/sunday-school')
 def sunday_school():
