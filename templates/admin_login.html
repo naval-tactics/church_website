@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔑 GOD'S KEY - GOLDEN GLOW LOGIN</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{
+  background: url('/static/uploads/god_key.jpg') no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+}
+.glass-golden{
+  backdrop-filter: blur(25px);
+  background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.78));
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+  box-shadow:
+    0 0 30px rgba(250,204,21,0.4),
+    0 0 60px rgba(250,204,21,0.2),
+    0 8px 32px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  animation: goldenPulse 3s ease-in-out infinite;
+}
+.glass-golden::before{
+  content:'';
+  position:absolute;
+  inset:-3px;
+  background: linear-gradient(45deg, #facc15, #fde047, #facc15, #eab308, #facc15);
+  border-radius: 2rem;
+  z-index:-1;
+  animation: rotateBorder 4s linear infinite;
+  background-size: 300% 300%;
+}
+.glass-golden::after{
+  content:'';
+  position:absolute;
+  top:-2px; left:-2px; right:-2px; height:2px;
+  background: linear-gradient(90deg, transparent, #facc15, #fff, #facc15, transparent);
+  animation: shimmerTop 2.5s infinite;
+  border-radius: 2rem 2rem 0 0;
+}
+@keyframes goldenPulse{
+  0%,100%{box-shadow: 0 0 30px rgba(250,204,21,0.4), 0 0 60px rgba(250,204,21,0.2), 0 8px 32px rgba(0,0,0,0.3);}
+  50%{box-shadow: 0 0 40px rgba(250,204,21,0.6), 0 0 80px rgba(250,204,21,0.3), 0 12px 40px rgba(0,0,0,0.4);}
+}
+@keyframes rotateBorder{
+  0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%}
+}
+@keyframes shimmerTop{
+  0%{transform: translateX(-100%)} 100%{transform: translateX(100%)}
+}
+.input-golden{
+  border: 2px solid rgba(250,204,21,0.3);
+  background: rgba(255,255,255,0.8);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05), 0 0 0 0 rgba(250,204,21,0);
+  transition: all 0.3s ease;
+}
+.input-golden:focus{
+  border-color: #facc15;
+  background: white;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05), 0 0 20px rgba(250,204,21,0.4), 0 0 0 3px rgba(250,204,21,0.2);
+  outline: none;
+}
+.btn-golden{
+  background: linear-gradient(135deg, #1a2332, #0f172a, #1a2332);
+  border: 2px solid #facc15;
+  box-shadow: 0 0 20px rgba(250,204,21,0.3), 0 4px 15px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+.btn-golden::before{
+  content:'';
+  position:absolute;
+  top:0; left:-100%; width:100%; height:100%;
+  background: linear-gradient(90deg, transparent, rgba(250,204,21,0.3), transparent);
+  transition: left 0.6s;
+}
+.btn-golden:hover::before{left:100%}
+.btn-golden:hover{
+  box-shadow: 0 0 30px rgba(250,204,21,0.6), 0 0 60px rgba(250,204,21,0.3), 0 6px 20px rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+  border-color: #fde047;
+}
+.key-float{
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px #facc15);
+}
+@keyframes float{
+  0%,100%{transform: translateY(0px) rotate(0deg)}
+  50%{transform: translateY(-10px) rotate(2deg)}
+}
+.badge-glow{
+  border: 1px solid rgba(250,204,21,0.5);
+  box-shadow: 0 0 10px rgba(250,204,21,0.3);
+  background: linear-gradient(135deg, rgba(250,204,21,0.15), rgba(255,255,255,0.5));
+}
+</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative">
+<!-- Dark overlay for readability -->
+<div class="absolute inset-0 bg-gradient-to-br from-[#0f172a]/60 via-[#1a2332]/40 to-black/60"></div>
+<!-- Golden particles effect -->
+<div class="absolute inset-0 overflow-hidden pointer-events-none">
+  <div class="absolute w-2 h-2 bg-[#facc15] rounded-full animate-ping" style="top:20%; left:20%; animation-delay:0s"></div>
+  <div class="absolute w-1 h-1 bg-[#fde047] rounded-full animate-ping" style="top:60%; left:80%; animation-delay:1s"></div>
+  <div class="absolute w-1.5 h-1.5 bg-[#facc15] rounded-full animate-ping" style="top:80%; left:30%; animation-delay:2s"></div>
+</div>
+
+<div class="relative z-10 w-full max-w-md">
+  <!-- Logo with golden glow -->
+  <div class="text-center mb-8">
+    <div class="key-float w-24 h-24 mx-auto bg-gradient-to-br from-[#facc15] via-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-4xl border-4 border-white/30 shadow-[0_0_30px_#facc15,0_0_60px_rgba(250,204,21,0.4)]">🔑</div>
+    <h1 class="font-black text-white text-3xl mt-5 tracking-[0.2em] drop-shadow-[0_0_20px_rgba(250,204,21,0.8)]">GOD'S KEY</h1>
+    <p class="text-[#facc15] text-xs font-black tracking-[0.4em] mt-1 drop-shadow-[0_0_10px_rgba(250,204,21,0.6)]">ADMIN • ENCRYPTED • GOLDEN GLOW</p>
+    <div class="mt-3 inline-flex gap-2">
+      <span class="badge-glow px-3 py-1 rounded-full text- font-black text-[#facc15]">🔐 bcrypt</span>
+      <span class="badge-glow px-3 py-1 rounded-full text- font-black text-[#facc15]">✨ GOLDEN GLOW</span>
+    </div>
+  </div>
+
+  <!-- Main Card with Golden Glowing Border — FIXED FORM ACTION -->
+  <div class="glass-golden rounded- p-8">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-black text-sm flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-gradient-to-br from-[#facc15] to-yellow-600 flex items-center justify-center text-black text-xs shadow-[0_0_10px_#facc15]">🔑</span> ENCRYPTED LOGIN</h2>
+      <span class="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 py-1 rounded-full text- font-black shadow-[0_0_10px_rgba(34,197,94,0.5)]"><i class="fas fa-shield-alt"></i> SECURED</span>
+    </div>
+
+    {% if error %}<div class="bg-gradient-to-r from-red-500/10 to-red-600/10 border-2 border-red-400/50 text-red-700 text-xs p-4 rounded-xl mb-5 shadow-[0_0_15px_rgba(239,68,68,0.2)]"><i class="fas fa-exclamation-triangle"></i> {{ error }}</div>{% endif %}
+    {% if msg %}<div class="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-2 border-green-400/50 text-green-700 text-xs p-4 rounded-xl mb-5 shadow-[0_0_15px_rgba(34,197,94,0.2)]">{{ msg }}</div>{% endif %}
+
+    <!-- FIXED: action="/admin/login" prevents refresh loop + Method Not Allowed -->
+    <form method="POST" action="/admin/login" class="space-y-5">
+      <div>
+        <label class="text- font-black text-gray-700 tracking-widest flex items-center gap-1"><i class="fas fa-user text-[#ca8a04]"></i> USERNAME</label>
+        <div class="relative mt-2">
+          <i class="fas fa-user absolute left-4 top-4 text-[#ca8a04] text-xs"></i>
+          <input name="username" value="admin" required class="input-golden w-full pl-11 pr-4 py-3.5 rounded-xl text-sm font-bold" placeholder="admin">
+        </div>
+      </div>
+
+      <div>
+        <label class="text- font-black text-gray-700 tracking-widest flex items-center gap-1"><i class="fas fa-key text-[#ca8a04]"></i> PASSWORD • GOD'S GOLDEN KEY</label>
+        <div class="relative mt-2">
+          <i class="fas fa-key absolute left-4 top-4 text-[#ca8a04] text-xs"></i>
+          <input name="password" type="password" required class="input-golden w-full pl-11 pr-4 py-3.5 rounded-xl text-sm font-bold" placeholder="••••••••••••">
+          <div class="absolute right-3 top-3 w-6 h-6 bg-gradient-to-br from-[#facc15] to-yellow-600 rounded-full flex items-center justify-center text- shadow-[0_0_8px_#facc15]">🔑</div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-golden w-full text-white py-4 rounded-xl font-black text-xs tracking-[0.2em] mt-2">
+        <i class="fas fa-unlock-alt"></i> DECRYPT & OPEN HEAVENLY GATES
+      </button>
+    </form>
+
+    <div class="mt-7 grid grid-cols-3 gap-3">
+      <div class="bg-gradient-to-br from-white to-yellow-50/50 border-2 border-[#facc15]/30 p-3 rounded-xl text-center shadow-[0_0_10px_rgba(250,204,21,0.15)] hover:shadow-[0_0_15px_rgba(250,204,21,0.3)] transition"><i class="fas fa-shield-alt text-green-500 text-sm"></i><p class="text- font-black mt-1">IP LOGGED</p><p class="text- text-gray-500">Encrypted</p></div>
+      <div class="bg-gradient-to-br from-white to-blue-50/50 border-2 border-[#facc15]/30 p-3 rounded-xl text-center shadow-[0_0_10px_rgba(250,204,21,0.15)] hover:shadow-[0_0_15px_rgba(250,204,21,0.3)] transition"><i class="fas fa-clock text-blue-500 text-sm"></i><p class="text- font-black mt-1">30 MIN</p><p class="text- text-gray-500">Timeout</p></div>
+      <div class="bg-gradient-to-br from-white to-red-50/50 border-2 border-[#facc15]/30 p-3 rounded-xl text-center shadow-[0_0_10px_rgba(250,204,21,0.15)] hover:shadow-[0_0_15px_rgba(250,204,21,0.3)] transition"><i class="fas fa-ban text-red-500 text-sm"></i><p class="text- font-black mt-1">5 TRIES</p><p class="text- text-gray-500">Lock</p></div>
+    </div>
+
+    <div class="mt-6 text-center">
+      <div class="inline-flex items-center gap-2 bg-black/5 px-4 py-2 rounded-full border border-[#facc15]/20">
+        <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+        <p class="text- font-bold text-gray-600 tracking-widest">GOLDEN GLOW: ACTIVE • GATES OPEN</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-center text-white/70 text- mt-6 tracking-widest font-bold drop-shadow-[0_1px_10px_rgba(0,0,0,0.8)]">Revelation 3:8 — I have placed before you an open door ✨</p>
+  <p class="text-center text-[#facc15]/60 text- mt-2">Golden glowing border • Shimmer animation • Encrypted with bcrypt • Fixed login loop</p>
+</div>
+</body>
+</html>

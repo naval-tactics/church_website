@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Registration - South B Police Chapel - 12/7 FINAL SEALED</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{font-family:Inter,sans-serif}
+.heaven-bg{background:url('/static/uploads/god_key.jpg') no-repeat center center fixed;background-size:cover}
+.glass-panel{backdrop-filter:blur(18px);background:rgba(255,255,255,0.95);border:2px solid rgba(250,204,21,0.5)}
+.step-active{background:#facc15!important;color:#000!important;box-shadow:0 0 10px #facc15}
+.input{border:2px solid #fef08a;padding:12px;border-radius:12px;font-size:11px;background:rgba(255,255,255,0.9);width:100%;outline:none}
+.input:focus{border-color:#facc15}
+.photo-preview{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid #facc15;box-shadow:0 0 15px #facc15}
+</style>
+</head>
+<body class="heaven-bg min-h-screen"><div class="min-h-screen bg-gradient-to-br from-[#0f172a]/10 to-black/20 py-6">
+<nav class="max-w-5xl mx-auto bg-[#1a2332]/90 backdrop-blur text-white px-6 py-3 rounded-full flex justify-between items-center"><div class="font-black text-xs">SOUTH B POLICE CHAPEL — MEMBER REGISTRATION 12/7 FINAL — PHOTO + CLOSE PRESERVED</div><a href="/member-qualifications" class="text-xs bg-white/10 px-3 py-1 rounded-full">QUALIFICATIONS</a></nav>
+
+<div class="max-w-5xl mx-auto mt-6 px-4">
+  <div class="glass-panel rounded-[1.5rem] p-6">
+    <div class="flex justify-between items-center">
+      <div class="flex gap-2 overflow-x-auto pb-2">
+        <button onclick="goStep(1)" id="s1" class="step-active px-4 py-2 rounded-full text-xs font-black whitespace-nowrap">1. Personal + Photo</button>
+        <button onclick="goStep(2)" id="s2" class="bg-white border px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">2. Contact</button>
+        <button onclick="goStep(3)" id="s3" class="bg-white border px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">3. Church</button>
+        <button onclick="goStep(4)" id="s4" class="bg-white border px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">4. Spiritual</button>
+        <button onclick="goStep(5)" id="s5" class="bg-white border px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">5. Ministry</button>
+        <button onclick="goStep(6)" id="s6" class="bg-white border px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">6. Emergency</button>
+        <button onclick="goStep(7)" id="s7" class="bg-white border px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">7. Account</button>
+      </div>
+      <button onclick="closeRegistration()" class="bg-red-600 text-white w-8 h-8 rounded-full font-black text-xs">✕</button>
+    </div>
+
+    <form id="memberForm" class="mt-6" enctype="multipart/form-data">
+      <div id="step1" class="step">
+        <h3 class="font-black text-sm">👤 Personal Information + Your Photo — 12/7</h3>
+        <div class="mt-4 bg-yellow-50 border-2 border-yellow-200 p-4 rounded-xl flex gap-4 items-center flex-wrap">
+          <img id="photoPreview" src="https://via.placeholder.com/120x120.png?text=Photo" class="photo-preview">
+          <div class="flex-1 min-w-">
+            <label class="text-xs font-black">📸 Upload Your Clear Photo* (For Membership ID)</label>
+            <input id="photo" type="file" accept="image/*" required class="w-full mt-2 text-xs bg-white p-2 rounded-lg border-2 border-yellow-200">
+            <p class="text-xs text-gray-500 mt-1">Admin will see your photo when approving. JPG/PNG/WEBP — Clear face photo — secure upload</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3 mt-4">
+          <input id="fullName" required placeholder="Full Name*" class="input">
+          <input id="idNumber" placeholder="ID / Passport Number" class="input">
+          <input id="dob" type="date" class="input"><select id="gender" class="input"><option>Gender</option><option>Male</option><option>Female</option></select>
+          <select id="marital" class="input"><option>Marital Status</option><option>Single</option><option>Married</option><option>Widowed</option><option>Divorced</option></select>
+          <input id="nationality" placeholder="Nationality" class="input">
+        </div>
+      </div>
+      <div id="step2" class="step hidden">
+        <h3 class="font-black text-sm">📞 Contact Information — 12/7</h3>
+        <div class="grid md:grid-cols-2 gap-3 mt-4">
+          <input id="phone" required placeholder="Phone* 0721..." class="input">
+          <input id="whatsapp" placeholder="WhatsApp" class="input">
+          <input id="email" type="email" required placeholder="Email*" class="input">
+          <input id="estate" placeholder="Estate / Area" class="input">
+          <input id="city" placeholder="City" class="input md:col-span-2">
+          <textarea id="address" placeholder="Full Residential Address" class="input md:col-span-2 h-20"></textarea>
+        </div>
+      </div>
+      <div id="step3" class="step hidden">
+        <h3 class="font-black text-sm">⛪ Church Information</h3>
+        <div class="grid md:grid-cols-2 gap-3 mt-4">
+          <select id="howLong" class="input"><option>How long attending South B?</option><option>Less than 1 month</option><option>1-6 months</option><option>6-12 months</option><option>1-2 years</option><option>2+ years</option></select>
+          <select id="membershipElsewhere" class="input"><option>Member elsewhere?</option><option>No</option><option>Yes - still member</option><option>Yes - left</option></select>
+          <input id="prevChurch" placeholder="Previous church (if any)" class="input">
+          <select id="baptismStatus" class="input"><option>Baptism Status</option><option>Not baptized</option><option>Baptized - immersion</option><option>Baptized - sprinkling</option><option>Planning to be baptized</option></select>
+          <textarea id="reasonJoin" placeholder="Why do you want to join South B Police Chapel?" class="input md:col-span-2 h-20"></textarea>
+        </div>
+      </div>
+      <div id="step4" class="step hidden">
+        <h3 class="font-black text-sm">✝ Spiritual Information</h3>
+        <div class="grid gap-3 mt-4">
+          <textarea id="salvation" placeholder="Your salvation / Christian faith journey" class="input h-24"></textarea>
+          <select id="baptismInterest" class="input"><option>Interested in baptism?</option><option>Yes</option><option>No</option><option>Already baptized</option></select>
+          <textarea id="supportNeeded" placeholder="Areas where you may need spiritual support" class="input h-20"></textarea>
+          <textarea id="prayerRequest" placeholder="Prayer request (optional)" class="input h-20"></textarea>
+        </div>
+      </div>
+      <div id="step5" class="step hidden">
+        <h3 class="font-black text-sm">🎶 Ministry / Department</h3>
+        <div class="grid md:grid-cols-2 gap-3 mt-4">
+          <select id="preferredMinistry" class="input"><option>Preferred Ministry</option><option>Choir / Worship</option><option>Ushering</option><option>Youth</option><option>Sunday School</option><option>Media / Sound</option><option>Intercession</option><option>Evangelism</option><option>Cleaning</option><option>Other</option></select>
+          <input id="skills" placeholder="Skills / Talents" class="input">
+          <input id="prevMinistry" placeholder="Previous ministry experience" class="input">
+          <select id="availability" class="input"><option>Availability</option><option>Sundays only</option><option>Weekdays</option><option>Any day</option></select>
+        </div>
+      </div>
+      <div id="step6" class="step hidden">
+        <h3 class="font-black text-sm">🚨 Emergency / Family Contact</h3>
+        <div class="grid md:grid-cols-2 gap-3 mt-4">
+          <input id="emergencyName" required placeholder="Emergency Contact Name*" class="input">
+          <select id="emergencyRel" class="input"><option>Relationship</option><option>Spouse</option><option>Parent</option><option>Sibling</option><option>Friend</option><option>Pastor</option></select>
+          <input id="emergencyPhone" required placeholder="Emergency Phone*" class="input">
+          <input id="emergencyEmail" placeholder="Emergency Email" class="input md:col-span-2">
+        </div>
+      </div>
+      <div id="step7" class="step hidden">
+        <h3 class="font-black text-sm">🔐 Account Information — 12/7 Secure</h3>
+        <div class="grid md:grid-cols-2 gap-3 mt-4">
+          <input id="username" required placeholder="Username*" class="input">
+          <input id="regEmail" type="email" required placeholder="Email for login*" class="input">
+          <input id="password" type="password" required placeholder="Password* min 6" class="input">
+          <input id="confirmPassword" type="password" required placeholder="Confirm Password*" class="input">
+          <label class="md:col-span-2 flex gap-2 items-start text-xs mt-2"><input type="checkbox" id="terms" required class="mt-1"> I accept Terms & Privacy — accurate info, reviewed before approval.</label>
+          <label class="md:col-span-2 flex gap-2 items-start text-xs"><input type="checkbox" id="communication" class="mt-1"> I consent to receive church communication.</label>
+        </div>
+      </div>
+
+      <div class="flex justify-between mt-8 items-center">
+        <div class="flex gap-2">
+          <button type="button" onclick="prevStep()" id="prevBtn" class="bg-gray-200 px-6 py-2.5 rounded-full font-black text-xs hidden">← PREV</button>
+          <button type="button" onclick="closeRegistration()" class="bg-red-100 border-2 border-red-200 text-red-700 px-6 py-2.5 rounded-full font-black text-xs">✕ CLOSE REGISTRATION</button>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" onclick="nextStep()" id="nextBtn" class="bg-[#1a2332] text-white px-6 py-2.5 rounded-full font-black text-xs">NEXT →</button>
+          <button type="submit" id="submitBtn" class="hidden bg-gradient-to-r from-[#facc15] to-yellow-600 text-black px-8 py-2.5 rounded-full font-black text-xs shadow-[0_0_15px_#facc15]">SEND MEMBERSHIP REQUEST WITH PHOTO 🙏 12/7</button>
+        </div>
+      </div>
+      <p id="msg" class="text-center font-black text-xs mt-4"></p>
+    </form>
+  </div>
+</div>
+</div>
+
+<div id="successModal" class="hidden fixed inset-0 z-[200] bg-black/70 backdrop-blur flex items-center justify-center p-4">
+  <div class="bg-white rounded-[1.5rem] p-8 w-full max-w-md border-4 border-[#facc15] shadow-[0_0_40px_#facc15] text-center">
+    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto text-3xl">✅</div>
+    <h3 class="font-black text-lg mt-4 text-[#1a2332]">Registration Sent Successfully! 12/7</h3>
+    <p class="text-xs text-gray-600 mt-3">Your membership request with photo has been received. Your full details will be reviewed by church administration before approval.</p>
+    <p class="text-xs font-black mt-2 bg-yellow-50 border border-yellow-200 p-2 rounded-xl">ID: <span id="successId">-</span> • Status: Pending Review</p>
+    <p class="text-xs text-gray-500 mt-2">You will be notified once approved. Then you can login and unlock members-only gallery photos.</p>
+    <div class="flex gap-2 mt-6">
+      <button onclick="closeSuccessAndRedirect()" class="flex-1 bg-[#1a2332] text-white py-3 rounded-full font-black text-xs">CLOSE & GO TO HOME</button>
+      <button onclick="closeSuccessStay()" class="flex-1 bg-[#facc15] text-black py-3 rounded-full font-black text-xs">CLOSE</button>
+    </div>
+    <button onclick="closeSuccessStay()" class="mt-3 text-xs text-gray-400 underline">Close this window</button>
+  </div>
+</div>
+
+</div>
+<script>
+let cur=1;
+function goStep(n){ document.querySelectorAll('.step').forEach(s=>s.classList.add('hidden')); document.getElementById('step'+n).classList.remove('hidden'); document.querySelectorAll('[id^=s]').forEach(b=>{ if(b.id.startsWith('s') &&!isNaN(b.id.slice(1))) b.className='bg-white border px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap'; }); document.getElementById('s'+n).className='step-active px-4 py-2 rounded-full text-xs font-black whitespace-nowrap'; cur=n; updateBtns(); }
+function nextStep(){
+  // light validation per step 12/7
+  if(cur===1){
+    if(!document.getElementById('fullName').value.trim()){ alert('Full Name required'); return; }
+    if(!document.getElementById('photo').files[0]){ alert('Photo required'); return; }
+  }
+  if(cur===2){
+    let phone=document.getElementById('phone').value.trim();
+    if(!/^07\d{8}$/.test(phone) &&!/^\+254\d{9}$/.test(phone)){ alert('Enter valid phone 07... or +254...'); return; }
+    if(!document.getElementById('email').value.includes('@')){ alert('Valid email required'); return; }
+  }
+  if(cur<7){ goStep(cur+1); }
+}
+function prevStep(){ if(cur>1){ goStep(cur-1); } }
+function updateBtns(){ document.getElementById('prevBtn').classList.toggle('hidden', cur===1); document.getElementById('nextBtn').classList.toggle('hidden', cur===7); document.getElementById('submitBtn').classList.toggle('hidden', cur!==7); }
+function closeRegistration(){ if(confirm('Close registration? Your progress will be lost.')){ window.location.href='/'; } }
+function closeSuccessAndRedirect(){ document.getElementById('successModal').classList.add('hidden'); window.location.href='/'; }
+function closeSuccessStay(){ document.getElementById('successModal').classList.add('hidden'); document.getElementById('memberForm').reset(); document.getElementById('photoPreview').src='https://via.placeholder.com/120x120.png?text=Photo'; goStep(1); document.getElementById('msg').innerText=''; }
+
+document.getElementById('photo').addEventListener('change', e=>{
+  const f=e.target.files[0];
+  if(f){
+    if(f.size > 5*1024*1024){ alert('Photo too large max 5MB'); e.target.value=''; return; }
+    const r=new FileReader(); r.onload=ev=>{ document.getElementById('photoPreview').src=ev.target.result; }; r.readAsDataURL(f);
+  }
+});
+document.getElementById('memberForm').addEventListener('submit', async(e)=>{
+  e.preventDefault();
+  if(document.getElementById('password').value!== document.getElementById('confirmPassword').value){ document.getElementById('msg').innerText='❌ Passwords do not match'; return; }
+  if(document.getElementById('password').value.length < 6){ document.getElementById('msg').innerText='❌ Password min 6 chars'; return; }
+  if(!document.getElementById('photo').files[0]){ document.getElementById('msg').innerText='❌ Please upload your photo'; return; }
+  const payload={
+    personal:{fullName:document.getElementById('fullName').value, idNumber:document.getElementById('idNumber').value, dob:document.getElementById('dob').value, gender:document.getElementById('gender').value, marital:document.getElementById('marital').value, nationality:document.getElementById('nationality').value},
+    contact:{phone:document.getElementById('phone').value, whatsapp:document.getElementById('whatsapp').value, email:document.getElementById('email').value, estate:document.getElementById('estate').value, city:document.getElementById('city').value, address:document.getElementById('address').value},
+    church:{howLong:document.getElementById('howLong').value, membershipElsewhere:document.getElementById('membershipElsewhere').value, prevChurch:document.getElementById('prevChurch').value, baptismStatus:document.getElementById('baptismStatus').value, reasonJoin:document.getElementById('reasonJoin').value},
+    spiritual:{salvation:document.getElementById('salvation').value, baptismInterest:document.getElementById('baptismInterest').value, supportNeeded:document.getElementById('supportNeeded').value, prayerRequest:document.getElementById('prayerRequest').value},
+    ministry:{preferredMinistry:document.getElementById('preferredMinistry').value, skills:document.getElementById('skills').value, prevMinistry:document.getElementById('prevMinistry').value, availability:document.getElementById('availability').value},
+    emergency:{name:document.getElementById('emergencyName').value, relationship:document.getElementById('emergencyRel').value, phone:document.getElementById('emergencyPhone').value, email:document.getElementById('emergencyEmail').value},
+    username:document.getElementById('username').value,
+    email:document.getElementById('regEmail').value,
+    password:document.getElementById('password').value,
+    terms:document.getElementById('terms').checked,
+    communication:document.getElementById('communication').checked
+  };
+  const fd=new FormData();
+  fd.append('photo', document.getElementById('photo').files[0]);
+  fd.append('data', JSON.stringify(payload));
+  fd.append('username', payload.username);
+  fd.append('email', payload.email);
+  fd.append('password', payload.password);
+  fd.append('terms', payload.terms);
+  fd.append('communication', payload.communication);
+  fd.append('personal', JSON.stringify(payload.personal));
+  fd.append('contact', JSON.stringify(payload.contact));
+  fd.append('church', JSON.stringify(payload.church));
+  fd.append('spiritual', JSON.stringify(payload.spiritual));
+  fd.append('ministry', JSON.stringify(payload.ministry));
+  fd.append('emergency', JSON.stringify(payload.emergency));
+  document.getElementById('msg').innerText='⏳ Uploading with photo... 12/7 secure';
+  const r=await fetch('/api/member/register',{method:'POST',body:fd});
+  const j=await r.json();
+  if(j.ok){
+    document.getElementById('successId').innerText=j.id;
+    document.getElementById('successModal').classList.remove('hidden');
+    document.getElementById('msg').innerText='';
+  } else { document.getElementById('msg').innerText='❌ '+(j.error||'Failed'); }
+});
+updateBtns();
+</script>
+</body>
+</html>

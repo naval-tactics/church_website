@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Videos - South B Police Chapel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>body{font-family:Inter,sans-serif}.golden-card{border:2px solid rgba(250,204,21,0.4);box-shadow:0 0 15px rgba(250,204,21,0.15)}</style>
+</head>
+<body class="bg-[#f8f6f0]">
+<nav class="bg-[#1a2332] text-white px-6 py-3 sticky top-0 z-50">
+  <div class="flex justify-between items-center">
+    <div class="text-[#5aa9ff] font-black text- leading-tight">SOUTH B POLICE<br>CHAPEL</div>
+    <div class="flex gap-4 text- font-bold items-center flex-wrap">
+      <a href="/">HOME</a><a href="/events">EVENTS</a><a href="/sermons">SERMONS</a>
+      <a href="/prayer-wall">PRAYER WALL</a><a href="/contact">CONTACT</a>
+      <a href="/bible-quiz">BIBLE QUIZ</a><a href="/counselling">COUNSELLING CARE</a>
+      <a href="/sunday-school">SUNDAY SCHOOL</a>
+      <a href="/gallery">GALLERY</a>
+      <a href="/videos" class="text-[#facc15] border-b-2 border-[#facc15] pb-1">VIDEOS</a>
+    </div>
+  </div>
+  <div class="flex justify-center mt-3">
+    <a href="/faith-arcade" class="text-[#9b7cff] hover:text-[#facc15] text- font-bold tracking-widest flex items-center gap-2 transition">
+      <span>⚔</span> <span class="underline">FAITH ARCADE</span> <span>⚔</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO WITH GOOD BACKGROUND IMAGE - WORSHIP CROWD -->
+<div class="relative h- overflow-hidden">
+  <img src="https://images.unsplash.com/photo-1478147427282-58a87a120781?w=1400&q=80" class="absolute inset-0 w-full h-full object-cover">
+  <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-[#1a2332]/70 to-red-900/40"></div>
+  <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+  <div class="relative z-10 max-w-7xl mx-auto px-6 h-full flex flex-col justify-center">
+    <div class="inline-flex items-center gap-2 bg-red-600 text-white px-3 py-1 rounded-full text- font-bold w-fit"><span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE WORSHIP • VIDEO MINISTRY</div>
+    <h1 class="text-4xl md:text-5xl font-black text-white mt-4 drop-shadow-lg">🎬 CHURCH VIDEOS</h1>
+    <p class="text- text-gray-200 mt-2 max-w-xl">Sermons, Worship, Sunday School, Events - Watch & Be Blessed. Powerful messages from South B Police Chapel.</p>
+    <div class="mt-4 flex gap-3"><div class="bg-white/20 backdrop-blur border border-white/30 px-4 py-2 rounded-full text- font-bold text-white">📹 <span id="videoCount">0</span> Videos</div><div class="bg-[#facc15] text-black px-4 py-2 rounded-full text- font-bold">▶ Watch Anytime, Anywhere</div></div>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-6 mt-6 flex gap-2 overflow-x-auto">
+  <button onclick="filterVids('all')" class="filterBtn active bg-[#1a2332] text-white px-4 py-2 rounded-full text- font-bold">All Videos</button>
+  <button onclick="filterVids('sermon')" class="filterBtn bg-white border px-4 py-2 rounded-full text- font-bold">Sermons</button>
+  <button onclick="filterVids('worship')" class="filterBtn bg-white border px-4 py-2 rounded-full text- font-bold">Worship</button>
+  <button onclick="filterVids('sunday')" class="filterBtn bg-white border px-4 py-2 rounded-full text- font-bold">Sunday School</button>
+  <button onclick="filterVids('event')" class="filterBtn bg-white border px-4 py-2 rounded-full text- font-bold">Events</button>
+</div>
+
+<div id="videosGrid" class="max-w-7xl mx-auto px-6 mt-6 grid md:grid-cols-3 gap-5"></div>
+
+<div id="emptyState" class="max-w-7xl mx-auto px-6 mt-10 hidden">
+  <div class="bg-white rounded-2xl p-10 text-center shadow-sm border-2 border-dashed relative overflow-hidden">
+    <div class="absolute inset-0 opacity-5 bg-[url('https://images.unsplash.com/photo-1516450360452-9312abbf6f7e?w=800')] bg-cover"></div>
+    <div class="relative z-10"><div class="text-6xl mb-4">🎬</div><h2 class="font-bold text-xl">No Videos Yet</h2><p class="text- text-gray-500 mt-2 max-w-md mx-auto">Our media team will upload sermons and worship here. Videos from Admin page will appear automatically with YouTube thumbnails.</p></div>
+  </div>
+</div>
+
+<div id="videoModal" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4">
+  <div class="bg-black max-w-4xl w-full rounded-2xl overflow-hidden border-4 border-[#facc15]">
+    <div class="flex justify-between items-center p-4 bg-[#1a2332] text-white"><h3 id="modalTitle" class="font-bold text-"></h3><button onclick="closeVideo()" class="w-8 h-8 bg-white/20 rounded-full">✕</button></div>
+    <div id="modalPlayer" class="aspect-video bg-black"></div>
+  </div>
+</div>
+
+<script>
+let allVideos=[];
+async function loadVideos(){
+  try{ const r=await fetch('/api/videos'); allVideos=await r.json(); }catch(e){ allVideos=[]; }
+  document.getElementById('videoCount').innerText=allVideos.length;
+  if(allVideos.length===0){ document.getElementById('videosGrid').classList.add('hidden'); document.getElementById('emptyState').classList.remove('hidden'); return; }
+  document.getElementById('emptyState').classList.add('hidden');
+  document.getElementById('videosGrid').classList.remove('hidden');
+  renderVideos(allVideos);
+  // update filter buttons
+  document.querySelectorAll('.filterBtn').forEach(b=>{
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.filterBtn').forEach(x=>{x.classList.remove('bg-[#1a2332]','text-white','active'); x.classList.add('bg-white')});
+      this.classList.add('bg-[#1a2332]','text-white','active'); this.classList.remove('bg-white');
+    });
+  });
+}
+
+function renderVideos(videos){
+  document.getElementById('videosGrid').innerHTML=videos.map(v=>{
+    const yt = v.yt || v.yt_id || '';
+    const local = v.local_file || '';
+    const title = (v.title || '').replace(/'/g, "\\'");
+
+    let thumb, clickAction, badge;
+
+    if(yt){
+      thumb = `<img src="https://img.youtube.com/vi/${yt}/hqdefault.jpg" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">`;
+      clickAction = `openVideo('${yt}','${title}','', '')`;
+      badge = `<div class="absolute top-2 left-2 bg-red-600 text-white text- px-2 py-1 rounded-full font-black">YOUTUBE</div>`;
+    } else if(local){
+      // Local file preview
+      thumb = `<video class="w-full h-full object-cover" muted preload="metadata"><source src="/static/${local}#t=1"></video><div class="absolute inset-0 bg-black/20"></div>`;
+      clickAction = `openVideo('','${title}','','/static/${local}')`;
+      badge = `<div class="absolute top-2 left-2 bg-[#facc15] text-black text- px-2 py-1 rounded-full font-black">LOCAL • PC UPLOAD</div>`;
+    } else {
+      thumb = `<div class="w-full h-full bg-gray-800 flex items-center justify-center text-white/50"><i class="fas fa-video text-3xl"></i></div>`;
+      clickAction = '';
+      badge = '';
+    }
+
+    return `
+    <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition golden-card group">
+      <div class="relative h-44 bg-black overflow-hidden cursor-pointer" onclick="${clickAction}">
+        ${thumb}
+        <div class="absolute inset-0 flex items-center justify-center"><div class="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center text-xl group-hover:scale-110 transition">▶</div></div>
+        ${badge}
+        <div class="absolute top-2 right-2 bg-black/70 text-white text- px-2 py-1 rounded-full uppercase">${v.category||'sermon'}</div>
+      </div>
+      <div class="p-4">
+        <h3 class="font-bold text- leading-tight">${v.title}</h3>
+        <p class="text- text-gray-500 mt-1 line-clamp-2">${v.description||'South B Police Chapel'}</p>
+        <div class="flex gap-2 mt-3 flex-wrap">
+          <button onclick="${clickAction}" class="bg-[#1a2332] text-white text- px-3 py-1.5 rounded-full font-bold"><i class="fas fa-eye"></i> View</button>
+          ${local? `<a href="/static/${local}" target="_blank" class="bg-white border-2 border-yellow-200 text- px-3 py-1.5 rounded-full font-bold">Open</a>
+          <a href="/static/${local}" download class="bg-[#facc15] text-black text- px-3 py-1.5 rounded-full font-black"><i class="fas fa-download"></i> Download</a>` : ''}
+          ${yt? `<a href="https://www.youtube.com/watch?v=${yt}" target="_blank" class="bg-white border text- px-3 py-1.5 rounded-full">YouTube</a>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterVids(cat){
+  if(cat==='all') renderVideos(allVideos);
+  else renderVideos(allVideos.filter(v=> (v.category||'sermon').toLowerCase().includes(cat)));
+}
+
+function openVideo(yt,title,desc,localFile){
+  document.getElementById('modalTitle').innerText=title;
+  if(localFile){
+    document.getElementById('modalPlayer').innerHTML=`<video controls autoplay playsinline class="w-full h-full"><source src="${localFile}"></video>`;
+  } else if(yt){
+    document.getElementById('modalPlayer').innerHTML=`<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${yt}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  }
+  document.getElementById('videoModal').classList.remove('hidden');
+}
+function closeVideo(){
+  document.getElementById('videoModal').classList.add('hidden');
+  document.getElementById('modalPlayer').innerHTML='';
+}
+loadVideos();
+</script>
+</body>
+</html>

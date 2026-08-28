@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Gallery - South B Police Chapel - 12/7 FINAL SEALED</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{font-family:Inter,sans-serif}
+.golden-card{border:2px solid rgba(250,204,21,0.4);box-shadow:0 0 15px rgba(250,204,21,0.15),0 4px 15px rgba(0,0,0,0.08);transition:all 0.3s}
+.golden-card:hover{border-color:#facc15;box-shadow:0 0 25px rgba(250,204,21,0.4),0 8px 25px rgba(0,0,0,0.12);transform:translateY(-4px)}
+.fade-enter{animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)}}
+.lightbox-img{max-width:100%;max-height:90vh;object-fit:contain;display:block;margin:auto}
+.lazy{filter:blur(8px);transition:filter 0.3s}.lazy.loaded{filter:blur(0)}
+.members-blur{filter:blur(14px) brightness(0.7);pointer-events:none;user-select:none}
+.lock-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.no-select{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.nav-link{white-space:nowrap}.nav-link:hover{color:#facc15}
+</style>
+</head>
+<body class="bg-[#faf8f5]" oncontextmenu="return false">
+
+<nav class="bg-[#111c2e] text-white px-4 md:px-6 py-3 sticky top-0 z-50 border-b border-white/5">
+  <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-2">
+    <div class="text-[#5aa9ff] font-black text-xs leading-[1.1] tracking-wide shrink-0">
+      SOUTH B POLICE<br>CHAPEL — 12/7 SEALED
+    </div>
+    <div class="flex gap-3 md:gap-5 text-xs md:text-sm font-bold items-center flex-wrap">
+      <a href="/" class="nav-link">HOME</a>
+      <a href="/events" class="nav-link">EVENTS</a>
+      <a href="/sermons" class="nav-link">SERMONS</a>
+      <a href="/prayer-wall" class="nav-link">PRAYER WALL</a>
+      <a href="/contact" class="nav-link">CONTACT</a>
+      <a href="/bible-quiz" class="nav-link">BIBLE QUIZ</a>
+      <a href="/counselling-care" class="nav-link">COUNSELLING CARE</a>
+      <a href="/sunday-school" class="nav-link">SUNDAY SCHOOL</a>
+      <a href="/gallery" class="nav-link bg-[#facc15] text-black px-4 py-1 rounded-full shadow-[0_0_15px_#facc15]">GALLERY</a>
+      <a href="/videos" class="nav-link">VIDEOS</a>
+      <span id="memberBadge" class="hidden bg-green-600 text-white px-3 py-1 rounded-full text-xs font-black">MEMBER ✓</span>
+      <a id="loginLink" href="/members/login" class="text-xs bg-white/10 px-3 py-1 rounded-full">MEMBER LOGIN</a>
+    </div>
+  </div>
+  <div class="mt-3 flex flex-col gap-2">
+    <div class="flex justify-start items-center gap-2">
+      <a href="/member-qualifications" class="bg-[#facc15] text-black px-5 py-2 rounded-full text-xs font-black shadow-[0_0_20px_rgba(250,204,21,0.6)] hover:scale-105 transition flex items-center gap-1">
+        REGISTER AS A MEMBER <span>→</span>
+      </a>
+      <span class="text-xs text-white/40 hidden md:inline">Auto with YOUR sound: /static/uploads/slide_custom.mp3 — 12/7</span>
+    </div>
+    <div class="flex justify-center">
+      <a href="/faith-arcade" class="text-[#a78bfa] text-xs font-bold tracking-widest flex items-center gap-2 hover:text-[#c4b5fd] transition">
+        <span>⚔</span> <span class="underline underline-offset-4">FAITH ARCADE</span> <span>⚔</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="relative overflow-hidden">
+  <img src="https://images.unsplash.com/photo-1516450360452-9312abbf6f7e?w=800&q=60" class="absolute inset-0 w-full h-full object-cover" loading="eager">
+  <div class="absolute inset-0 bg-gradient-to-r from-[#0a1931]/90 via-[#1a2332]/70 to-purple-900/60"></div>
+  <div class="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center py-10">
+    <div>
+      <h1 class="text-4xl md:text-5xl font-black text-white drop-shadow">Media Gallery — 12/7 FINAL + YOUR SOUND + MEMBERS SEALED</h1>
+      <p class="text-sm text-yellow-200 mt-2 italic font-semibold">Capturing moments of God's faithfulness • Public & Members Only • No crop • Auto with YOUR Sound — PRESERVED</p>
+      <div class="mt-4 bg-white/20 backdrop-blur inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white border border-white/30">📷 <span id="photoCount">0</span> Photos • <span id="albumCountTop">0</span> Albums • <span id="accessInfo">Public</span> • <span id="musicStatus">🔊 Your Sound Ready</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-6 py-8">
+  <div id="emptyState" class="mt-8 bg-white rounded-2xl p-12 text-center shadow-sm border-2 border-dashed border-yellow-200 hidden">
+    <div class="text-6xl">🖼</div><h2 class="font-bold text-xl mt-4">Gallery is Empty — FULL CRUD 12/7</h2>
+  </div>
+  <div id="realGallery" class="hidden mt-6 grid lg:grid-cols-[1fr_320px] gap-6">
+    <div>
+      <div class="flex justify-between items-center flex-wrap gap-2"><h3 class="font-bold text-sm">📁 Photo Albums <span id="albumCount" class="text-gray-400 text-xs">0 Albums</span></h3><div class="flex gap-2"><button onclick="filterAlbums('all')" id="btn-all" class="bg-[#facc15] text-black px-3 py-1 rounded-full text-xs font-black">ALL</button><button onclick="filterAlbums('public')" id="btn-public" class="bg-white border px-3 py-1 rounded-full text-xs font-bold">PUBLIC</button><button onclick="filterAlbums('members')" id="btn-members" class="bg-white border px-3 py-1 rounded-full text-xs font-bold">MEMBERS ONLY 🔒</button></div></div>
+      <div id="albumsGrid" class="mt-4 grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      <div class="mt-10">
+        <div class="flex justify-between items-center"><h3 class="font-bold text-sm">Recent Photos</h3><span class="text-xs text-gray-500 bg-white border px-3 py-1 rounded-full">Bigger • No cropping • Members Lock • Your Sound 12/7</span></div>
+        <div id="recentGrid" class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+      </div>
+    </div>
+    <div class="space-y-4">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-yellow-100 golden-card">
+        <h4 class="font-bold text-sm">⭐ Featured Album — 12/7 PRESERVED</h4>
+        <div id="featuredAlbum" class="mt-4"></div>
+        <div id="memberNote" class="mt-4 bg-green-50 border-2 border-green-200 p-3 rounded-xl text-xs hidden"><p class="font-black text-green-700">🔓 Member Access Unlocked 12/7</p><p class="text-gray-600 mt-1">You can view and download members-only photos. Screenshot protection lifted for trusted members. Your sound unlocked.</p></div>
+        <div id="publicNote" class="mt-4 bg-orange-50 border-2 border-orange-200 p-3 rounded-xl text-xs"><p class="font-black text-orange-700">🔒 Some albums are Members Only</p><p class="text-gray-600 mt-1">Register as member to view private fellowship photos. Public can only view public albums. Secured by new app.py filter.</p><a href="/member-qualifications" class="mt-2 inline-block bg-[#facc15] text-black px-4 py-1.5 rounded-full font-black text-xs">REGISTER AS MEMBER →</a></div>
+        <div class="mt-4 bg-[#111c2e] text-white p-3 rounded-xl text-xs">
+          <p class="font-black text-[#facc15]">🎵 Your Custom Sound — 12/7 PRESERVED CONTROLS</p>
+          <p class="text-xs opacity-70 mt-1">ENJOY — low volume 0.22 no irritation</p>
+          <div class="mt-2 flex gap-2">
+            <button onclick="toggleMusic()" id="musicBtn" class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold">🔊 Sound ON</button>
+            <button onclick="testSound()" class="bg-[#facc15] text-black px-3 py-1 rounded-full text-xs font-bold">Test Your Sound</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="lightbox" class="hidden fixed inset-0 z-[100] bg-black/95 flex flex-col">
+  <div class="flex justify-between items-center p-3 bg-black/60 text-white border-b border-white/10 flex-wrap gap-2">
+    <div class="flex items-center gap-3">
+      <button onclick="closeLightbox()" class="w-9 h-9 bg-white/20 rounded-full hover:bg-white/30"><i class="fas fa-times text-sm"></i></button>
+      <button onclick="minimizeLightbox()" class="w-9 h-9 bg-white/20 rounded-full hover:bg-white/30"><i class="fas fa-minus text-sm"></i></button>
+      <span id="lightCounter" class="text-xs font-bold ml-2">1 / 10</span>
+      <span id="lightTitle" class="text-xs opacity-70 ml-3 hidden md:inline"></span>
+      <span id="lightVisibility" class="text-xs px-2 py-1 rounded-full font-black ml-2"></span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="toggleMusic()" id="musicBtn2" class="px-3 py-2 rounded-full text-xs font-bold bg-white/10 hover:bg-white/20 border border-white/20"><i class="fas fa-music"></i> <span id="musicLabel">Sound ON</span></button>
+      <button id="autoBtn" onclick="toggleAuto()" class="px-4 py-2 rounded-full text-xs font-bold bg-white/20 hover:bg-white/30"><i class="fas fa-play"></i> Auto + Your Sound</button>
+      <button onclick="toggleFit()" id="fitBtn" class="px-4 py-2 rounded-full text-xs font-bold bg-white text-black">Full View</button>
+      <a id="lightDownload" href="#" download class="px-4 py-2 rounded-full text-xs font-black bg-[#facc15] text-black"><i class="fas fa-download"></i></a>
+    </div>
+  </div>
+  <div class="flex-1 relative flex items-center justify-center p-0 overflow-hidden bg-black no-select" oncontextmenu="return false">
+    <button onclick="prevImg()" class="absolute left-4 z-10 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full text-white text-lg"><i class="fas fa-chevron-left"></i></button>
+    <img id="lightImg" class="lightbox-img fade-enter no-select" draggable="false">
+    <div id="lightLock" class="hidden absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white p-6 text-center"><div class="text-5xl">🔒</div><h3 class="font-black text-xl mt-4">Members Only Photo</h3><p class="text-xs mt-2 opacity-80">This photo is for approved members only. Register as member to view and download.</p><a href="/member-qualifications" class="mt-4 bg-[#facc15] text-black px-6 py-2 rounded-full font-black text-xs">REGISTER AS MEMBER</a><a href="/members/login" class="mt-2 bg-white text-black px-6 py-2 rounded-full font-black text-xs">MEMBER LOGIN</a></div>
+    <button onclick="nextImg()" class="absolute right-4 z-10 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full text-white text-lg"><i class="fas fa-chevron-right"></i></button>
+    <div id="progressBar" class="absolute bottom-0 left-0 h-1 bg-[#facc15] hidden" style="width:0%"></div>
+  </div>
+  <div class="bg-black/70 border-t border-white/10 p-3 overflow-x-auto"><div id="thumbStrip" class="flex gap-2"></div></div>
+</div>
+
+<div id="miniBar" class="hidden fixed bottom-5 right-5 z-[101] bg-[#1a2332] text-white px-5 py-3 rounded-full shadow-2xl border-2 border-[#facc15] flex items-center gap-3"><img id="miniImg" class="w-10 h-10 rounded-full object-cover"><span class="text-xs font-bold">Minimized + Your Sound</span><button onclick="restoreLightbox()" class="bg-[#facc15] text-black px-4 py-1.5 rounded-full text-xs font-black">Restore</button><button onclick="closeLightbox()" class="w-7 h-7 bg-white/20 rounded-full text-xs">✕</button></div>
+
+<div id="memberModal" class="hidden fixed inset-0 z-[110] bg-black/70 backdrop-blur flex items-center justify-center p-4"><div class="bg-white rounded-[1.5rem] p-6 w-full max-w-sm border-4 border-[#facc15] shadow-[0_0_30px_#facc15] text-center"><div class="text-4xl">🔒</div><h3 class="font-black text-sm mt-3">Members Only Album — 12/7 Secured</h3><p class="text-xs text-gray-600 mt-2">This album is for approved members only. Only members can view and download. Please register.</p><div class="flex gap-2 mt-5"><a href="/member-qualifications" class="flex-1 bg-[#facc15] text-black py-2.5 rounded-full font-black text-xs text-center">REGISTER AS MEMBER</a><a href="/members/login" class="flex-1 bg-[#1a2332] text-white py-2.5 rounded-full font-black text-xs text-center">LOGIN</a></div><button onclick="closeMemberModal()" class="mt-3 text-xs text-gray-500">Continue viewing public albums</button></div></div>
+
+<audio id="customSound" preload="auto" src="/static/uploads/slide_custom.mp3"></audio>
+
+<script>
+function fixUrl(src){
+  if(!src) return '/static/uploads/god_key.jpg';
+  src=src.trim();
+  if(src.startsWith('http')) return src;
+  if(src.startsWith('/static/')) return src;
+  if(src.startsWith('static/')) return '/' + src;
+  if(src.startsWith('uploads/')) return '/static/' + src;
+  return '/static/' + src.replace(/^\/+/, '');
+}
+let allImages=[]; let currentIdx=0; let autoInterval=null; let autoPlaying=false; let isContain=true;
+let isMember=false; let allAlbums=[]; let currentFilter='all';
+let soundOn=false;
+
+function playYourSound(){
+  if(!soundOn) return;
+  const audio = document.getElementById('customSound');
+  if(!audio) return;
+  try{ audio.volume = 0.22; audio.currentTime = 0; audio.play().catch(()=>{}); }catch(e){}
+}
+function testSound(){ soundOn=true; updateSoundUI(); playYourSound(); }
+function toggleMusic(){ soundOn=!soundOn; updateSoundUI(); if(soundOn) playYourSound(); }
+function updateSoundUI(){
+  const labelOn = soundOn? '🔊 Sound ON' : '🔇 Sound OFF';
+  document.getElementById('musicBtn').innerText = labelOn;
+  document.getElementById('musicBtn2').innerHTML = `<i class="fas fa-music"></i> <span id="musicLabel">${soundOn?'Sound ON':'Sound OFF'}</span>`;
+  document.getElementById('musicStatus').innerText = soundOn? '🔊 Your Sound ON' : '🔇 Sound OFF';
+}
+
+async function checkMember(){
+  try{
+    let r=await fetch('/api/member/me');
+    let j=await r.json();
+    if(j.logged_in && j.approved){
+      isMember=true;
+      document.getElementById('memberBadge').classList.remove('hidden');
+      document.getElementById('loginLink').innerText='DASHBOARD';
+      document.getElementById('loginLink').href='/members/dashboard';
+      document.getElementById('accessInfo').innerText='Member Access ✓ - Public + Members 12/7';
+      document.getElementById('memberNote').classList.remove('hidden');
+      document.getElementById('publicNote').classList.add('hidden');
+    }
+  }catch(e){}
+}
+
+async function loadGallery(){
+  await checkMember();
+  let data=[]; try{ const r=await fetch('/api/gallery'); data=await r.json(); }catch(e){ data=[]; }
+  allAlbums=data;
+  const total=data.reduce((s,a)=>s+(a.images?.length||0),0);
+  document.getElementById('photoCount').innerText=total;
+  document.getElementById('albumCountTop').innerText=data.length;
+  if(data.length===0){ document.getElementById('emptyState').classList.remove('hidden'); return; }
+  document.getElementById('realGallery').classList.remove('hidden');
+  document.getElementById('albumCount').innerText=data.length+' Albums';
+  renderAlbums(data);
+  const feat=data[0]; const featCover=fixUrl(feat.cover||feat.images?.[0]||'');
+  document.getElementById('featuredAlbum').innerHTML=`<div class="bg-white rounded-xl overflow-hidden"><img src="${featCover}" loading="lazy" class="w-full h-48 object-contain p-3 bg-white rounded-xl cursor-pointer hover:scale-105 transition duration-500 lazy" onload="this.classList.add('loaded')" onclick="openLightboxBySrc('${featCover}')"></div><p class="font-black text-xs mt-3">${feat.title}</p><p class="text-xs text-gray-500 mt-1">${feat.images?.length||0} photos • ${feat.visibility==='members'?'🔒 Members Only':'🌍 Public'}</p>`;
+}
+
+function renderAlbums(data){
+  let filtered=data;
+  if(currentFilter==='public') filtered=data.filter(a=> (a.visibility||'public')==='public');
+  if(currentFilter==='members') filtered=data.filter(a=> a.visibility==='members');
+  document.getElementById('albumCount').innerText=filtered.length+' Albums';
+  allImages=filtered.flatMap(a=> (a.images||[]).map(src=>({src: fixUrl(src), album: a.title, visibility: a.visibility||'public'})));
+  document.getElementById('albumsGrid').innerHTML=filtered.map(a=>{
+    const cover=fixUrl(a.cover||a.images?.[0]||'');
+    const isMembersOnly = (a.visibility||'public')==='members';
+    const locked = isMembersOnly &&!isMember;
+    return `<div class="bg-white rounded-2xl overflow-hidden shadow-sm golden-card hover:shadow-xl relative no-select" ${locked?'oncontextmenu="return false"':''}>
+      <div class="relative h-64 bg-white cursor-pointer ${locked?'overflow-hidden':''}" onclick="${locked?`openMemberModal()`:`openFromAlbum('${a.title.replace(/'/g,"\\'")}')`}">
+        <img src="${cover}" loading="lazy" class="w-full h-full object-contain p-2 lazy ${locked?'members-blur':''}" onload="this.classList.add('loaded')" onerror="this.src='/static/uploads/god_key.jpg'" draggable="false">
+        <div class="absolute top-3 left-3 ${isMembersOnly?'bg-green-600':'bg-black/75'} text-white text-xs px-3 py-1.5 rounded-full font-bold">${a.images?.length||0} Photos • ${isMembersOnly?'🔒 Members Only':'🌍 Public'}</div>
+        ${locked?`<div class="lock-overlay"><div class="text-3xl">🔒</div><p class="font-black text-white text-xs mt-2">MEMBERS ONLY</p><p class="text-xs text-yellow-200 mt-1">Login to view</p><span class="mt-2 bg-[#facc15] text-black px-3 py-1 rounded-full text-xs font-black">REGISTER</span></div>`:''}
+        ${!locked?`<div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black/10 transition"><span class="bg-white/90 px-3 py-1 rounded-full text-xs font-black">VIEW + Your Sound</span></div>`:''}
+      </div>
+      <div class="p-4"><p class="font-black text-xs">${a.title}</p><p class="text-xs text-gray-500 mt-1">${a.category} • ${isMembersOnly?'Only approved members can download':'Anyone can download'}</p></div>
+      ${locked?`<div class="absolute inset-0 z-10" oncontextmenu="return false" style="background:transparent"></div>`:''}
+      </div>`;
+  }).join('');
+  document.getElementById('recentGrid').innerHTML=allImages.slice(0,12).map((o,i)=>{
+    const locked = o.visibility==='members' &&!isMember;
+    return `<div class="h-48 bg-white rounded-2xl overflow-hidden cursor-pointer group relative border-2 border-transparent hover:border-[#facc15] shadow-sm golden-card no-select" onclick="${locked?'openMemberModal()':'openLightbox('+i+')'}" oncontextmenu="return false">
+      <img src="${o.src}" loading="lazy" class="w-full h-full object-contain p-2 bg-white group-hover:scale-105 transition duration-500 lazy ${locked?'members-blur':''}" onload="this.classList.add('loaded')" draggable="false" onerror="this.src='/static/uploads/god_key.jpg'">
+      ${locked?`<div class="lock-overlay"><span class="text-xl">🔒</span><span class="text-xs font-black text-white mt-1">MEMBERS</span></div><div class="absolute inset-0" style="background:transparent"></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function filterAlbums(f){ currentFilter=f; document.querySelectorAll('[id^=btn-]').forEach(b=>b.className='bg-white border px-3 py-1 rounded-full text-xs font-bold'); document.getElementById('btn-'+f).className='bg-[#facc15] text-black px-3 py-1 rounded-full text-xs font-black'; renderAlbums(allAlbums); }
+function openMemberModal(){ document.getElementById('memberModal').classList.remove('hidden'); }
+function closeMemberModal(){ document.getElementById('memberModal').classList.add('hidden'); }
+
+function openLightbox(idx){
+  const o=allImages[idx]; if(!o) return;
+  if(o.visibility==='members' &&!isMember){ openMemberModal(); return; }
+  currentIdx=idx; showImage(true); document.getElementById('lightbox').classList.remove('hidden'); document.getElementById('miniBar').classList.add('hidden'); document.body.style.overflow='hidden'; renderThumbs();
+}
+function openLightboxBySrc(src){ const idx=allImages.findIndex(o=>o.src===src); if(idx>=0) openLightbox(idx); }
+function openFromAlbum(t){ const idx=allImages.findIndex(o=>o.album===t); if(idx>=0) openLightbox(idx); }
+function showImage(isFirst=false){
+  const o=allImages[currentIdx]; if(!o) return;
+  const isMembersOnly = o.visibility==='members';
+  const locked = isMembersOnly &&!isMember;
+  const img=document.getElementById('lightImg'); img.classList.remove('fade-enter'); void img.offsetWidth;
+  img.src=o.src; img.style.objectFit=isContain?'contain':'cover'; img.classList.add('fade-enter');
+  document.getElementById('lightCounter').innerText=`${currentIdx+1} / ${allImages.length}`;
+  document.getElementById('lightTitle').innerText=o.album;
+  document.getElementById('lightVisibility').innerText=isMembersOnly?'🔒 MEMBERS ONLY':'🌍 PUBLIC';
+  document.getElementById('lightVisibility').className=isMembersOnly?'text-xs px-2 py-1 rounded-full font-black ml-2 bg-green-600 text-white':'text-xs px-2 py-1 rounded-full font-black ml-2 bg-black/70 text-white';
+  const dl=document.getElementById('lightDownload');
+  if(locked){ dl.classList.add('hidden'); document.getElementById('lightLock').classList.remove('hidden'); }
+  else{ dl.classList.remove('hidden'); dl.href=o.src; document.getElementById('lightLock').classList.add('hidden'); }
+  document.getElementById('miniImg').src=o.src;
+  highlightThumb();
+  if(!isFirst && soundOn){ playYourSound(); }
+}
+function toggleFit(){ isContain=!isContain; document.getElementById('fitBtn').innerText=isContain?'Full View':'Fill View'; document.getElementById('lightImg').style.objectFit=isContain?'contain':'cover'; }
+function nextImg(){ let n=(currentIdx+1)%allImages.length; const o=allImages[n]; if(o.visibility==='members' &&!isMember){ openMemberModal(); return; } currentIdx=n; showImage(); }
+function prevImg(){ let p=(currentIdx-1+allImages.length)%allImages.length; const o=allImages[p]; if(o.visibility==='members' &&!isMember){ openMemberModal(); return; } currentIdx=p; showImage(); }
+function closeLightbox(){ document.getElementById('lightbox').classList.add('hidden'); document.getElementById('miniBar').classList.add('hidden'); document.body.style.overflow=''; stopAuto(); }
+function minimizeLightbox(){ document.getElementById('lightbox').classList.add('hidden'); document.getElementById('miniBar').classList.remove('hidden'); }
+function restoreLightbox(){ document.getElementById('miniBar').classList.add('hidden'); document.getElementById('lightbox').classList.remove('hidden'); }
+function renderThumbs(){ document.getElementById('thumbStrip').innerHTML=allImages.map((o,i)=>`<div class="relative"><img src="${o.src}" loading="lazy" onclick="openLightbox(${i})" class="w-20 h-14 object-cover rounded-xl cursor-pointer border-2 ${i===currentIdx?'border-[#facc15]':'border-transparent'} opacity-70 hover:opacity-100 ${o.visibility==='members' &&!isMember?'members-blur':''}">${o.visibility==='members' &&!isMember?'<div class="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl text-xs">🔒</div>':''}</div>`).join(''); }
+function highlightThumb(){ document.querySelectorAll('#thumbStrip img').forEach((el,i)=>{ el.classList.toggle('border-[#facc15]', i===currentIdx); if(i===currentIdx) el.scrollIntoView({behavior:'smooth',inline:'center'}); }); }
+function toggleAuto(){ if(autoPlaying) stopAuto(); else startAuto(); }
+function startAuto(){
+  autoPlaying=true;
+  document.getElementById('autoBtn').innerHTML='<i class="fas fa-pause"></i> Pause + Your Sound';
+  document.getElementById('autoBtn').classList.add('bg-[#facc15]','text-black');
+  document.getElementById('progressBar').classList.remove('hidden');
+  if(soundOn) playYourSound();
+  let w=0;
+  autoInterval=setInterval(()=>{ w+=0.5; document.getElementById('progressBar').style.width=w+'%'; if(w>=100){ w=0; nextImg(); } },30);
+}
+function stopAuto(){
+  autoPlaying=false;
+  document.getElementById('autoBtn').innerHTML='<i class="fas fa-play"></i> Auto + Your Sound';
+  document.getElementById('autoBtn').classList.remove('bg-[#facc15]','text-black');
+  document.getElementById('progressBar').classList.add('hidden');
+  if(autoInterval){ clearInterval(autoInterval); autoInterval=null; }
+}
+document.addEventListener('keydown', e=>{ if(document.getElementById('lightbox').classList.contains('hidden')) return; if(e.key==='ArrowRight') nextImg(); if(e.key==='ArrowLeft') prevImg(); if(e.key==='Escape') closeLightbox(); });
+loadGallery();
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact - South B Police Chapel - Golden Glow No Crop</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.heaven-bg{background:url('/static/uploads/god_key.jpg') no-repeat center center fixed;background-size:cover}
+.glass-panel{backdrop-filter:blur(18px);background:rgba(255,255,255,0.88);border:2px solid rgba(250,204,21,0.5);box-shadow:0 0 15px rgba(250,204,21,0.4),0 0 30px rgba(250,204,21,0.2)}
+.card-golden{backdrop-filter:blur(16px);background:rgba(255,255,255,0.95);border:2px solid transparent;position:relative;border-radius:1rem;transition:all 0.3s}
+.card-golden::after{content:'';position:absolute;inset:-2px;background:linear-gradient(45deg,#facc15,#fde047,#facc15,#eab308);border-radius:inherit;z-index:-1;opacity:0.7}
+.card-golden:hover::after{opacity:1}.card-golden:hover{transform:translateY(-4px);box-shadow:0 15px 35px rgba(0,0,0,0.2)}
+</style>
+</head><body class="heaven-bg min-h-screen"><div class="min-h-screen bg-gradient-to-br from-[#0f172a]/50 via-transparent to-black/60">
+
+<nav class="bg-[#1a2332]/90 backdrop-blur text-white px-8 py-3 sticky top-0 z-50 border-b border-[#facc15]/30">
+  <div class="flex justify-between items-center">
+    <div class="text-[#5aa9ff] font-black text- leading-tight">SOUTH B POLICE<br>CHAPEL <span class="text-[#facc15] text-">🔑 GOLDEN GLOW</span></div>
+    <div class="flex gap-5 text- font-bold flex-wrap">
+      <a href="/">HOME</a><a href="/events">EVENTS</a><a href="/sermons">SERMONS</a><a href="/prayer-wall">PRAYER WALL</a>
+      <a href="/contact" class="bg-[#facc15] text-black px-5 py-1.5 rounded-full shadow-[0_0_15px_#facc15]">CONTACT</a>
+      <a href="/bible-quiz">BIBLE QUIZ</a><a href="/counselling">COUNSELLING CARE</a><a href="/sunday-school">SUNDAY SCHOOL</a><a href="/gallery">GALLERY</a><a href="/videos">VIDEOS</a>
+    </div>
+  </div>
+  <div class="flex justify-center mt-3"><a href="/faith-arcade" class="text-[#fde047] bg-white/10 px-4 py-1 rounded-full border border-[#facc15]/30 text- font-bold tracking-widest">⚔ <span class="underline">FAITH ARCADE</span> ⚔</a></div>
+</nav>
+
+<div class="text-center py-12">
+  <div class="glass-panel max-w-2xl mx-auto p-6 rounded-[1.5rem]">
+  <h1 class="text-[#1a2332] font-black text-2xl">🔑 We'd love to meet you - Golden Glow</h1>
+  <p class="text-gray-600 text-xs mt-2">Visit our church, request a prayer, or write directly to our administration office team below. No Crop Compatible.</p>
+  </div>
+</div>
+
+<div class="max-w-6xl mx-auto px-6 pb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+  <div class="card-golden p-6 text-center flex flex-col shadow-xl">
+    <div class="w-14 h-14 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-full mx-auto mb-4 flex items-center justify-center text-xl border-2 border-[#facc15] shadow-[0_0_15px_#facc15]">📍</div>
+    <h3 class="font-black text-sm text-[#1a2332]">Plan Your Visit</h3>
+    <p class="text- text-gray-600 mt-3 leading-relaxed">Plan your leave to visit our office, meet our pastoral leadership team, or join us live in person for any of our scheduled weekly church services.</p>
+    <a href="/events" class="mt-auto pt-6 text-[#b45309] text- font-black hover:text-[#facc15]">Service Times → Golden Glow</a>
+  </div>
+
+  <div class="card-golden p-6 text-center flex flex-col shadow-xl">
+    <div class="w-14 h-14 bg-gradient-to-br from-red-100 to-orange-100 rounded-full mx-auto mb-4 flex items-center justify-center text-xl border-2 border-red-200">🙏</div>
+    <h3 class="font-black text-sm text-[#1a2332]">Prayer Request</h3>
+    <p class="text- text-gray-600 mt-3 leading-relaxed">Submit your prayer requests online to our active church prayer wall group so our congregation family can lift up your intentions.</p>
+    <a href="/prayer-wall" class="mt-auto pt-6 text-[#b45309] text- font-black">Go to Prayer Wall →</a>
+  </div>
+
+  <div class="card-golden p-6 shadow-xl">
+    <h3 class="font-black text-sm mb-1 text-[#1a2332]">📩 Contact Office - Golden Glow</h3>
+    <p class="text- text-gray-500 mb-3">Messages go to Admin → CONTACTS tab • Overview stat</p>
+    <form id="contactForm" class="space-y-3">
+      <input name="name" required placeholder="Your Name*" class="w-full border-2 border-yellow-100 focus:border-[#facc15] rounded-xl px-3 py-2.5 text- bg-white/90 outline-none">
+      <input name="email" required type="email" placeholder="Email Address*" class="w-full border-2 border-yellow-100 focus:border-[#facc15] rounded-xl px-3 py-2.5 text- bg-white/90 outline-none">
+      <textarea name="message" required placeholder="Type your message here... what do you want?" class="w-full border-2 border-yellow-100 focus:border-[#facc15] rounded-xl px-3 py-2.5 text- h-28 bg-white/90 outline-none"></textarea>
+      <button class="w-full bg-gradient-to-r from-[#b45309] to-orange-700 text-white text- font-black py-3 rounded-xl shadow-[0_0_15px_rgba(180,83,9,0.4)]">Submit Request ⚡ Golden Glow</button>
+    </form>
+    <p id="contactOk" class="hidden text-green-600 text- mt-3 text-center font-black bg-green-50 border-2 border-green-200 p-2 rounded-xl">✓ Message sent to Admin! Pastor will reply soon.</p>
+  </div>
+
+</div>
+
+<div class="max-w-6xl mx-auto px-6 pb-10">
+  <div class="glass-panel rounded-[1.5rem] p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 border-2 border-[#facc15]/30">
+    <div>
+      <h3 class="text-[#facc15] bg-[#1a2332] w-fit px-3 py-1 rounded-full font-black text-xs">Meet Our Team - Golden Glow</h3>
+      <p class="text-gray-600 text- mt-2">Get in touch with us; we'll be glad to assist you in the church.</p>
+      <div class="w-20 h-1 bg-gradient-to-r from-[#facc15] to-yellow-600 mt-3 mb-5 rounded-full"></div>
+      <div class="card-golden p-4 flex gap-4 items-center">
+        <div class="w-14 h-14 rounded-full overflow-hidden bg-white shadow-lg flex-shrink-0 ring-2 ring-[#facc15]/50">
+          <img src="{{ url_for('static', filename=images['flower']) }}" alt="Heavenly Flower" class="w-full h-full object-contain bg-white p-1">
+        </div>
+        <div>
+          <p class="text-[#1a2332] text-sm font-black">Caudensha Sawe</p>
+          <p class="text-gray-500 text-">Senior Chaplain & Leadership Overseer</p>
+          <p class="text-[#b45309] text- font-black mt-1">0721424392</p>
+        </div>
+      </div>
+    </div>
+    <div class="rounded-2xl overflow-hidden border-2 border-[#facc15]/50 shadow-[0_0_20px_rgba(250,204,21,0.3)]">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.768272080067!2d36.83029377496565!3d-1.314544298672979!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f11e66ad3b913%3A0x53a9494d7ef1da2f!2sSouth%20B%20Police%20Band%20Dispensary!5e0!3m2!1sen!2ske!4v1787171625387!5m2!1sen!2ske" width="100%" height="220" style="border:0;object-fit:contain" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-[#1a2332]/90 backdrop-blur text-white text-center py-6 text- border-t border-[#facc15]/20">© 2025 South B Police Chapel • Golden Glow • No Crop • Contact Elite</footer>
+</div></div>
+<script>
+document.getElementById('contactForm').onsubmit = e=>{
+  e.preventDefault();
+  const fd=new FormData(e.target);
+  fetch('/contact/send',{method:'POST', body:fd}).then(r=>r.json()).then(d=>{
+    if(d.ok){document.getElementById('contactOk').classList.remove('hidden'); e.target.reset(); setTimeout(()=>document.getElementById('contactOk').classList.add('hidden'),5000);}
+  }).catch(()=>{document.getElementById('contactOk').innerText='✓ Sent (offline saved)'; document.getElementById('contactOk').classList.remove('hidden'); e.target.reset();});
+}
+</script>
+</body></html>

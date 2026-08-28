@@ -1,0 +1,7 @@
+Flask==3.0.0
+gunicorn==21.2.0
+pytz==2024.1
+Werkzeug==3.0.1
+qrcode==7.4.2
+Pillow==10.2.0
+html5-qrcode

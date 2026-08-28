@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADMIN QUIZ - GOLDEN GLOW - No Crop</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.heaven-bg{background:url('/static/uploads/god_key.jpg') no-repeat center center fixed;background-size:cover}
+.glass-panel{backdrop-filter:blur(18px);background:rgba(255,255,255,0.88);border:2px solid rgba(250,204,21,0.5);box-shadow:0 0 15px rgba(250,204,21,0.4)}
+.card-golden{background:rgba(255,255,255,0.92);border:2px solid transparent;position:relative;border-radius:1rem}
+.card-golden::after{content:'';position:absolute;inset:-2px;background:linear-gradient(45deg,#facc15,#fde047,#facc15,#eab308);border-radius:inherit;z-index:-1;opacity:0.7}
+</style>
+</head>
+<body class="heaven-bg min-h-screen">
+<div class="min-h-screen bg-gradient-to-br from-[#0f172a]/30 via-transparent to-black/40 p-6">
+<div class="max-w-6xl mx-auto">
+<div class="glass-panel p-6 rounded-[1.5rem] flex justify-between items-center">
+<div><h1 class="font-black text-xl">🔑 BIBLE QUIZ ADMIN - GOLDEN GLOW</h1><p class="text- text-gray-600 mt-1">4 Levels • 15 Q random no repeat • 2 Attempts public preserved • No crop compatible</p></div>
+<a href="/admin" class="bg-[#1a2332] text-white px-5 py-2 rounded-full text- font-black">← BACK TO DASHBOARD</a>
+</div>
+
+<div class="grid md:grid-cols-4 gap-3 mt-6">
+<button onclick="showLevel('sunday')" id="btn-sunday" class="levelBtn bg-[#facc15] text-black p-3 rounded-xl font-black text-xs shadow-[0_0_15px_#facc15]">🌈 SUNDAY <span id="count-sunday">0</span></button>
+<button onclick="showLevel('youth')" id="btn-youth" class="levelBtn bg-white p-3 rounded-xl font-black text-xs">🔥 YOUTH <span id="count-youth">0</span></button>
+<button onclick="showLevel('adult')" id="btn-adult" class="levelBtn bg-white p-3 rounded-xl font-black text-xs">📖 ADULT <span id="count-adult">0</span></button>
+<button onclick="showLevel('pastors')" id="btn-pastors" class="levelBtn bg-white p-3 rounded-xl font-black text-xs">👑 PASTORS <span id="count-pastors">0</span></button>
+</div>
+
+<div class="glass-panel p-6 rounded-[1.5rem] mt-6">
+<h3 class="font-black text-xs">➕ ADD QUESTION - <span id="currentLevelLabel" class="bg-[#facc15] px-3 py-1 rounded-full">SUNDAY</span></h3>
+<form id="quizForm" class="grid md:grid-cols-2 gap-3 mt-4">
+<input id="qBook" placeholder="Book e.g. Genesis" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs bg-white/90">
+<input id="qRef" placeholder="Ref e.g. Genesis 6:14" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs bg-white/90">
+<textarea id="qText" placeholder="Question*" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs bg-white/90 md:col-span-2 h-20"></textarea>
+<input id="optA" placeholder="Option A*" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs bg-white/90">
+<input id="optB" placeholder="Option B*" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs bg-white/90">
+<input id="optC" placeholder="Option C*" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs bg-white/90">
+<input id="optD" placeholder="Option D*" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs bg-white/90">
+<select id="qAnswer" class="border-2 border-yellow-200 p-3 rounded-xl text-xs bg-white/90 md:col-span-2"><option value="0">Correct = A</option><option value="1">Correct = B</option><option value="2">Correct = C</option><option value="3">Correct = D</option></select>
+<button class="md:col-span-2 bg-gradient-to-r from-[#facc15] to-yellow-600 text-black py-3 rounded-xl font-black text-xs shadow-[0_0_15px_#facc15]">+ ADD QUESTION - GOLDEN GLOW</button>
+</form>
+</div>
+
+<div id="quizList" class="mt-6 space-y-3"></div>
+
+</div>
+</div>
+
+<script>
+let currentLevel='sunday';
+let allQuiz={};
+
+async function loadAll(){
+const r=await fetch('/api/admin/quiz-data').catch(async()=>{
+ // fallback to bible_database.json via app.py if needed
+ const rr=await fetch('/bible_database.json').catch(()=>null);
+ return rr;
+});
+try{
+ allQuiz = await r.json();
+} catch {
+ allQuiz = {{ quiz|tojson }};
+}
+['sunday','youth','adult','pastors'].forEach(l=>{
+ document.getElementById('count-'+l).innerText = (allQuiz[l]||[]).length;
+});
+showLevel(currentLevel);
+}
+
+function showLevel(l){
+ currentLevel=l;
+ document.getElementById('currentLevelLabel').innerText=l.toUpperCase();
+ document.querySelectorAll('.levelBtn').forEach(b=>b.classList.remove('bg-[#facc15]','shadow-[0_0_15px_#facc15]','text-black'));
+ document.getElementById('btn-'+l).classList.add('bg-[#facc15]','shadow-[0_0_15px_#facc15]','text-black');
+ const list = allQuiz[l]||[];
+ document.getElementById('quizList').innerHTML = list.map((q,idx)=>`
+  <div class="card-golden p-4 bg-white flex justify-between items-start">
+    <div class="flex-1">
+      <p class="text- bg-yellow-100 px-2 py-1 rounded-full w-fit font-black">${q.book} • ${q.ref} • ID ${q.id}</p>
+      <p class="font-bold text- mt-2">${idx+1}. ${q.q}</p>
+      <div class="grid grid-cols-2 gap-1 mt-2 text-">
+        ${q.options.map((o,i)=>`<span class="${i===q.answer?'bg-green-100 border-2 border-green-400 font-black rounded-lg p-1':''}">${String.fromCharCode(65+i)}. ${o} ${i===q.answer?'✓':''}</span>`).join('')}
+      </div>
+    </div>
+    <div class="flex flex-col gap-1 ml-3">
+      <button onclick="editQ('${l}',${q.id})" class="bg-blue-500 text-white px-3 py-1 rounded-full text- font-black">EDIT</button>
+      <button onclick="deleteQ('${l}',${q.id})" class="bg-red-500 text-white px-3 py-1 rounded-full text- font-black">DELETE</button>
+    </div>
+  </div>
+ `).join('') || '<p class="bg-white/80 p-4 rounded-xl text-xs">No questions yet for '+l+'</p>';
+}
+
+document.getElementById('quizForm').onsubmit=async(e)=>{
+ e.preventDefault();
+ const payload={
+  book:document.getElementById('qBook').value,
+  ref:document.getElementById('qRef').value,
+  q:document.getElementById('qText').value,
+  options:[
+    document.getElementById('optA').value,
+    document.getElementById('optB').value,
+    document.getElementById('optC').value,
+    document.getElementById('optD').value
+  ],
+  answer:parseInt(document.getElementById('qAnswer').value),
+  level:currentLevel
+ };
+ const r=await fetch('/api/admin/add-quiz',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+ if(r.ok){ alert('✅ Question Added!'); e.target.reset(); loadAll(); } else alert('Failed');
+};
+
+async function deleteQ(level,id){
+ if(!confirm('Delete Q '+id+'?')) return;
+ await fetch('/api/admin/delete-quiz',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({level,id})});
+ loadAll();
+}
+async function editQ(level,id){
+ const q = (allQuiz[level]||[]).find(x=>x.id===id);
+ if(!q) return;
+ document.getElementById('qBook').value=q.book;
+ document.getElementById('qRef').value=q.ref;
+ document.getElementById('qText').value=q.q;
+ document.getElementById('optA').value=q.options[0];
+ document.getElementById('optB').value=q.options[1];
+ document.getElementById('optC').value=q.options[2];
+ document.getElementById('optD').value=q.options[3];
+ document.getElementById('qAnswer').value=q.answer;
+ // delete old then add new on submit
+ await fetch('/api/admin/delete-quiz',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({level,id})});
+ alert('Editing Q '+id+' - modify and click ADD - will replace');
+}
+
+loadAll();
+</script>
+</body></html>

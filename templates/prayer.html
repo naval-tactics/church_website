@@ -1,0 +1,101 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prayer Wall - South B Police Chapel - FULL NAV PRESERVED</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{font-family:Inter,sans-serif}
+.golden-card{border:2px solid rgba(250,204,21,0.4);box-shadow:0 0 15px rgba(250,204,21,0.2);transition:all 0.3s;background:white}
+.golden-card:hover{border-color:#facc15;box-shadow:0 0 25px rgba(250,204,21,0.4);transform:translateY(-3px)}
+.glass-panel{backdrop-filter:blur(18px);background:rgba(255,255,255,0.88);border:2px solid rgba(250,204,21,0.5)}
+.nav-link{white-space:nowrap}
+.nav-link:hover{color:#facc15}
+</style>
+</head><body class="bg-cover bg-center min-h-screen flex flex-col" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200')">
+
+<!-- FULL NAV - PRESERVED FROM SCREENSHOT - LIKE EVENTS FIXED -->
+<nav class="bg-[#111c2e] text-white px-4 md:px-6 py-3 sticky top-0 z-50 border-b border-white/5">
+  <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-2">
+    <div class="text-[#5aa9ff] font-black text-[11px] leading-[1.1] tracking-wide shrink-0">
+      SOUTH B POLICE<br>CHAPEL
+    </div>
+    <div class="flex gap-3 md:gap-5 text-[11px] md:text-[12px] font-bold items-center flex-wrap">
+      <a href="/" class="nav-link">HOME</a>
+      <a href="/events" class="nav-link">EVENTS</a>
+      <a href="/sermons" class="nav-link">SERMONS</a>
+      <a href="/prayer-wall" class="nav-link bg-[#facc15] text-black px-4 py-1 rounded-full">PRAYER WALL</a>
+      <a href="/contact" class="nav-link">CONTACT</a>
+      <a href="/bible-quiz" class="nav-link">BIBLE QUIZ</a>
+      <a href="/counselling-care" class="nav-link">COUNSELLING CARE</a>
+      <a href="/sunday-school" class="nav-link">SUNDAY SCHOOL</a>
+      <a href="/gallery" class="nav-link">GALLERY</a>
+      <a href="/videos" class="nav-link">VIDEOS</a>
+    </div>
+  </div>
+  <div class="mt-3 flex flex-col gap-2">
+    <div class="flex justify-start">
+      <a href="/members/register" class="bg-[#facc15] text-black px-5 py-2 rounded-full text-[11px] font-black shadow-[0_0_20px_rgba(250,204,21,0.6)] hover:scale-105 transition flex items-center gap-1">
+        REGISTER AS A MEMBER <span>→</span>
+      </a>
+    </div>
+    <div class="flex justify-center">
+      <a href="/faith-arcade" class="text-[#a78bfa] text-[11px] font-bold tracking-widest flex items-center gap-2 hover:text-[#c4b5fd] transition">
+        <span>⚔</span> <span class="underline underline-offset-4">FAITH ARCADE</span> <span>⚔</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-7xl mx-auto px-6 w-full flex-1 flex flex-col lg:flex-row gap-8 mt-10">
+  <div class="lg:w-2/3">
+    <h2 class="text-white font-black text-lg drop-shadow flex items-center gap-2"><span class="w-2 h-2 bg-[#facc15] rounded-full shadow-[0_0_10px_#facc15]"></span> Public Prayer Requests - Golden Glow • No Crop - PRESERVED • FULL NAV</h2>
+    <div id="prayersList" class="space-y-4 mt-4"></div>
+    <div id="emptyPrayer" class="hidden bg-white rounded-xl p-10 text-center mt-4 golden-card">No public prayer requests at the moment. Be the first to share. - PRESERVED</div>
+    <div class="mt-10 text-center"><span class="bg-[#8b4a4a] text-white px-6 py-2 text-xs rounded-full font-bold tracking-widest shadow-lg">Matthew 7:7 - Ask and it will be given - PRESERVED</span></div>
+  </div>
+
+  <div class="lg:w-1/3">
+    <div class="bg-[#1e293b] text-white rounded-[1.5rem] p-6 shadow-[0_0_30px_rgba(250,204,21,0.2)] border-2 border-yellow-400/30">
+      <h3 class="text-[#facc15] font-black">Share Your Request • Golden Glow - PRESERVED</h3><p class="text-xs opacity-70 mb-4">Public goes to wall, Private goes to Pastor only. - FULL CRUD</p><hr class="opacity-20 mb-4">
+      <form id="prayerForm" class="space-y-4">
+        <div><label class="text- opacity-60">Select Category *</label><select name="category" class="w-full text-black text-xs p-3 rounded-xl mt-1 border-2 border-yellow-200"><option>Healing and Recovery</option><option>Financial Provision</option><option>Family</option><option>Spiritual Growth</option><option>Thanksgiving</option><option>Other</option></select></div>
+        <div><label class="text- opacity-60">Your Name (Optional)</label><input name="name" placeholder="e.g., Brother Mark" class="w-full text-black text-xs p-3 rounded-xl mt-1 border-2 border-yellow-200"></div>
+        <label class="text-xs flex gap-2 items-center"><input type="checkbox" name="anonymous"> Make anonymous</label>
+        <div class="flex gap-3 text- bg-white/10 p-3 rounded-xl border border-white/20"><label class="flex gap-1 items-center"><input type="radio" name="visibility" value="public" checked> <span>Public (on wall)</span></label><label class="flex gap-1 items-center"><input type="radio" name="visibility" value="private"> <span class="text-[#facc15] font-bold">Private (to Pastor only 🔒)</span></label></div>
+        <div><label class="text- opacity-60">Write your prayer request *</label><textarea name="content" required placeholder="Type what you want church family to lift up..." class="w-full text-black text-xs p-3 rounded-xl mt-1 h-28 border-2 border-yellow-200"></textarea></div>
+        <label class="text-xs flex gap-2"><input type="checkbox" name="contact"> I would like someone to contact me</label>
+        <button class="w-full bg-gradient-to-r from-[#b45309] to-yellow-600 py-3 rounded-full text-xs font-black shadow-[0_0_20px_rgba(180,83,9,0.4)] hover:scale-105 transition">🙏 Submit Request • Golden Glow - FULL CRUD</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-[#1a2332] text-white text-center py-6 text-xs mt-10">
+  <div>© 2026 South B Police Chapel • Prayer Wall • Golden Glow Active • Full Nav Preserved</div>
+  <div class="mt-1 text-[9px] text-yellow-300/80 tracking-widest">Built with ❤️ by <span class="font-bold text-white">YOU</span> • Website Developer</div>
+</footer>
+
+<script>
+async function loadPrayers(){
+  let prayers=[]; try{ prayers=await fetch('/api/prayers').then(r=>r.json()); }catch(e){ prayers=[]; }
+  let publicP=prayers.filter(p=>p.visibility==='public');
+  document.getElementById('prayersList').innerHTML=publicP.length?publicP.map(pr=>`
+    <div class="bg-white rounded-xl shadow golden-card flex p-4 border-l-4 border-[#facc15]">
+      <div class="flex-1"><span class="bg-gray-100 text- px-3 py-1 rounded-full font-bold">${pr.category}</span><p class="font-black text-xs mt-2">Request from: ${pr.anonymous?'Anonymous':(pr.name||'Anonymous')}</p><p class="text- text-gray-400">Posted: ${pr.date}</p><p class="text- mt-3 italic leading-relaxed">"${pr.content}"</p></div>
+      <div class="text-center ml-4 border-l pl-4 min-w-"><div class="font-black text-lg pray-count">${pr.pray_count}</div><div class="text- font-bold">PRAYING</div><button onclick="prayed(${pr.id}, this)" class="mt-3 bg-green-50 border-2 border-green-200 text- px-4 py-2 rounded-full text-green-700 font-black hover:bg-green-100">I Prayed 🙏</button></div>
+    </div>`).join(''):'';
+  if(publicP.length===0) document.getElementById('emptyPrayer').classList.remove('hidden');
+}
+function prayed(id, btn){
+  fetch('/prayer/pray/'+id,{method:'POST'}).then(r=>r.json()).then(d=>{
+    btn.parentElement.querySelector('.pray-count').innerText=d.count;
+    btn.innerText='Prayed ✓'; btn.disabled=true; btn.classList.add('bg-green-200');
+  });
+}
+document.getElementById('prayerForm').onsubmit=e=>{
+  e.preventDefault(); const fd=new FormData(e.target);
+  fetch('/prayer/submit',{method:'POST',body:fd}).then(()=>{ alert(fd.get('visibility')==='private'?'🔒 Private prayer sent to Pastor only!':'✅ Public prayer shared on wall! FULL CRUD'); e.target.reset(); loadPrayers(); });
+};
+loadPrayers();
+</script>
+</body></html>

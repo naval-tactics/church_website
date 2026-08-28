@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sermons - South B Police Chapel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.golden-card{border:2px solid rgba(250,204,21,0.4);box-shadow:0 0 15px rgba(250,204,21,0.15),0 4px 15px rgba(0,0,0,0.08);transition:all 0.3s ease}
+.golden-card:hover{border-color:#facc15;box-shadow:0 0 25px rgba(250,204,21,0.4),0 8px 25px rgba(0,0,0,0.12);transform:translateY(-4px)}
+</style>
+</head><body class="bg-gray-50 flex flex-col min-h-screen">
+
+<nav class="bg-[#1a2332] text-white px-8 py-3">
+  <div class="flex justify-between items-center">
+    <div class="text-[#5aa9ff] font-black text-sm">SOUTH B POLICE CHAPEL</div>
+    <div class="flex gap-6 text- font-bold tracking-wide items-center flex-wrap">
+      <a href="/" class="hover:text-[#facc15]">HOME</a>
+      <a href="/events" class="hover:text-[#facc15]">EVENTS</a>
+      <a href="/sermons" class="text-[#facc15] border-b-2 border-[#facc15] pb-1">SERMONS</a>
+      <a href="/prayer-wall" class="hover:text-[#facc15]">PRAYER WALL</a>
+      <a href="/contact" class="hover:text-[#facc15]">CONTACT</a>
+      <a href="/bible-quiz" class="hover:text-[#facc15]">BIBLE QUIZ</a>
+      <a href="/counselling" class="hover:text-[#facc15]">COUNSELLING</a>
+      <a href="/sunday-school" class="hover:text-[#facc15]">SUNDAY SCHOOL</a>
+      <a href="/gallery" class="hover:text-[#facc15]">GALLERY</a>
+      <a href="/videos" class="hover:text-[#facc15]">VIDEOS</a>
+    </div>
+  </div>
+  <div class="flex justify-center mt-3">
+    <a href="/faith-arcade" class="text-[#9b7cff] hover:text-[#facc15] text- font-bold tracking-widest"><span>⚔</span> <span class="underline">FAITH ARCADE</span> <span>⚔</span></a>
+  </div>
+</nav>
+
+<div style="background:linear-gradient(135deg,#2b0a0f,#5a1a1a);border-radius:0 0 50% 50%/0 0 40%;transform:scaleX(1.2);overflow:hidden">
+  <div style="transform:scaleX(0.83);text-align:center;color:white;padding:50px 0;">
+    <h1 class="tracking-[0.3em] font-black text-xl">SERMONS</h1>
+    <div class="flex items-center justify-center gap-2 mt-2"><div class="w-10 h- bg-yellow-400"></div><i class="fas fa-microphone text-yellow-400 text-xs"></i><div class="w-10 h- bg-yellow-400"></div></div>
+    <p class="text- mt-3 opacity-70">Listen, be encouraged and grow in God's Word. • Local uploads + YouTube supported</p>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-6 w-full mt-8 flex-1">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <div class="lg:w-3/4">
+      <div class="flex flex-wrap gap-2 mb-5 border-b pb-4 items-center">
+        <button onclick="filterSermon('all')" id="f-all" class="filter-btn bg-[#5a1a1a] text-white text- px-5 py-2 rounded-full font-bold shadow">All</button>
+        <button onclick="filterSermon('video')" id="f-video" class="filter-btn border-2 border-yellow-200 text- px-5 py-2 rounded-full font-bold hover:border-[#facc15]">🎥 Video</button>
+        <button onclick="filterSermon('audio')" id="f-audio" class="filter-btn border-2 border-yellow-200 text- px-5 py-2 rounded-full font-bold hover:border-[#facc15]">🎧 Audio</button>
+        <button onclick="filterSermon('written')" id="f-written" class="filter-btn border-2 border-yellow-200 text- px-5 py-2 rounded-full font-bold hover:border-[#facc15]">📝 Written</button>
+        <div class="ml-auto flex gap-2 text-">
+          <select id="seriesFilter" onchange="filterSeries()" class="border-2 border-yellow-200 rounded-full px-3 py-2 bg-white"><option value="all">All Series</option></select>
+          <select id="speakerFilter" onchange="filterSpeaker()" class="border-2 border-yellow-200 rounded-full px-3 py-2 bg-white"><option value="all">All Speakers</option></select>
+        </div>
+      </div>
+
+      {% if sermons|length == 0 %}
+      <div class="text-center py-20 bg-white rounded-2xl shadow-sm border-2 border-dashed border-yellow-200">
+        <div class="w-20 h-20 mx-auto bg-yellow-50 rounded-full flex items-center justify-center border-2 border-yellow-200 shadow-[0_0_15px_rgba(250,204,21,0.2)]"><i class="fas fa-book-open text-2xl text-yellow-600"></i></div>
+        <p class="text-sm text-gray-800 font-black mt-4">No sermons yet — Upload one in Admin!</p>
+        <p class="text-xs text-gray-500 mt-1">Your uploads will appear here instantly</p>
+      </div>
+      {% else %}
+      <div id="sermonsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {% for s in sermons %}
+        <div class="sermon-item golden-card bg-white rounded-2xl overflow-hidden" data-type="{{ s.type }}" data-series="{{ s.series }}" data-speaker="{{ s.speaker }}">
+
+          {% if s.type == 'video' %}
+            {% if s.yt %}
+            <div class="relative h-48 bg-black group cursor-pointer" onclick="window.open('https://www.youtube.com/watch?v={{ s.yt }}','_blank')">
+              <img src="https://img.youtube.com/vi/{{ s.yt }}/hqdefault.jpg" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition flex items-center justify-center"><i class="fas fa-play-circle text-white text-5xl drop-shadow-[0_0_15px_rgba(250,204,21,0.8)]"></i></div>
+              <span class="absolute top-2 left-2 bg-red-600 text-white text- px-2 py-1 rounded-full font-black">YOUTUBE</span>
+            </div>
+            {% elif s.local_file %}
+            <div class="h-48 bg-black relative">
+              <video controls playsinline class="w-full h-full object-contain" preload="metadata">
+                <source src="/static/{{ s.local_file }}">
+              </video>
+              <span class="absolute top-2 left-2 bg-[#facc15] text-black text- px-2 py-1 rounded-full font-black">LOCAL VIDEO</span>
+            </div>
+            {% endif %}
+
+          {% elif s.type == 'audio' %}
+            <div class="h-48 bg-gradient-to-br from-[#1a2332] to-[#5a1a1a] flex flex-col items-center justify-center p-4 relative">
+              <i class="fas fa-headphones text-white text-4xl mb-3"></i>
+              {% if s.local_file %}
+              <audio controls class="w-full h-10 mt-2" preload="metadata">
+                <source src="/static/{{ s.local_file }}">
+              </audio>
+              <p class="text- text-white/60 mt-2">Tap play to listen here</p>
+              {% endif %}
+              <span class="absolute top-2 left-2 bg-green-500 text-white text- px-2 py-1 rounded-full font-black">AUDIO</span>
+            </div>
+
+          {% else %}
+            {% if s.local_file and '.pdf' in s.local_file %}
+            <div class="h-48 bg-[#fffbeb] border-b-2 border-yellow-200 relative">
+              <iframe src="/static/{{ s.local_file }}" class="w-full h-full"></iframe>
+              <span class="absolute top-2 left-2 bg-yellow-600 text-white text- px-2 py-1 rounded-full font-black">PDF</span>
+            </div>
+            {% else %}
+            <div class="h-48 bg-[#fffbeb] flex flex-col items-center justify-center p-4 border-b-2 border-yellow-200"><i class="fas fa-file-alt text-[#5a1a1a] text-3xl mb-2"></i><p class="text- text-gray-600 text-center line-clamp-3">{{ s.description[:120] }}</p></div>
+            {% endif %}
+          {% endif %}
+
+          <div class="p-4">
+            <h3 class="text- font-black leading-tight">{{ s.title }}</h3>
+            <p class="text- text-gray-500 mt-1"><i class="fas fa-user"></i> {{ s.speaker }} • {{ s.date }} {% if s.series %}• <span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">{{ s.series }}</span>{% endif %}</p>
+            <p class="text- text-gray-600 mt-2 line-clamp-2">{{ s.description }}</p>
+            <div class="flex gap-2 mt-3 flex-wrap">
+              {% if s.local_file %}
+              <a href="/static/{{ s.local_file }}" target="_blank" class="bg-[#1a2332] text-white text- px-3 py-1.5 rounded-full font-bold"><i class="fas fa-eye"></i> View</a>
+              <a href="/static/{{ s.local_file }}" download class="bg-[#facc15] text-black text- px-3 py-1.5 rounded-full font-black"><i class="fas fa-download"></i> Download</a>
+              {% endif %}
+              {% if s.type == 'written' %}
+              <button onclick="openReadModal(this.dataset.title, this.dataset.desc)" data-title="{{ s.title | e }}" data-desc="{{ s.description | e }}" class="border-2 border-yellow-200 text- px-3 py-1.5 rounded-full font-bold">Read</button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="lg:w-1/4 space-y-6">
+      <div class="bg-white rounded-2xl shadow border-2 border-yellow-100 p-4 golden-card"><h3 class="text- font-black mb-3"><i class="fas fa-layer-group text-[#ca8a04]"></i> BROWSE BY SERIES</h3><ul id="seriesList" class="text- space-y-2 text-gray-600"></ul></div>
+      <div class="bg-white rounded-2xl shadow border-2 border-yellow-100 p-4 golden-card"><h3 class="text- font-black mb-3">RECENT SERMONS</h3><div class="space-y-3">{% for s in sermons[:5] %}<div class="flex gap-2 text-"><div class="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center border border-yellow-200"><i class="fas fa-microphone text-yellow-600 text-xs"></i></div><div><p class="font-bold leading-tight">{{ s.title[:30] }}</p><p class="text- text-gray-400">{{ s.speaker }} • {{ s.date }}</p></div></div>{% endfor %}{% if sermons|length==0 %}<p class="text- text-gray-400">No recent yet</p>{% endif %}</div></div>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-[#1a2332] text-white text-center py-10 text-xs mt-10 border-t-4 border-[#facc15]">© 2025 South B Police Chapel • Golden Glow Edition</footer>
+
+<div id="readModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-6 max-w-2xl w-full border-4 border-[#facc15]"><h3 id="readTitle" class="font-black"></h3><p id="readDesc" class="text-sm mt-4 whitespace-pre-wrap"></p><button onclick="document.getElementById('readModal').classList.add('hidden')" class="mt-4 bg-[#1a2332] text-white px-6 py-2 rounded-full text-xs font-black">CLOSE</button></div></div>
+
+<script>
+function openReadModal(t,d){document.getElementById('readTitle').innerText=t;document.getElementById('readDesc').innerText=d;document.getElementById('readModal').classList.remove('hidden');}
+function filterSermon(type){
+  document.querySelectorAll('.filter-btn').forEach(b=>{b.classList.remove('bg-[#5a1a1a]','text-white');b.classList.add('border-2','border-yellow-200')});
+  document.getElementById('f-'+type).classList.add('bg-[#5a1a1a]','text-white');document.getElementById('f-'+type).classList.remove('border-2','border-yellow-200');
+  document.querySelectorAll('.sermon-item').forEach(item=>{if(type==='all'||item.dataset.type===type)item.style.display='block';else item.style.display='none';});
+}
+const sermonsData={{ sermons|tojson }};
+const seriesSet=[...new Set(sermonsData.map(s=>s.series).filter(Boolean))];
+const speakerSet=[...new Set(sermonsData.map(s=>s.speaker).filter(Boolean))];
+const seriesFilter=document.getElementById('seriesFilter');
+const speakerFilter=document.getElementById('speakerFilter');
+const seriesList=document.getElementById('seriesList');
+seriesSet.forEach(se=>{let o=document.createElement('option');o.value=se;o.textContent=se;seriesFilter.appendChild(o);let li=document.createElement('li');li.innerHTML=`⭕ ${se}`;li.className='hover:text-[#ca8a04] cursor-pointer';li.onclick=()=>{seriesFilter.value=se;filterSeries()};seriesList.appendChild(li);});
+speakerSet.forEach(sp=>{let o=document.createElement('option');o.value=sp;o.textContent=sp;speakerFilter.appendChild(o);});
+function filterSeries(){let v=seriesFilter.value;document.querySelectorAll('.sermon-item').forEach(item=>{if(v==='all'||item.dataset.series===v)item.style.display='block';else item.style.display='none';});}
+function filterSpeaker(){let v=speakerFilter.value;document.querySelectorAll('.sermon-item').forEach(item=>{if(v==='all'||item.dataset.speaker===v)item.style.display='block';else item.style.display='none';});}
+</script>
+</body></html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAITH ARCADE - South B Police Chapel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+<style>
+.arcade-font{font-family:'Press Start 2P',cursive}
+body{font-family:Inter,sans-serif;background:#0a0a14}
+.neon{box-shadow:0 0 10px #facc15,0 0 20px #facc15}
+.neon-blue{box-shadow:0 0 10px #5aa9ff,0 0 20px #5aa9ff}
+.scanlines{background:repeating-linear-gradient(0deg,rgba(0,0,0,0.15),rgba(0,0,0,0.15) 1px,transparent 1px,transparent 2px)}
+</style>
+</head>
+<body class="text-white overflow-x-hidden">
+
+<nav class="bg-[#1a2332] text-white px-6 py-3 sticky top-0 z-50 border-b-2 border-[#facc15]">
+  <div class="flex justify-between items-center">
+    <div class="text-[#5aa9ff] font-black text- leading-tight">SOUTH B POLICE<br>CHAPEL</div>
+    <div class="flex gap-4 text- font-bold items-center flex-wrap">
+      <a href="/" class="hover:text-[#facc15]">HOME</a>
+      <a href="/events" class="hover:text-[#facc15]">EVENTS</a>
+      <a href="/sermons" class="hover:text-[#facc15]">SERMONS</a>
+      <a href="/prayer-wall" class="hover:text-[#facc15]">PRAYER WALL</a>
+      <a href="/contact" class="hover:text-[#facc15]">CONTACT</a>
+      <a href="/bible-quiz" class="hover:text-[#facc15]">BIBLE QUIZ</a>
+      <a href="/counselling" class="hover:text-[#facc15]">COUNSELLING CARE</a>
+      <a href="/sunday-school" class="hover:text-[#facc15]">SUNDAY SCHOOL</a>
+      <a href="/gallery" class="hover:text-[#facc15]">GALLERY</a>
+      <a href="/videos" class="hover:text-[#facc15]">VIDEOS</a>
+    </div>
+  </div>
+  <div class="flex justify-center mt-3">
+    <a href="/faith-arcade" class="text-[#facc15] border-b-2 border-[#facc15] pb-1 text- font-black tracking-widest flex items-center gap-2">
+      <span>⚔</span> <span class="underline">FAITH ARCADE</span> <span>⚔</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO ARCADE -->
+<div class="relative h- bg-black overflow-hidden border-b-4 border-[#facc15]">
+  <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1400&q=80" class="absolute inset-0 w-full h-full object-cover opacity-40">
+  <div class="absolute inset-0 bg-gradient-to-r from-purple-900/90 via-black/70 to-[#1a2332]/90"></div>
+  <div class="absolute inset-0 scanlines"></div>
+  <div class="relative z-10 max-w-7xl mx-auto px-6 py-10 h-full flex flex-col md:flex-row items-center justify-between">
+    <div>
+      <h1 class="arcade-font text-3xl md:text-5xl text-[#facc15] leading-tight drop-shadow-[0_0_10px_#facc15]">FAITH<br>ARCADE</h1>
+      <p class="mt-4 text- text-gray-300 max-w-md">Level up your faith! Play Bible games, earn crowns 👑, become a Disciple. Top players win on Sunday!</p>
+      <div class="mt-5 flex gap-3 flex-wrap">
+        <div class="bg-white/10 backdrop-blur border border-[#facc15]/50 px-4 py-2 rounded-full text- font-bold">👑 <span id="crownCount">0</span> Crowns</div>
+        <div class="bg-[#facc15] text-black px-4 py-2 rounded-full text- font-black">LEVEL <span id="playerLevel">1</span> - SEEKER</div>
+      </div>
+    </div>
+    <div class="mt-6 md:mt-0 bg-black/70 border-2 border-[#facc15] rounded-2xl p-4 w-64">
+      <h3 class="arcade-font text- text-[#facc15]">LEADERBOARD</h3>
+      <div id="leaderboard" class="mt-3 space-y-2 text-"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ARCADE CABINETS -->
+<div class="max-w-7xl mx-auto px-6 py-8 grid md:grid-cols-3 gap-6">
+
+  <!-- GAME 1: BIBLE BLASTER -->
+  <div class="group relative bg-gradient-to-b from-[#1e293b] to-black border-2 border-[#5aa9ff] rounded-2xl p-5 hover:neon-blue transition cursor-pointer" onclick="openGame('blaster')">
+    <div class="absolute top-3 right-3 bg-[#5aa9ff] text-black px-2 py-1 rounded-full text- font-black">+10 👑</div>
+    <div class="text-4xl">🎯</div>
+    <h3 class="arcade-font text- mt-3 text-[#5aa9ff]">BIBLE BLASTER</h3>
+    <p class="text- text-gray-400 mt-2">Shoot the correct answer before time runs! Fast fingers, sharp Word.</p>
+    <div class="mt-4 bg-black rounded-full h-2 overflow-hidden"><div class="bg-[#5aa9ff] h-full w-[70%]"></div></div>
+    <button class="w-full mt-4 bg-[#5aa9ff] text-black py-2 rounded-full text- font-black group-hover:bg-white transition">PLAY NOW ▶</button>
+  </div>
+
+  <!-- GAME 2: MEMORY MATCH -->
+  <div class="group relative bg-gradient-to-b from-[#1e293b] to-black border-2 border-[#facc15] rounded-2xl p-5 hover:neon transition cursor-pointer" onclick="openGame('memory')">
+    <div class="absolute top-3 right-3 bg-[#facc15] text-black px-2 py-1 rounded-full text- font-black">+15 👑</div>
+    <div class="text-4xl">🧠</div>
+    <h3 class="arcade-font text- mt-3 text-[#facc15]">SCRIPTURE MATCH</h3>
+    <p class="text- text-gray-400 mt-2">Flip cards, match Bible characters & verses. Train your memory!</p>
+    <div class="mt-4 bg-black rounded-full h-2 overflow-hidden"><div class="bg-[#facc15] h-full w-[85%]"></div></div>
+    <button class="w-full mt-4 bg-[#facc15] text-black py-2 rounded-full text- font-black group-hover:bg-white transition">PLAY NOW ▶</button>
+  </div>
+
+  <!-- GAME 3: DAVID RUNNER -->
+  <div class="group relative bg-gradient-to-b from-[#1e293b] to-black border-2 border-green-400 rounded-2xl p-5 hover:shadow-[0_0_15px_#4ade80] transition cursor-pointer" onclick="openGame('runner')">
+    <div class="absolute top-3 right-3 bg-green-400 text-black px-2 py-1 rounded-full text- font-black">+20 👑</div>
+    <div class="text-4xl">⚔</div>
+    <h3 class="arcade-font text- mt-3 text-green-400">DAVID RUNNER</h3>
+    <p class="text- text-gray-400 mt-2">Run, jump, collect stones! Defeat Goliath. How far can you go?</p>
+    <div class="mt-4 bg-black rounded-full h-2 overflow-hidden"><div class="bg-green-400 h-full w-[60%]"></div></div>
+    <button class="w-full mt-4 bg-green-400 text-black py-2 rounded-full text- font-black group-hover:bg-white transition">PLAY NOW ▶</button>
+  </div>
+
+  <!-- GAME 4: VERSE SCRAMBLE -->
+  <div class="group relative bg-gradient-to-b from-[#1e293b] to-black border-2 border-purple-400 rounded-2xl p-5 hover:shadow-[0_0_15px_#a78bfa] transition cursor-pointer" onclick="openGame('scramble')">
+    <div class="absolute top-3 right-3 bg-purple-400 text-black px-2 py-1 rounded-full text- font-black">+12 👑</div>
+    <div class="text-4xl">📖</div>
+    <h3 class="arcade-font text- mt-3 text-purple-400">VERSE SCRAMBLE</h3>
+    <p class="text- text-gray-400 mt-2">Unscramble the Bible verse! John 3:16 mixed up — fix it fast.</p>
+    <button class="w-full mt-4 bg-purple-400 text-black py-2 rounded-full text- font-black">PLAY NOW ▶</button>
+  </div>
+
+  <!-- GAME 5: NOAH'S STACK -->
+  <div class="group relative bg-gradient-to-b from-[#1e293b] to-black border-2 border-orange-400 rounded-2xl p-5 hover:shadow-[0_0_15px_#fb923c] transition cursor-pointer" onclick="openGame('stack')">
+    <div class="absolute top-3 right-3 bg-orange-400 text-black px-2 py-1 rounded-full text- font-black">+18 👑</div>
+    <div class="text-4xl">🛳</div>
+    <h3 class="arcade-font text- mt-3 text-orange-400">NOAH'S ARK STACK</h3>
+    <p class="text- text-gray-400 mt-2">Stack animals 2x2 into the Ark! Don't let them fall!</p>
+    <button class="w-full mt-4 bg-orange-400 text-black py-2 rounded-full text- font-black">PLAY NOW ▶</button>
+  </div>
+
+  <!-- GAME 6: QUIZ BOSS -->
+  <div class="group relative bg-gradient-to-b from-[#1e293b] to-black border-2 border-red-400 rounded-2xl p-5 hover:shadow-[0_0_15px_#f87171] transition cursor-pointer" onclick="openGame('quiz')">
+    <div class="absolute top-3 right-3 bg-red-400 text-black px-2 py-1 rounded-full text- font-black">+25 👑</div>
+    <div class="text-4xl">👑</div>
+    <h3 class="arcade-font text- mt-3 text-red-400">BIBLE BOSS QUIZ</h3>
+    <p class="text- text-gray-400 mt-2">15 random questions, no repeat! From Sunday School pool. Beat the boss!</p>
+    <button class="w-full mt-4 bg-red-400 text-black py-2 rounded-full text- font-black">PLAY NOW ▶</button>
+  </div>
+</div>
+
+<!-- GAME MODAL -->
+<div id="gameModal" class="hidden fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4">
+  <div class="bg-[#0f172a] border-2 border-[#facc15] max-w-2xl w-full rounded-2xl overflow-hidden max-h- overflow-y-auto">
+    <div class="flex justify-between items-center p-4 bg-black border-b border-[#facc15]/30">
+      <h2 id="gameTitle" class="arcade-font text- text-[#facc15]"></h2>
+      <button onclick="closeGame()" class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">✕</button>
+    </div>
+    <div id="gameArea" class="p-6"></div>
+  </div>
+</div>
+
+<footer class="bg-[#1a2332] text-center text- text-gray-400 py-6 border-t border-[#facc15]/20">South B Police Chapel © 2026 - Faith Arcade • Earn Crowns for Heaven 👑</footer>
+
+<script>
+let crowns = parseInt(localStorage.getItem('faith_crowns')||'0');
+let name = localStorage.getItem('faith_name')||'Player';
+function updateCrowns(n){ crowns+=n; localStorage.setItem('faith_crowns',crowns); document.getElementById('crownCount').innerText=crowns; let lvl=crowns<50?1:crowns<150?2:crowns<300?3:4; document.getElementById('playerLevel').innerText=lvl; }
+updateCrowns(0);
+function loadBoard(){
+  let board = JSON.parse(localStorage.getItem('faith_board')||'[{"name":"Esther","crowns":320},{"name":"David","crowns":280},{"name":"Ruth","crowns":210}]');
+  board.push({name:name+' (You)', crowns:crowns}); board.sort((a,b)=>b.crowns-a.crowns);
+  document.getElementById('leaderboard').innerHTML=board.slice(0,5).map((p,i)=>`<div class="flex justify-between ${p.name.includes('You')?'text-[#facc15] font-bold':''}"><span>${i+1}. ${p.name}</span><span>${p.crowns} 👑</span></div>`).join('');
+}
+loadBoard();
+function openGame(type){
+  document.getElementById('gameModal').classList.remove('hidden');
+  const area=document.getElementById('gameArea'); const title=document.getElementById('gameTitle');
+  if(type==='blaster'){ title.innerText='BIBLE BLASTER'; area.innerHTML=`<p class="text-">Quick! Who built the ark?</p><div class="grid grid-cols-2 gap-2 mt-4"><button onclick="correct(this,10)" class="bg-white/10 p-3 rounded-xl text- hover:bg-[#5aa9ff]">Moses</button><button onclick="correct(this,10)" class="bg-white/10 p-3 rounded-xl text- hover:bg-[#5aa9ff]">Noah ✓</button><button onclick="wrong(this)" class="bg-white/10 p-3 rounded-xl text-">David</button><button onclick="wrong(this)" class="bg-white/10 p-3 rounded-xl text-">Peter</button></div><p id="gmsg" class="mt-4 text-"></p>`; }
+  if(type==='memory'){ title.innerText='SCRIPTURE MATCH'; let cards=['🐑','🐑','✝','✝','📖','📖','🕊','🕊'].sort(()=>Math.random()-0.5); area.innerHTML=`<div class="grid grid-cols-4 gap-2">${cards.map((c,i)=>`<div onclick="flip(this,'${c}')" class="h-16 bg-white/10 rounded-xl flex items-center justify-center text-2xl cursor-pointer">?</div>`).join('')}</div><p class="text- mt-3 text-gray-400">Match 2 same emojis! Admin can add real verses later.</p>`; window.flipped=[]; window.matched=0; }
+  if(type==='runner'){ title.innerText='DAVID RUNNER'; area.innerHTML=`<div class="bg-black h-40 rounded-xl relative overflow-hidden"><div id="david" class="absolute bottom-2 left-10 text-2xl">🏃♂</div><div id="goliath" class="absolute bottom-2 right-0 text-3xl">🧌</div></div><p class="text- mt-3">Press SPACE to jump! Collect stones. Each jump = +2 crowns</p><button onclick="jump()" class="w-full mt-3 bg-green-400 text-black py-2 rounded-full font-black">JUMP (SPACE)</button>`; }
+  if(type==='scramble'){ title.innerText='VERSE SCRAMBLE'; area.innerHTML=`<p class="text-">Unscramble: <b class="text-[#facc15]">GOD LOVED WORLD THE SO FOR</b></p><input id="scrambleInput" placeholder="Type correct verse..." class="w-full mt-3 bg-white/10 border border-purple-400/50 p-3 rounded-xl text-"><button onclick="checkScramble()" class="w-full mt-3 bg-purple-400 text-black py-2 rounded-full font-black">CHECK</button><p id="scramMsg" class="text- mt-2"></p>`; }
+  if(type==='stack'){ title.innerText="NOAH'S ARK STACK"; area.innerHTML=`<p class="text-">Tap to stack animals! Don't miss!</p><div id="stackTower" class="mt-3 flex flex-col-reverse items-center gap-1 h-48 justify-start"><div class="w-24 h-6 bg-orange-900 rounded"></div></div><button onclick="stackAnimal()" class="w-full mt-3 bg-orange-400 text-black py-2 rounded-full font-black">STACK 🦁</button>`; }
+  if(type==='quiz'){ title.innerText='BIBLE BOSS QUIZ'; area.innerHTML=`<div id="quizBox" class="text-">Loading boss questions...</div>`; fetch('/api/sunday-quiz').then(r=>r.json()).then(qs=>{ let i=0, score=0; function showQ(){ if(i>=qs.length){ document.getElementById('quizBox').innerHTML=`<p class="text-xl font-black">SCORE ${score}/${qs.length} 👑 +${score*5} crowns</p><button onclick="updateCrowns(${score*5});closeGame();loadBoard()" class="w-full mt-4 bg-[#facc15] text-black py-2 rounded-full font-black">CLAIM CROWNS</button>`; return; } let qq=qs[i]; document.getElementById('quizBox').innerHTML=`<p class="font-bold">${i+1}. ${qq.q}</p><div class="grid gap-2 mt-3">${qq.options.map((o,idx)=>`<button onclick="if(${idx}===${qq.answer}){score++;} i++; showQ()" class="bg-white/10 p-2 rounded-xl text-left text-">${o}</button>`).join('')}</div>`; } showQ(); }); }
+}
+function closeGame(){ document.getElementById('gameModal').classList.add('hidden'); }
+function correct(el,n){ el.classList.add('bg-green-500'); document.getElementById('gmsg').innerText='Correct! +'+n+' crowns'; updateCrowns(n); loadBoard(); setTimeout(closeGame,1000); }
+function wrong(el){ el.classList.add('bg-red-500'); document.getElementById('gmsg').innerText='Wrong! Try again'; }
+function flip(el,c){ if(el.innerText!=='?') return; el.innerText=c; window.flipped.push({el,c}); if(window.flipped.length===2){ let [a,b]=window.flipped; if(a.c===b.c){ window.matched++; if(window.matched===4){ setTimeout(()=>{updateCrowns(15); loadBoard(); alert('+15 crowns!'); closeGame();},500);} window.flipped=[]; } else { setTimeout(()=>{a.el.innerText='?'; b.el.innerText='?'; window.flipped=[];},800); } } }
+function jump(){ let d=document.getElementById('david'); d.style.transform='translateY(-50px)'; setTimeout(()=>d.style.transform='',300); updateCrowns(2); }
+function checkScramble(){ let v=document.getElementById('scrambleInput').value.toLowerCase(); if(v.includes('for god so loved the world')){ document.getElementById('scramMsg').innerText='Correct! John 3:16 +12 crowns'; updateCrowns(12); loadBoard(); } else document.getElementById('scramMsg').innerText='Keep trying - starts with FOR GOD...'; }
+function stackAnimal(){ let tower=document.getElementById('stackTower'); let animals=['🦁','🐘','🐒','🦒','🐫']; let a=animals[Math.floor(Math.random()*5)]; tower.innerHTML+=`<div class="w-20 h-6 bg-white text-black flex items-center justify-center text- rounded">${a} ${a}</div>`; updateCrowns(2); if(tower.children.length>8){ alert('Ark Full! +18 crowns'); updateCrowns(18); loadBoard(); closeGame(); } }
+if(!localStorage.getItem('faith_name')){ let n=prompt('Enter your player name for Leaderboard:','Youth'); if(n){ localStorage.setItem('faith_name',n); name=n; } }
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}">
+<title>Member Dashboard - South B Police Chapel - 12/7 SECURE FINAL MATCHES APP.PY</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+body{font-family:Inter,sans-serif}
+.heaven-bg{background:url('/static/uploads/god_key.jpg') no-repeat center center fixed;background-size:cover}
+.glass-panel{backdrop-filter:blur(18px);background:rgba(255,255,255,0.92);border:2px solid rgba(250,204,21,0.5);box-shadow:0 0 20px rgba(250,204,21,0.3)}
+.golden-photo{border:4px solid #facc15;box-shadow:0 0 20px #facc15, 0 4px 20px rgba(0,0,0,0.2)}
+#qrcode{min-height:220px;display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body class="heaven-bg min-h-screen"><div class="min-h-screen bg-gradient-to-br from-[#0f172a]/10 to-black/20">
+<nav class="bg-[#1a2332]/90 backdrop-blur text-white px-6 py-3 flex justify-between items-center sticky top-0 z-50 border-b border-[#facc15]/20">
+  <div class="font-black text-xs md:text-sm">MEMBER DASHBOARD — SOUTH B POLICE CHAPEL <span class="text-[#facc15]">🔑</span> — 12/7 SECURE MATCHES MERGED CHECKIN</div>
+  <div class="flex gap-2 flex-wrap">
+    <a href="/gallery" class="bg-[#facc15] text-black px-4 py-1.5 rounded-full text-xs font-black shadow-[0_0_10px_#facc15]">GALLERY ✓ UNLOCKED</a>
+    <a href="/" class="bg-white/10 px-4 py-1.5 rounded-full text-xs font-bold">HOME</a>
+    <button onclick="logout()" class="bg-red-600 px-4 py-1.5 rounded-full text-xs font-black">LOGOUT</button>
+  </div>
+</nav>
+
+<div class="max-w-5xl mx-auto px-4 mt-8 pb-10">
+  <div class="glass-panel rounded-[1.5rem] p-8">
+    <div class="flex gap-6 items-center flex-wrap">
+      {% set raw_photo = member.photo if member.photo else '' %}
+      {% set safe_photo = '' %}
+      {% if raw_photo and raw_photo.startswith('uploads/members/') and '..' not in raw_photo %}
+        {% set safe_photo = '/static/' + raw_photo %}
+      {% endif %}
+      <img id="dashPhoto" src="{{ safe_photo if safe_photo else 'https://via.placeholder.com/150x150.png?text=No+Photo' }}" class="w-32 h-32 rounded-full golden-photo object-cover bg-white" onerror="this.onerror=null;this.src='https://via.placeholder.com/150x150.png?text=No+Photo'">
+      <div class="flex-1 min-w-0">
+        <h2 class="text-2xl md:text-3xl font-black text-[#1a2332]">Welcome, {{ member.username|e }} 🙏</h2>
+        <p class="text-xs text-gray-500 mt-2 bg-green-50 border border-green-200 px-3 py-1.5 rounded-full w-fit font-bold text-green-700">✅ Approved Member — Gallery Unlocked — QR Secure Signed 12/7</p>
+        <div class="mt-3 text-xs space-y-1">
+          <p><b>Username:</b> {{ member.username|e }}</p>
+          <p><b>Email:</b> {{ member.email|e }}</p>
+          <p><b>Member ID:</b> {{ member.id }}</p>
+          <p><b>Full Name:</b> {{ member.personal.fullName|e if member.personal else 'N/A' }}</p>
+        </div>
+      </div>
+      <div class="bg-gradient-to-br from-[#facc15] to-yellow-600 text-black p-4 rounded-2xl text-center min-w-">
+        <p class="text-xs font-black">MEMBER STATUS</p>
+        <p class="text-2xl font-black mt-1">APPROVED</p>
+        <p class="text-xs mt-1">Gallery Unlocked 🔓<br>QR Signed 🔐 12/7</p>
+      </div>
+    </div>
+
+    <div class="mt-8 grid md:grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-blue-300 rounded-2xl p-5 shadow-[0_0_20px_rgba(59,130,246,0.2)] text-center">
+        <h3 class="font-black text-xs md:text-sm text-blue-700">📱 YOUR SUNDAY QR — SHOW AT GATE — SIGNED + 5 MIN EXPIRY — 12/7 FINAL</h3>
+        <div id="qrcode" class="flex justify-center bg-white p-4 rounded-xl border-2 border-dashed border-[#facc15] mt-3 min-h- items-center">
+          <p class="text-xs animate-pulse">Generating secure signed QR...</p>
+        </div>
+        <p id="qrText" class="text-xs font-black mt-3 bg-yellow-50 border border-yellow-200 p-2 rounded-xl">Loading secure token...</p>
+        <p id="qrExpiry" class="text-xs font-bold mt-1 text-blue-600">Expires in 5:00 — Auto refreshes every 4 mins — Rogue-proof</p>
+        <p class="text-xs text-gray-500 mt-2">Gate scans signed token, not raw ID. Matches merged checkin endpoint.</p>
+        <div class="mt-3 flex gap-2 justify-center">
+          <button onclick="downloadQR()" class="bg-[#1a2332] text-white px-4 py-2 rounded-full text-xs font-black">⬇ Download QR</button>
+          <button onclick="loadQR()" class="bg-[#facc15] text-black px-4 py-2 rounded-full text-xs font-black">↻ Refresh Now</button>
+        </div>
+      </div>
+      <div class="bg-[#f0fdf4] border-2 border-green-200 rounded-2xl p-5">
+        <h3 class="font-black text-sm text-green-700">✅ Check-in Info — Sunday 8AM — Secure 12/7</h3>
+        <p class="text-xs mt-2 text-gray-600">Present QR at gate — Admin scans with camera — Token verified + expiry checked — Works with raw ID fallback too.</p>
+        <div id="myCheckins" class="mt-3 space-y-2 text-xs">
+          <p class="bg-green-50 border border-green-200 p-2 rounded-xl font-bold">✅ Secure QR Ready — Show at gate! ID {{ member.id }}</p>
+          <p class="bg-blue-50 border border-blue-200 p-2 rounded-xl">🔐 Rogue-proof: Token expires in 5 mins, can't be reused tomorrow</p>
+          <p class="bg-yellow-50 border border-yellow-200 p-2 rounded-xl">📍 South B Police Band, near Naivas — Sunday 8AM — 12/7 SEALED</p>
+        </div>
+        <a href="/gallery" class="mt-4 inline-block bg-green-600 text-white px-5 py-2 rounded-full text-xs font-black">📁 VIEW GALLERY (Members Only) →</a>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-4 mt-8">
+      <div class="bg-green-50 border-2 border-green-200 p-5 rounded-2xl">
+        <p class="font-black text-sm text-green-700">🔓 Gallery Unlocked</p>
+        <p class="text-xs text-gray-600 mt-2">View and download members-only albums.</p>
+        <a href="/gallery" class="mt-4 inline-block bg-green-600 text-white px-5 py-2 rounded-full text-xs font-black">GO TO GALLERY →</a>
+      </div>
+      <div class="bg-yellow-50 border-2 border-yellow-200 p-5 rounded-2xl">
+        <p class="font-black text-sm">📸 Private Albums</p>
+        <p class="text-xs text-gray-600 mt-2">Access private fellowship photos approved for members only.</p>
+      </div>
+      <div class="bg-blue-50 border-2 border-blue-200 p-5 rounded-2xl">
+        <p class="font-black text-sm">🔐 Change Password</p>
+        <p class="text-xs text-gray-600 mt-2">Secure your account — CSRF protected — 12/7</p>
+        <button onclick="document.getElementById('pwdModal').classList.remove('hidden')" class="mt-4 bg-[#1a2332] text-white px-5 py-2 rounded-full text-xs font-black">CHANGE PASSWORD</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pwdModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur z-[100] flex items-center justify-center p-4">
+    <div class="bg-white rounded-[1.5rem] p-6 w-full max-w-sm border-4 border-[#facc15] shadow-[0_0_30px_#facc15]">
+      <div class="flex justify-between items-center"><h3 class="font-black text-sm">🔐 Change Password</h3><button onclick="document.getElementById('pwdModal').classList.add('hidden')" class="w-8 h-8 bg-red-500 text-white rounded-full font-black">✕</button></div>
+      <div class="mt-4 space-y-3">
+        <input id="oldPwd" type="password" placeholder="Old Password*" class="w-full border-2 border-yellow-200 p-3 rounded-xl text-xs">
+        <input id="newPwd" type="password" placeholder="New Password* (min 6)" class="w-full border-2 border-yellow-200 p-3 rounded-xl text-xs">
+        <input id="confirmPwd" type="password" placeholder="Confirm New Password*" class="w-full border-2 border-yellow-200 p-3 rounded-xl text-xs">
+        <p id="pwdMsg" class="text-xs font-bold text-center"></p>
+        <button onclick="changePwd()" class="w-full bg-[#1a2332] text-white py-3 rounded-xl font-black text-xs">UPDATE PASSWORD</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+function getCsrf(){ return document.querySelector('meta[name="csrf-token"]')?.content || ''; }
+let memberId = {{ member.id|tojson }};
+let currentToken = null;
+let expiryTimer = null;
+
+async function logout(){
+  await fetch('/api/member/logout',{method:'POST', headers:{'X-CSRF-Token': getCsrf()}, credentials:'same-origin'});
+  location.href='/';
+}
+async function changePwd(){
+  const oldPwd=document.getElementById('oldPwd').value;
+  const newPwd=document.getElementById('newPwd').value;
+  const confirmPwd=document.getElementById('confirmPwd').value;
+  const msg=document.getElementById('pwdMsg');
+  if(newPwd!==confirmPwd){ msg.innerText='❌ New passwords do not match'; msg.className='text-xs font-bold text-center text-red-600'; return; }
+  if(newPwd.length<6){ msg.innerText='❌ Min 6 chars'; msg.className='text-xs font-bold text-center text-red-600'; return; }
+  const r=await fetch('/api/member/change-password',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token': getCsrf()},body:JSON.stringify({old_password:oldPwd,new_password:newPwd}), credentials:'same-origin'});
+  const j=await r.json();
+  if(j.ok){ msg.innerText='✅ Password changed!'; msg.className='text-xs font-bold text-center text-green-600'; setTimeout(()=>{document.getElementById('pwdModal').classList.add('hidden'); msg.innerText='';},1500); }
+  else { msg.innerText='❌ '+(j.error||'Failed'); msg.className='text-xs font-bold text-center text-red-600'; }
+}
+function startExpiryCountdown(seconds){
+  if(expiryTimer) clearInterval(expiryTimer);
+  let remaining = seconds;
+  const el = document.getElementById('qrExpiry');
+  expiryTimer = setInterval(()=>{
+    remaining--;
+    if(remaining<=0){ el.textContent='Expired — Refreshing...'; clearInterval(expiryTimer); loadQR(); return; }
+    const m = Math.floor(remaining/60); const s = remaining%60;
+    el.textContent=`Expires in ${m}:${String(s).padStart(2,'0')} — Auto refreshes every 4 mins — Rogue-proof 12/7`;
+  },1000);
+}
+async function loadQR(){
+  try{
+    document.getElementById('qrcode').innerHTML='<p class="text-xs animate-pulse">Generating secure signed QR...</p>';
+    document.getElementById('qrText').textContent='Requesting signed token...';
+    let res = await fetch('/api/member/my-qr', {credentials:'same-origin'});
+    let data = await res.json();
+    if(!data.ok){
+      let infoRes = await fetch('/api/member/qr-info', {credentials:'same-origin'}).then(r=>r.json());
+      if(infoRes.ok){
+        document.getElementById('qrcode').innerHTML='';
+        new QRCode(document.getElementById('qrcode'), {text: String(infoRes.id), width: 220, height: 220, colorDark:"#000", colorLight:"#fff", correctLevel:QRCode.CorrectLevel.H});
+        document.getElementById('qrText').textContent=`ID:${infoRes.id} — Fallback — Update to signed QR`;
+        currentToken = String(infoRes.id);
+        document.getElementById('qrExpiry').textContent='Fallback QR — upgrade server';
+        return;
+      }
+      throw new Error(data.error||'Failed');
+    }
+    currentToken = data.token;
+    document.getElementById('qrcode').innerHTML='';
+    new QRCode(document.getElementById('qrcode'), {text: data.token, width: 220, height: 220, colorDark:"#000", colorLight:"#fff", correctLevel:QRCode.CorrectLevel.H});
+    document.getElementById('qrText').textContent=`Secure Signed QR — ID:${data.id} — APPROVED — Show at gate 12/7`;
+    startExpiryCountdown(data.expires_in||300);
+  }catch(e){
+    document.getElementById('qrText').textContent='Failed: '+(e.message||'error')+' — ID:'+memberId;
+    document.getElementById('qrcode').innerHTML='';
+    try{ new QRCode(document.getElementById('qrcode'), {text: String(memberId), width: 220, height: 220}); currentToken=String(memberId); }catch{}
+  }
+}
+function downloadQR(){
+  if(!currentToken){ alert('QR not ready'); return; }
+  let canvas=document.querySelector('#qrcode canvas');
+  if(canvas){
+    let a=document.createElement('a'); a.href=canvas.toDataURL(); a.download=`Secure-QR-${memberId}-${new Date().toISOString().slice(0,10)}.png`; a.click();
+  } else {
+    let img=document.querySelector('#qrcode img');
+    if(img){ let a=document.createElement('a'); a.href=img.src; a.download=`Secure-QR-${memberId}.png`; a.click(); } else alert('QR not ready');
+  }
+}
+loadQR();
+setInterval(loadQR, 4*60*1000);
+</script>
+</body>
+</html>

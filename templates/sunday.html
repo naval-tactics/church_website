@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunday School - South B Police Chapel - Golden Glow No Crop</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body{font-family:Inter,sans-serif}.kids{font-family:Fredoka,sans-serif}
+.heaven-bg{background:url('/static/uploads/god_key.jpg') no-repeat center center fixed;background-size:cover}
+.glass-panel{backdrop-filter:blur(18px);background:rgba(255,255,255,0.88);border:2px solid rgba(250,204,21,0.5);box-shadow:0 0 15px rgba(250,204,21,0.4),0 0 30px rgba(250,204,21,0.2),0 8px 32px rgba(0,0,0,0.15)}
+.card-golden{backdrop-filter:blur(16px);background:rgba(255,255,255,0.92);border:2px solid transparent;position:relative;border-radius:1rem;transition:all 0.3s}
+.card-golden::after{content:'';position:absolute;inset:-2px;background:linear-gradient(45deg,#facc15,#fde047,#facc15,#eab308);border-radius:inherit;z-index:-1;opacity:0.7}
+.card-golden:hover::after{opacity:1}.card-golden:hover{transform:translateY(-3px);box-shadow:0 15px 35px rgba(0,0,0,0.15)}
+.card-golden video{object-fit:contain!important;background:black}
+</style>
+</head>
+<body class="heaven-bg min-h-screen">
+<div class="min-h-screen bg-gradient-to-br from-[#0f172a]/30 via-transparent to-black/40">
+<nav class="bg-[#1a2332]/90 backdrop-blur text-white px-6 py-3 border-b border-[#facc15]/30 sticky top-0 z-50">
+  <div class="flex justify-between items-center">
+    <div class="text-[#5aa9ff] font-black text- leading-tight">SOUTH B POLICE<br>CHAPEL <span class="text-[#facc15] text-">🔑 GOLDEN GLOW • NO CROP</span></div>
+    <div class="flex gap-4 text- font-bold items-center flex-wrap">
+      <a href="/">HOME</a><a href="/events">EVENTS</a><a href="/sermons">SERMONS</a><a href="/prayer-wall">PRAYER WALL</a><a href="/contact">CONTACT</a><a href="/bible-quiz">BIBLE QUIZ</a><a href="/counselling" class="text-[#facc15]">COUNSELLING CARE</a><a href="/sunday-school" class="border-b-2 border-[#facc15] pb-1 text-[#facc15]">SUNDAY SCHOOL</a><a href="/gallery">GALLERY</a><a href="/videos">VIDEOS</a>
+    </div>
+  </div>
+  <div class="flex justify-center mt-2">
+    <a href="/faith-arcade" class="text-[#fde047] hover:text-[#facc15] text- font-bold tracking-widest transition bg-white/10 px-4 py-1 rounded-full border border-[#facc15]/30">⚔ <span class="underline">FAITH ARCADE</span> ⚔</a>
+  </div>
+</nav>
+
+<div class="max-w-7xl mx-auto px-4 mt-6 grid md:grid-cols-3 gap-5">
+
+<!-- VIDEO - ELITE NO CROP GOLDEN -->
+<div class="card-golden p-4 shadow">
+<h3 class="kids font-bold flex items-center gap-2">▶ Watch & Learn <span class="text- bg-[#facc15] text-black px-2 py-0.5 rounded-full">NO CROP • GOLDEN</span></h3>
+<div id="videoBox" class="mt-3 bg-blue-50/80 backdrop-blur rounded-2xl p-3 text-center border-2 border-yellow-100">
+<p class="text- text-gray-500">🎬 Loading videos...</p>
+</div>
+<div id="videoList" class="mt-3 space-y-1 max-h-32 overflow-y-auto"></div>
+</div>
+
+<!-- NOTES - VIEW ON WEBSITE + DOWNLOAD - GOLDEN -->
+<div class="card-golden p-4 shadow">
+<h3 class="kids font-bold">📝 Notes & Lessons <span class="text- bg-blue-100 px-2 py-0.5 rounded-full">View+DL</span></h3>
+<div id="notesList" class="mt-3 space-y-2"></div>
+</div>
+
+<!-- QUIZ - DIFFERENT EVERY ROUND - GOLDEN -->
+<div class="card-golden p-4 shadow">
+<h3 class="kids font-bold">❓ Quiz Time - <span id="qNum">Loading...</span></h3>
+<p id="qText" class="font-bold text- mt-3"></p>
+<div id="qOpts" class="mt-2 space-y-2"></div>
+<button onclick="nextQ()" class="w-full mt-3 bg-gradient-to-r from-[#1a2332] to-black text-white py-2.5 rounded-full text- font-bold shadow-[0_0_15px_rgba(250,204,21,0.3)]">Next →</button>
+<p id="qScore" class="text-center text- font-bold mt-2 text-green-600"></p>
+</div>
+
+<!-- MEMORY - CHANGES ICONS EVERY ROUND - GOLDEN -->
+<div class="card-golden p-4 shadow">
+<h3 class="kids font-bold">🎴 Memory Match - <span id="memMoves">0 moves</span></h3>
+<div id="memGrid" class="mt-3 grid grid-cols-4 gap-2"></div>
+<button onclick="initMemory()" class="w-full mt-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white py-2.5 rounded-full text- font-bold">New Game (Different Cards)</button>
+<p id="memWin" class="text-center text- font-bold mt-2"></p>
+</div>
+
+<!-- ADVENTURE - DIFFERENT STORY EVERY ROUND - GOLDEN -->
+<div class="card-golden p-4 shadow">
+<h3 class="kids font-bold">🎮 Bible Adventure</h3>
+<div id="advBox" class="mt-3 bg-orange-50/80 backdrop-blur p-3 rounded-2xl text- border border-orange-200">
+<p id="advText" class="font-bold"></p>
+<div id="advBtns" class="mt-2 grid gap-2"></div>
+</div>
+<button onclick="newAdventure()" class="w-full mt-2 bg-blue-500 text-white py-2 rounded-full text- font-bold">New Story</button>
+</div>
+
+<!-- ASK - GOLDEN -->
+<div class="card-golden p-4 shadow">
+<h3 class="kids font-bold">💬 Ask & Talk</h3>
+<div class="flex gap-2 mt-3"><input id="askIn" placeholder="Ask anything..." class="flex-1 border-2 border-yellow-100 rounded-full px-3 py-2 text- bg-white/90"><button onclick="askNow()" class="bg-[#1a2332] text-white px-4 rounded-full text- font-bold">Ask</button></div>
+<div id="askList" class="mt-3 space-y-2 max-h-48 overflow-y-auto"></div>
+</div>
+
+</div>
+
+<!-- Note Viewer Modal - GOLDEN -->
+<div id="noteModal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur flex items-center justify-center p-4">
+<div class="bg-white max-w-2xl w-full rounded-[1.5rem] p-6 max-h- overflow-y-auto border-4 border-[#facc15] shadow-[0_0_40px_#facc15]">
+<div class="flex justify-between"><h2 id="noteTitle" class="font-bold text-lg"></h2><button onclick="document.getElementById('noteModal').classList.add('hidden')" class="bg-gray-100 w-8 h-8 rounded-full font-black">✕</button></div>
+<p id="noteContent" class="mt-4 text- leading-relaxed whitespace-pre-wrap"></p>
+<div class="flex gap-2 mt-6">
+<a id="noteViewLink" href="#" target="_blank" class="bg-[#1a2332] text-white px-5 py-2.5 rounded-full text- font-black">👁 VIEW PDF</a>
+<button id="noteDownload" class="bg-[#facc15] text-black px-5 py-2.5 rounded-full text- font-black">⬇ DOWNLOAD</button>
+<button onclick="document.getElementById('noteModal').classList.add('hidden')" class="bg-gray-100 px-5 py-2.5 rounded-full text- font-black">Close</button>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+let quiz=[],qi=0,score=0,sel=-1;
+async function loadQuiz(){const r=await fetch('/api/sunday-quiz');quiz=await r.json();qi=0;score=0;sel=-1;renderQ();}
+function renderQ(){if(!quiz.length)return;document.getElementById('qNum').innerText=(qi+1)+'/'+quiz.length;document.getElementById('qText').innerText=(qi+1)+'. '+quiz[qi].q;document.getElementById('qOpts').innerHTML=quiz[qi].options.map((o,i)=>`<label class="flex gap-2 p-2.5 border-2 rounded-xl text- cursor-pointer bg-white/90 ${sel===i?'bg-green-100 border-green-400 font-bold': 'border-yellow-100 hover:border-[#facc15]'}" onclick="sel=${i};renderQ()"><input type="radio" ${sel===i?'checked':''}> ${String.fromCharCode(65+i)} ${o}</label>`).join('');}
+async function nextQ(){if(sel===-1)return alert('Choose answer!');if(sel===quiz[qi].answer)score++;qi++;sel=-1;if(qi<quiz.length){renderQ();}else{document.getElementById('qOpts').innerHTML=`<div class="text-center py-4"><div class="text-3xl">🎉</div><p class="font-bold text-">You scored ${score}/${quiz.length}!</p><button onclick="loadQuiz()" class="mt-3 bg-green-500 text-white px-4 py-2 rounded-full text-">New Questions (Different!)</button></div>`;document.getElementById('qScore').innerText='Score: '+score+'/'+quiz.length+' - New questions next round!';}}
+
+let notes=[];
+function fixFile(url){ if(!url) return ''; if(url.startsWith('http')) return url; if(url.startsWith('/static/')) return url; if(url.startsWith('uploads/')) return '/static/'+url; if(url.startsWith('static/')) return '/'+url; return '/static/'+url; }
+async function loadNotes(){const r=await fetch('/api/sunday-notes');notes=await r.json();document.getElementById('notesList').innerHTML=notes.length?notes.map((n,i)=>`<div class="flex justify-between items-center bg-blue-50/80 p-3 rounded-xl border border-blue-100 backdrop-blur"><div class="flex-1"><p class="text- font-bold truncate">${n.title}</p><p class="text- text-gray-500">${n.size||''} • ${n.date||''} ${n.file?'• 📄 PDF':''}</p></div><div class="flex gap-1"><button onclick="viewNote(${i})" class="bg-white border-2 border-yellow-200 px-3 py-1 rounded-full text- font-black hover:bg-[#facc15]">View</button><button onclick="downloadNote(${i})" class="bg-[#1a2332] text-white px-3 py-1 rounded-full text- font-black">⬇</button></div></div>`).join(''):'<p class="text- text-gray-500 bg-white/80 p-3 rounded-xl">No notes yet. Admin → SUNDAY SCHOOL → Add Note</p>';}
+function viewNote(i){
+document.getElementById('noteTitle').innerText=notes[i].title;
+document.getElementById('noteContent').innerText=notes[i].content||'No content';
+const link = fixFile(notes[i].file);
+document.getElementById('noteViewLink').href = link || '#';
+document.getElementById('noteViewLink').style.display = link? 'inline-block':'none';
+document.getElementById('noteDownload').onclick=()=>downloadNote(i);
+document.getElementById('noteModal').classList.remove('hidden');
+}
+function downloadNote(i){
+if(notes[i].file){
+  const a=document.createElement('a'); a.href=fixFile(notes[i].file); a.download=''; a.target='_blank'; a.click();
+} else {
+  const blob=new Blob([notes[i].title+'\n\n'+notes[i].content],{type:'text/plain'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=notes[i].title+'.txt';a.click();
+}
+}
+
+async function loadVideos(){
+const r=await fetch('/api/sunday-videos');const vids=await r.json();
+const box=document.getElementById('videoBox');const list=document.getElementById('videoList');
+if(vids.length===0){box.innerHTML=`<p class="text- text-gray-500">🎬 No videos yet.<br>Teacher will upload from Admin → SUNDAY SCHOOL → Sunday Video</p>`;return;}
+function renderVideo(v){
+ if(v.yt){ return `<iframe width="100%" height="180" src="https://www.youtube.com/embed/${v.yt}" class="rounded-2xl border-2 border-white shadow" allowfullscreen style="object-fit:contain"></iframe><p class="font-bold text- mt-2">${v.title}</p><p class="text- text-gray-500">${v.date||''}</p>`; }
+ else if(v.local_file){ return `<video controls class="w-full rounded-2xl" style="max-height:220px;object-fit:contain;background:black"><source src="${fixFile(v.local_file)}"></video><p class="font-bold text- mt-2">${v.title}</p>`; }
+ else return `<p class="text-">No video source</p>`;
+}
+box.innerHTML=renderVideo(vids[0]);
+list.innerHTML=vids.map((v,idx)=>`<button onclick="document.getElementById('videoBox').innerHTML=renderVideoByIdx(${idx})" class="w-full text-left bg-white/90 border-2 border-yellow-100 hover:border-[#facc15] p-2.5 rounded-xl text- font-bold truncate">▶ ${v.title}</button>`).join('');
+window._sundayVids=vids;
+window.renderVideoByIdx=(idx)=>{ const v=window._sundayVids[idx]; return renderVideo(v); }
+}
+
+const iconSets=[['✝','📖','🕊','❤'],['🌟','🙏','⛪','👼'],['🐑','🕊','🌈','📜'],['🍞','🐟','🌿','🔥']];
+let cards=[],flipped=[],matched=0,moves=0;
+function initMemory(){const set=iconSets[Math.floor(Math.random()*iconSets.length)];cards=[...set,...set].sort(()=>0.5-Math.random());flipped=[];matched=0;moves=0;document.getElementById('memWin').innerText='';document.getElementById('memMoves').innerText='0 moves';document.getElementById('memGrid').innerHTML=cards.map((c,i)=>`<div id="card${i}" onclick="flip(${i})" class="bg-blue-100/80 h-12 rounded-xl flex items-center justify-center cursor-pointer text-xl border-2 border-white shadow hover:border-[#facc15]">?</div>`).join('');}
+function flip(i){if(flipped.length>=2||document.getElementById('card'+i).innerText!=='?'||flipped.includes(i))return;document.getElementById('card'+i).innerText=cards[i];document.getElementById('card'+i).style.background='white';flipped.push(i);if(flipped.length===2){moves++;document.getElementById('memMoves').innerText=moves+' moves';setTimeout(()=>{const [a,b]=flipped;if(cards[a]===cards[b]){matched+=2;document.getElementById('card'+a).style.background='#dcfce7';document.getElementById('card'+b).style.background='#dcfce7';if(matched===cards.length){document.getElementById('memWin').innerText='🎉 Won! New cards next time!';}}else{document.getElementById('card'+a).innerText='?';document.getElementById('card'+b).innerText='?';document.getElementById('card'+a).style.background='#dbeafe';document.getElementById('card'+b).style.background='#dbeafe';}flipped=[];},700);}}
+
+const stories=[
+{title:"Noah needs to build ark!",steps:[{t:"Gather wood",n:"Animals coming 2 by 2!"},{t:"Let them in",n:"Rain coming!"},{t:"Pray and close door",n:"You saved all! Genesis 7"}]},
+{title:"David vs Goliath!",steps:[{t:"Pick 5 smooth stones",n:"Goliath is shouting!"},{t:"Trust God, run to battle",n:"Aim with faith!"},{t:"Sling the stone!",n:"Goliath fell! 1 Samuel 17"}]},
+{title:"Daniel in lions den!",steps:[{t:"Pray 3 times daily",n:"Enemies plotting!"},{t:"Keep praying, don't fear",n:"Thrown to lions!"},{t:"God shuts lions mouths!",n:"You are safe! Daniel 6"}]}
+];
+let advIdx=0,advStepIdx=0;
+function newAdventure(){advIdx=Math.floor(Math.random()*stories.length);advStepIdx=0;renderAdv();}
+function renderAdv(){const s=stories[advIdx];if(advStepIdx>=s.steps.length){document.getElementById('advText').innerText='🎉 '+s.steps[s.steps.length-1].n;document.getElementById('advBtns').innerHTML=`<button onclick="newAdventure()" class="bg-green-500 text-white px-3 py-1.5 rounded-full text- font-bold">New Story (Different!)</button>`;return;}document.getElementById('advText').innerText=advStepIdx===0?s.title:s.steps[advStepIdx-1].n;document.getElementById('advBtns').innerHTML=`<button onclick="advStepIdx++;renderAdv()" class="bg-white border-2 border-yellow-100 hover:border-[#facc15] p-2.5 rounded-xl text-left w-full text- font-bold">${s.steps[advStepIdx].t}</button>`;}
+
+function askNow(){const q=document.getElementById('askIn').value;if(!q)return;fetch('/api/sunday-ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})}).then(r=>r.json()).then(d=>{const div=document.createElement('div');div.className='bg-blue-50/80 p-2.5 rounded-xl border';div.innerHTML=`<p class="text- font-bold">${q}</p><p class="text- text-gray-600">${d.answer||'Teacher will answer soon!'}</p>`;document.getElementById('askList').prepend(div);document.getElementById('askIn').value='';}).catch(()=>{const div=document.createElement('div');div.className='bg-blue-50/80 p-2.5 rounded-xl border';div.innerHTML=`<p class="text- font-bold">${q}</p><p class="text- text-gray-500">Saved — teacher will reply!</p>`;document.getElementById('askList').prepend(div);document.getElementById('askIn').value='';});}
+
+loadQuiz();loadNotes();loadVideos();initMemory();newAdventure();
+</script>
+</body>
+</html>
