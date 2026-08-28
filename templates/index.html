@@ -299,17 +299,70 @@ document.addEventListener('visibilitychange', () => {
     updateVoiceButtons('paused');
   }
 });
+// --- 16 REAL LIFE GUIDES - OFFLINE WORKS ON RENDER - PRESERVES ALL ACHIEVED ---
+const LIFE_GUIDES = {
+  'afraid': {verse:'Isaiah 41:10 - "Fear not, for I am with you; be not dismayed, for I am your God; I will strengthen you, I will help you, I will uphold you with my righteous right hand."', context:'God spoke to Israel when they faced mighty enemies and exile. They felt small and outnumbered.', principle:'God’s presence is stronger than what you fear. Fear shrinks when you remember Who holds you.', application:'1) Say Isaiah 41:10 aloud 3 times. 2) Write 3 times God helped you before. 3) Pray with a trusted believer today.', prayer:'Lord Jesus, I am afraid. But You are with me. You strengthen me. I receive Your peace now. Hold my hand. Amen.'},
+  'grieving': {verse:'Psalm 34:18 - "The Lord is near to the brokenhearted and saves the crushed in spirit."', context:'David wrote this while running for his life, feeling abandoned.', principle:'God moves closest when your heart is broken. Tears are prayers too.', application:'1) Allow tears without shame. 2) Share memory of loved one with someone. 3) Listen to worship quietly.', prayer:'Father, my heart is broken. Come near. Wipe my tears. Heal my grief with Your love. Amen.'},
+  'angry': {verse:'Ephesians 4:26-27 - "Be angry and do not sin; do not let the sun go down on your anger."', context:'Paul to Ephesian church with conflicts.', principle:'Anger is a signal, not a master. Feel it, but do not let it rule you.', application:'1) Pause 24hrs before replying. 2) Pray Psalm 4:4. 3) Speak truth in love, not heat.', prayer:'Lord, I am angry. Guard my tongue and heart. Give me Your peace and self-control. Amen.'},
+  'financially struggling': {verse:'Philippians 4:19 - "My God will supply every need of yours according to his riches in glory in Christ Jesus."', context:'Paul thanked church who gave sacrificially despite poverty.', principle:'God is your Source, not your salary. He sees your need.', application:'1) List needs vs wants. 2) Budget tithe first. 3) Ask pastoral team for financial counsel.', prayer:'Jehovah Jireh, You see my needs. Provide for me and teach me wise stewardship. Amen.'},
+  'marriage difficult': {verse:'1 Corinthians 13:7 - "Love bears all things, believes all things, hopes all things, endures all things."', context:'Corinth marriages were struggling, Paul defined agape action.', principle:'Marriage is refined by daily choosing love, not feeling love.', application:'1) Pray together 5 min daily. 2) Speak one appreciation daily. 3) Book counselling-care page.', prayer:'God, heal our marriage. Teach us to love as You love us. Restore us. Amen.'},
+  'being tempted': {verse:'1 Corinthians 10:13 - "No temptation has overtaken you that is not common to man. God is faithful, and he will not let you be tempted beyond your ability, but with the temptation he will also provide the way of escape."', context:'Believers in Corinth faced same temptations we face.', principle:'Every temptation has an exit door made by God.', application:'1) Name your trigger. 2) Memorize 1 Cor 10:13. 3) Flee physically + call an accountability partner.', prayer:'Father, I am tempted. Show me the escape. I choose You now over this. Strengthen me. Amen.'},
+  'need guidance': {verse:'Proverbs 3:5-6 - "Trust in the Lord with all your heart... and he will make straight your paths."', context:'Solomon to his son about big life decisions.', principle:'Guidance comes as you trust, not just ask.', application:'1) Pray + read Proverbs today. 2) Ask 2 godly counsellors. 3) Look for peace that stays.', prayer:'Lord, I need Your direction. I trust You. Make my path clear. I will obey. Amen.'},
+  'feel alone': {verse:'Deuteronomy 31:6 - "Be strong and courageous. Do not fear or be in dread... for it is the Lord your God who goes with you. He will not leave you or forsake you."', context:'Moses to Israel entering unknown land without him.', principle:'You are never truly alone; God is with you in that room.', application:'1) Come early Sunday, join small group. 2) Text one friend today. 3) Worship with a song.', prayer:'Jesus, I feel alone. Come near right now. Let me feel Your presence. I am Yours. Amen.'},
+  'need forgiveness': {verse:'1 John 1:9 - "If we confess our sins, he is faithful and just to forgive us our sins and to cleanse us from all unrighteousness."', context:'John to believers feeling guilty.', principle:'Forgiveness is immediate when confessed specifically.', application:'1) Confess specifically to God (not general). 2) Make restitution if needed. 3) Receive grace, stop punishing self.', prayer:'Father, forgive me. Thank You for forgiving and cleansing me now through Jesus. Amen.'},
+  'struggling faith': {verse:'Mark 9:24 - "I believe; help my unbelief!"', context:'Father with dying son was honest about weak faith, Jesus healed.', principle:'Honest doubt brought to Jesus grows faith.', application:'1) Read one miracle of Jesus daily (Mark). 2) Pray honest doubts. 3) Serve someone this week.', prayer:'Jesus, I believe but my faith is weak. Help my unbelief. I choose to trust You again. Amen.'},
+  'need encouragement': {verse:'Isaiah 40:31 - "But they who wait for the Lord shall renew their strength; they shall mount up with wings like eagles."', context:'Exiles tired and hopeless in Babylon.', principle:'Strength comes WHILE waiting, not after.', application:'1) Fast social media 24hrs. 2) Memorize Isaiah 40:31. 3) Encourage one person today.', prayer:'Lord, I am tired. I wait on You now. Renew my strength. Lift me up. Amen.'},
+  'difficult decision': {verse:'James 1:5 - "If any of you lacks wisdom, let him ask God, who gives generously to all without reproach, and it will be given him."', context:'James to scattered church facing hard choices.', principle:'God gives wisdom generously, not sparingly.', application:'1) Write options + pros/cons. 2) Pray James 1:5 for 3 days. 3) Decide with peace, seek pastor if stuck.', prayer:'God of wisdom, I lack wisdom for this decision. Give me clarity generously. I will obey. Amen.'},
+  'struggling to forgive': {verse:'Colossians 3:13 - "Bearing with one another and, if one has a complaint against another, forgiving each other; as the Lord has forgiven you, so you also must forgive."', context:'Church hurt needed to forgive.', principle:'We forgive much because we were forgiven much.', application:'1) Pray blessing over offender for 7 days. 2) Release debt to God. 3) Do not revisit offense daily.', prayer:'Father, it hurts to forgive. You forgave me much. Help me forgive as You forgave me. Free my heart. Amen.'},
+  'grow spiritually': {verse:'2 Peter 3:18 - "But grow in the grace and knowledge of our Lord and Savior Jesus Christ."', context:'Peter’s final words before death.', principle:'Growth is intentional, not automatic.', application:'1) Daily 10min Bible + 5min prayer (same time). 2) Weekly fellowship. 3) Serve one area monthly.', prayer:'Holy Spirit, grow me daily. Make me more like Jesus. I want to know You more. Amen.'},
+  'serve god': {verse:'Joshua 24:15 - "But as for me and my house, we will serve the Lord."', context:'Joshua challenges Israel to choose who to serve.', principle:'Serving God is a deliberate choice, not a feeling.', application:'1) Choose one area to volunteer this Sunday. 2) Tell pastor.', prayer:'Lord, here am I. I choose to serve You and Your house. Use me. Amen.'},
+  'need purpose': {verse:'Jeremiah 29:11 - "For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope."', context:'Exiles felt purposeless, God reminds He has a plan.', principle:'Purpose is discovered in God’s plan, not self.', application:'1) List your gifts. 2) Ask 3 people: What do I do well? 3) Serve in that area.', prayer:'Father, I feel lost. You know the plans for me. Show me Your purpose and give me hope. Amen.'}
+};
+
 function quickSeek(t){ document.getElementById('counselInput').value=t; seekCounsel(); }
 function seekCounsel(){
-  const inputEl=document.getElementById('counselInput'); const input=inputEl.value.trim();
-  if(!input){ inputEl.focus(); return; }
-  const resultBox=document.getElementById('counselResult'); const loading=document.getElementById('counselLoading'); const content=document.getElementById('counselContent'); const btn=document.getElementById('seekBtn');
+  const inputEl=document.getElementById('counselInput');
+  const raw=(inputEl.value||'').trim().toLowerCase();
+  if(!raw){ inputEl.focus(); return; }
+  const resultBox=document.getElementById('counselResult');
+  const loading=document.getElementById('counselLoading');
+  const content=document.getElementById('counselContent');
+  const btn=document.getElementById('seekBtn');
   resultBox.classList.remove('hidden'); loading.classList.remove('hidden'); content.innerHTML=''; btn.innerText='SEARCHING...'; btn.disabled=true;
+  let key = Object.keys(LIFE_GUIDES).find(k => raw.includes(k)) || 'need guidance';
+  if(raw.includes('afraid')||raw.includes('fear')||raw.includes('scared')||raw.includes('anxious')) key='afraid';
+  if(raw.includes('grief')||raw.includes('grieving')||raw.includes('loss')) key='grieving';
+  if(raw.includes('angry')||raw.includes('mad')) key='angry';
+  if(raw.includes('money')||raw.includes('finance')||raw.includes('debt')||raw.includes('broke')) key='financially struggling';
+  if(raw.includes('marriage')||raw.includes('wife')||raw.includes('husband')) key='marriage difficult';
+  if(raw.includes('tempt')) key='being tempted';
+  if(raw.includes('alone')||raw.includes('lonely')) key='feel alone';
+  if(raw.includes('forgive')&&raw.includes('me')||raw.includes('guilt')) key='need forgiveness';
+  if(raw.includes('faith')) key='struggling faith';
+  if(raw.includes('encourage')||raw.includes('tired')) key='need encouragement';
+  if(raw.includes('decision')||raw.includes('choose')) key='difficult decision';
+  if(raw.includes('forgive')&&!raw.includes('me')) key='struggling to forgive';
+  if(raw.includes('grow')) key='grow spiritually';
+  if(raw.includes('serve')) key='serve god';
+  if(raw.includes('purpose')||raw.includes('calling')) key='need purpose';
+  const g = LIFE_GUIDES[key];
   setTimeout(()=>{
     loading.classList.add('hidden'); btn.innerText='SEEK COUNSEL'; btn.disabled=false;
-    content.innerHTML=`<div class="flex justify-between items-start gap-3"><div><h3 class="font-black text-">Guide for: ${input}</h3><p class="text- mt-1 bg-[#0a1931] text-white inline-block px-3 py-1 rounded-full">16 Life Guides preserved</p></div><button onclick="document.getElementById('counselResult').classList.add('hidden')" class="bg-red-500 text-white w-8 h-8 rounded-full font-black">✕</button></div>`;
+    content.innerHTML = `
+      <div class="flex justify-between items-start gap-3 mb-4">
+        <div><h3 class="font-black text-lg text-[#0a1931] capitalize">Guide for: ${key}</h3><p class="text- mt-1 bg-[#0a1931] text-white inline-block px-3 py-1 rounded-full">VERSE → CONTEXT → PRINCIPLE → APPLICATION → PRAYER • OFFLINE WORKS ON RENDER</p></div>
+        <button onclick="document.getElementById('counselResult').classList.add('hidden')" class="bg-red-500 text-white w-8 h-8 rounded-full font-black">✕</button>
+      </div>
+      <div class="grid gap-3 text-sm leading-relaxed">
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-lg"><b>📖 Verse:</b> ${g.verse}</div>
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-3 rounded-lg"><b>📜 Context:</b> ${g.context}</div>
+        <div class="bg-green-50 border-l-4 border-green-400 p-3 rounded-lg"><b>💡 Life Principle:</b> ${g.principle}</div>
+        <div class="bg-purple-50 border-l-4 border-purple-400 p-3 rounded-lg"><b>🔧 Application:</b> ${g.application}</div>
+        <div class="bg-[#0a1931] text-white p-4 rounded-xl"><b class="text-yellow-300">🙏 Prayer:</b><br>${g.prayer}</div>
+        <div class="flex gap-2 pt-2"><a href="/counselling-care" class="bg-[#facc15] text-black px-5 py-2 rounded-full text-xs font-black">Talk to Pastor →</a><button onclick="document.getElementById('counselResult').classList.add('hidden')" class="bg-gray-100 px-5 py-2 rounded-full text-xs font-bold">Close</button></div>
+      </div>`;
     resultBox.scrollIntoView({behavior:'smooth'});
-  }, 300);
+  }, 400);
 }
 document.getElementById('counselInput')?.addEventListener('keydown', e=>{ if(e.key==='Enter') seekCounsel(); });
 
