@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1787527892,
+    "title": "Women of Faith",
+    "category": "Events",
+    "cover": "uploads/gallery/1787527892_Women.jpeg",
+    "images": [
+      "uploads/gallery/1787527892_Women.jpeg"
+    ],
+    "visibility": "members",
+    "date": "Aug 24, 2026"
+  },
+  {
+    "id": 1787527983,
+    "title": "Nelson",
+    "category": "Events",
+    "cover": "uploads/gallery/1787527983_Nelsons_House.jpeg",
+    "images": [
+      "uploads/gallery/1787527983_Nelsons_House.jpeg"
+    ],
+    "visibility": "members",
+    "date": "Aug 24, 2026"
+  },
+  {
+    "id": 1787528010,
+    "title": "Church Moment",
+    "category": "Worship",
+    "cover": "uploads/gallery/1787528010_Praise_worship_Team1.jpeg",
+    "images": [
+      "uploads/gallery/1787528010_Praise_worship_Team1.jpeg"
+    ],
+    "visibility": "public",
+    "date": "Aug 24, 2026"
+  },
+  {
+    "id": 1787528034,
+    "title": "Big Team",
+    "category": "Worship",
+    "cover": "uploads/gallery/1787528034_Jare_Sally_Emma.jpeg",
+    "images": [
+      "uploads/gallery/1787528034_Jare_Sally_Emma.jpeg"
+    ],
+    "visibility": "public",
+    "date": "Aug 24, 2026"
+  }
+]
