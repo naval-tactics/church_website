@@ -30,7 +30,7 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
 <div id="holidayCountdown" class="hidden w-full text-center py-3 text-sm font-bold text-white sticky top-0 z-40"></div>
 <div id="holidayModal" class="hidden fixed inset-0 z-[200] bg-black/85 flex items-center justify-center p-4">
   <div class="relative bg-black rounded-3xl overflow-hidden max-w-3xl w-full border-4 border-yellow-400 shadow-2xl">
-    <video id="holidayVideo" autoplay muted loop playsinline controls preload="none" class="w-full max-h-"></video>
+    <video id="holidayVideo" autoplay muted loop playsinline controls preload="none" class="w-full"></video>
     <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-5 text-center">
       <p id="holidayTitle" class="text-yellow-300 font-bold text-sm"></p>
       <button onclick="closeHoliday()" class="mt-3 bg-white text-black px-5 py-2 rounded-full text-xs font-bold">Continue to Website →</button>
@@ -41,35 +41,35 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
 
 <nav class="bg-[#1a2332] text-white px-4 md:px-8 py-3 sticky top-0 z-50">
   <div class="flex justify-between items-center flex-wrap gap-3">
-    <div class="text-[#5aa9ff] font-black text- leading-tight">SOUTH B POLICE<br>CHAPEL</div>
-    <button id="menuBtn" class="md:hidden bg-white/10 w-9 h-9 rounded-full text-">☰</button>
-    <div id="navLinks" class="hidden md:flex gap-5 text- font-bold tracking-wide items-center flex-wrap">
+    <div class="text-[#5aa9ff] font-black leading-tight">SOUTH B POLICE<br>CHAPEL</div>
+    <button id="menuBtn" class="md:hidden bg-white/10 w-9 h-9 rounded-full">☰</button>
+    <div id="navLinks" class="hidden md:flex gap-5 text-xs font-bold tracking-wide items-center flex-wrap">
       <a href="/" class="text-[#facc15] border-b-2 border-[#facc15] pb-1">HOME</a>
       <a href="/events" class="hover:text-[#facc15]">EVENTS</a>
       <a href="/sermons" class="hover:text-[#facc15]">SERMONS</a>
       <a href="/prayer-wall" class="hover:text-[#facc15]">PRAYER WALL</a>
       <a href="/contact" class="hover:text-[#facc15]">CONTACT</a>
       <a href="/bible-quiz" class="hover:text-[#facc15]">BIBLE QUIZ</a>
-      <a href="/counselling" class="hover:text-[#facc15]">COUNSELLING CARE</a>
+      <a href="/counselling-care" class="hover:text-[#facc15]">COUNSELLING CARE</a>
       <a href="/sunday-school" class="hover:text-[#facc15]">SUNDAY SCHOOL</a>
       <a href="/gallery" class="hover:text-[#facc15]">GALLERY</a>
       <a href="/videos" class="hover:text-[#facc15]">VIDEOS</a>
-      <a href="/member-qualifications" class="bg-[#facc15] text-black px-5 py-2 rounded-full text- font-black shadow-[0_0_15px_#facc15]">REGISTER AS A MEMBER →</a>
+      <a href="/member-qualifications" class="bg-[#facc15] text-black px-5 py-2 rounded-full text-xs font-black shadow-[0_0_15px_#facc15]">REGISTER AS A MEMBER →</a>
     </div>
   </div>
-  <div id="mobileNav" class="hidden md:hidden mt-3 grid grid-cols-2 gap-2 text- font-bold bg-white/5 p-3 rounded-xl">
+  <div id="mobileNav" class="hidden md:hidden mt-3 grid grid-cols-2 gap-2 text-xs font-bold bg-white/5 p-3 rounded-xl">
     <a href="/" class="bg-[#facc15] text-black px-3 py-2 rounded-full text-center">HOME</a>
     <a href="/events" class="bg-white/10 px-3 py-2 rounded-full text-center">EVENTS</a>
     <a href="/sermons" class="bg-white/10 px-3 py-2 rounded-full text-center">SERMONS</a>
     <a href="/prayer-wall" class="bg-white/10 px-3 py-2 rounded-full text-center">PRAYER WALL</a>
     <a href="/contact" class="bg-white/10 px-3 py-2 rounded-full text-center">CONTACT</a>
     <a href="/bible-quiz" class="bg-white/10 px-3 py-2 rounded-full text-center">BIBLE QUIZ</a>
-    <a href="/counselling" class="bg-white/10 px-3 py-2 rounded-full text-center col-span-2">COUNSELLING CARE</a>
+    <a href="/counselling-care" class="bg-white/10 px-3 py-2 rounded-full text-center col-span-2">COUNSELLING CARE</a>
     <a href="/gallery" class="bg-white/10 px-3 py-2 rounded-full text-center">GALLERY</a>
     <a href="/videos" class="bg-white/10 px-3 py-2 rounded-full text-center">VIDEOS</a>
     <a href="/member-qualifications" class="bg-[#facc15] text-black px-3 py-2 rounded-full text-center col-span-2">REGISTER AS MEMBER →</a>
   </div>
-  <div class="flex justify-center mt-3"><a href="/faith-arcade" class="text-[#9b7cff] hover:text-[#facc15] text- font-bold tracking-widest flex items-center gap-2"><span>⚔</span><span class="underline">FAITH ARCADE</span><span>⚔</span></a></div>
+  <div class="flex justify-center mt-3"><a href="/faith-arcade" class="text-[#9b7cff] hover:text-[#facc15] text-xs font-bold tracking-widest flex items-center gap-2"><span>⚔</span><span class="underline">FAITH ARCADE</span><span>⚔</span></a></div>
 </nav>
 
 <div class="max-w-7xl mx-auto mt-4 px-4">
@@ -80,15 +80,14 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
 </div>
 
 <div class="max-w-7xl mx-auto px-4 mt-6" id="welcomeSection">
-  <div class="relative rounded-2xl overflow-hidden min-h- md:min-h- bg-cover bg-center flex items-center justify-center" style="background-image:url('{{ url_for('static', filename=images.gate) }}');">
+  <div class="relative rounded-2xl overflow-hidden min-h-[380px] md:min-h-[520px] bg-cover bg-center flex items-center justify-center" style="background-image:url('{{ url_for('static', filename=images.gate) }}');">
     <div class="absolute inset-0 bg-black/65"></div>
     <div class="relative z-10 h-full flex flex-col items-center justify-center text-center text-white p-4 md:p-8 w-full">
-      <div class="border border-white/25 rounded-full px-4 py-1 mb-3"><span class="text- font-bold text-yellow-300 tracking-widest">STANDARD VIEW</span></div>
       <h1 class="text-3xl md:text-5xl font-extrabold leading-tight mb-3">WELCOME TO SOUTH B<br>POLICE CHAPEL</h1>
       <div class="mt-2 mb-4 w-full max-w-3xl bg-white/95 rounded-xl overflow-hidden border-2 border-yellow-400 glow-animate">
-        <img src="{{ url_for('static', filename='motto.jpeg') }}" alt="Our Church Motto - They Encounter Jesus Christ with glowing light" class="w-full h-auto object-contain" loading="eager" fetchpriority="high" decoding="async" width="1200" height="675">
+        <img src="{{ url_for('static', filename='motto.jpeg') }}" alt="Our Church Motto - They Encounter Jesus Christ" class="w-full h-auto object-contain" loading="eager" fetchpriority="high" decoding="async" width="1200" height="675">
       </div>
-      <p class="text- max-w-2xl opacity-90 mb-5 px-2">WE ARE DELIGHTED TO HAVE YOU VISIT US. OUR CHAPEL IS LOCATED WITHIN SOUTH B POLICE BAND, NEAR NAIVAS CAPITAL CENTER, NAIROBI.</p>
+      <p class="text-xs max-w-2xl opacity-90 mb-5 px-2">WE ARE DELIGHTED TO HAVE YOU VISIT US. OUR CHAPEL IS LOCATED WITHIN SOUTH B POLICE BAND, NEAR NAIVAS CAPITAL CENTER, NAIROBI.</p>
       <div class="flex gap-2 flex-wrap justify-center items-center">
         <button onclick="speakWelcome()" id="playBtn" class="bg-yellow-400 text-black px-6 py-2.5 rounded-full text-xs font-bold shadow">▶ Listen to Welcome Message</button>
         <button onclick="pauseWelcome()" id="pauseBtn" class="hidden bg-white/20 backdrop-blur text-white border border-white/30 px-4 py-2.5 rounded-full text-xs font-bold">⏸ Pause</button>
@@ -97,7 +96,7 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
         <a href="https://maps.app.goo.gl/4ZRJpzjAhSuAhjni8?g_st=aw" target="_blank" class="bg-blue-700 text-white px-6 py-2.5 rounded-full text-xs font-bold">📍 View Chapel Location Map</a>
         <a href="/member-qualifications" class="bg-[#facc15] text-black px-6 py-2.5 rounded-full text-xs font-black shadow-[0_0_15px_#facc15]">👑 REGISTER AS MEMBER</a>
       </div>
-      <p id="voiceStatus" class="text- text-yellow-300 mt-2 h-4"></p>
+      <p id="voiceStatus" class="text-xs text-yellow-300 mt-2 h-4"></p>
     </div>
   </div>
 </div>
@@ -106,26 +105,25 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
   <div class="relative overflow-hidden bg-cover bg-center py-20 px-4" style="background-image:url('{{ url_for('static', filename=images.clock) }}');">
     <div class="absolute inset-0 bg-[#0d213f]/90"></div>
     <div class="relative z-10 max-w-4xl mx-auto text-center text-white">
-      <div class="flex items-center justify-center gap-4 mb-6"><div class="h-px w-12 bg-white/30"></div><span class="text- tracking-[0.3em] text-white/70">TIME IN HIS PRESENCE</span><div class="h-px w-12 bg-white/30"></div></div>
+      <div class="flex items-center justify-center gap-4 mb-6"><div class="h-px w-12 bg-white/30"></div><span class="text-xs tracking-[0.3em] text-white/70">TIME IN HIS PRESENCE</span><div class="h-px w-12 bg-white/30"></div></div>
       <h2 class="text-3xl md:text-4xl font-bold mb-3" style="font-family:'Merriweather'">South B Police Chapel</h2>
       <p class="text-yellow-400 text-sm font-semibold mb-10">Preaching Christ and Serving the Community</p>
-      <p class="text- tracking-[0.2em] text-white/70 mb-4">TIME REMAINING UNTIL NEXT SUNDAY SERVICE</p>
+      <p class="text-xs tracking-[0.2em] text-white/70 mb-4">TIME REMAINING UNTIL NEXT SUNDAY SERVICE</p>
       <div class="inline-flex items-center gap-3 border border-yellow-400/60 rounded-2xl px-8 py-4 bg-black/30 backdrop-blur mb-6">
         <span class="text-4xl font-bold" id="d">04d</span><span class="text-white/30">:</span><span class="text-4xl font-bold" id="h">06h</span><span class="text-white/30">:</span><span class="text-4xl font-bold" id="m">53m</span><span class="text-white/30">:</span><span class="text-4xl font-bold text-yellow-400" id="s">39s</span>
       </div>
-      <div><span class="bg-yellow-400 text-black text- font-bold px-5 py-2 rounded-full">NEXT SERVICE: SUNDAY 8:00 AM EAT • NAIROBI</span></div>
+      <div><span class="bg-yellow-400 text-black text-xs font-bold px-5 py-2 rounded-full">NEXT SERVICE: SUNDAY 8:00 AM EAT • NAIROBI</span></div>
     </div>
   </div>
 </div>
 
 <div class="max-w-7xl mx-auto px-4 mt-8">
   <div class="relative rounded-[1.5rem] p-6 border-2 border-[#facc15]/50 shadow-xl overflow-hidden bg-cover bg-center" style="background-image:url('/static/uploads/encounter_bg.webp');">
-    <div class="absolute inset-0 bg-white/88 backdrop-blur-"></div>
+    <div class="absolute inset-0 bg-white/88 backdrop-blur-sm"></div>
     <div class="relative z-10">
-      <!-- STEP 2 PRIVATE — PRESERVED ALL BELOW — ONLY ADMIN SEES UNDER TESTIMONY — ELEPHANT 8/7 -->
-      <h2 class="font-black text-xl text-[#0a1931]" style="font-family:'Merriweather'">🗺 Where Did You Encounter Him? — Private & Confidential — Admin Only</h2>
-      <p class="text-xs text-gray-600 mt-1">Your pin is PRIVATE — only BN & CS + Admin sees under Testimony tab — rogue-proof — matches motto "they encounter Jesus Christ"</p>
-      <div id="encounterMap" class="w-full h- rounded-xl mt-4 border-2 border-yellow-200 z-0"></div>
+      <h2 class="font-black text-xl text-[#0a1931]" style="font-family:'Merriweather'">🗺 Where Did You Encounter Him?</h2>
+      <p class="text-xs text-gray-600 mt-1">Your pin is private — only pastoral team sees details</p>
+      <div id="encounterMap" class="w-full h-[320px] rounded-xl mt-4 border-2 border-yellow-200 z-0"></div>
       <div class="flex flex-col md:flex-row gap-2 mt-3">
         <input id="encounterText" placeholder="I encountered Jesus at South B bus stop — He healed me..." class="flex-1 border-2 border-yellow-100 p-3 rounded-full text-xs bg-white">
         <input id="encounterName" placeholder="Your name (or Anonymous)" class="border-2 border-yellow-100 p-3 rounded-full text-xs w-full md:w-48 bg-white">
@@ -133,11 +131,11 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
       </div>
       <div class="flex items-center gap-2 mt-2">
         <input id="encounterPray" type="checkbox" class="w-4 h-4">
-        <label for="encounterPray" class="text-xs text-gray-700">🙏 Pray for me about this encounter (private — only pastors see in Prayer → Private)</label>
+        <label for="encounterPray" class="text-xs text-gray-700">🙏 Pray for me about this encounter (private)</label>
       </div>
       <p id="encounterMsg" class="text-xs font-black text-green-600 mt-2 hidden"></p>
       <p id="publicEncounterCount" class="text-xs font-black text-[#0a1931] bg-[#fefce8] border border-yellow-200 px-3 py-2 rounded-full text-center mt-3">✨ Loading encounters...</p>
-      <p class="text- text-gray-400 mt-3 text-center">🔒 Confidential — Only pastoral team views details — public sees count only</p>
+      <p class="text-[11px] text-gray-400 mt-3 text-center">🔒 Confidential — Only pastoral team views details — public sees count only</p>
     </div>
   </div>
 </div>
@@ -146,34 +144,34 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
   <div class="max-w-5xl mx-auto text-center">
     <div class="w-12 h-12 mx-auto bg-white/10 rounded-xl flex items-center justify-center text-xl">📖</div>
     <h2 class="font-black text-2xl md:text-3xl text-white mt-4">Bible Life Application Guide</h2>
-    <p class="text-white/70 text- mt-3 max-w-3xl mx-auto leading-relaxed">Answers positive, negative & in-between biblically. Search by situation — Verse → Context → Life Principle → Application → Prayer.</p>
+    <p class="text-white/70 text-sm mt-3 max-w-3xl mx-auto leading-relaxed">Answers positive, negative & in-between biblically. Search by situation — Verse → Context → Life Principle → Application → Prayer.</p>
     <div class="mt-6">
-      <p class="text-[#facc15] text- font-black mb-3">🌱 What are you going through? — 16 Real-life Guides:</p>
+      <p class="text-[#facc15] text-xs font-black mb-3">🌱 What are you going through? — 16 Real-life Guides:</p>
       <div class="flex flex-wrap gap-2 justify-center max-w-4xl mx-auto">
-        <button onclick="quickSeek('afraid')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">😟 I'm Afraid</button>
-        <button onclick="quickSeek('grieving')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">😢 I'm Grieving</button>
-        <button onclick="quickSeek('angry')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">😡 I'm Angry</button>
-        <button onclick="quickSeek('financially struggling')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">💰 Financially Struggling</button>
-        <button onclick="quickSeek('marriage difficult')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">💍 Marriage Difficult</button>
-        <button onclick="quickSeek('being tempted')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">🚫 Being Tempted</button>
-        <button onclick="quickSeek('need guidance')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">🧭 Need Guidance</button>
-        <button onclick="quickSeek('feel alone')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">💔 Feel Alone</button>
-        <button onclick="quickSeek('need forgiveness')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">🤍 Need Forgiveness</button>
-        <button onclick="quickSeek('struggling faith')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">✝ Struggling Faith</button>
-        <button onclick="quickSeek('need encouragement')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">🌱 Need Encouragement</button>
-        <button onclick="quickSeek('difficult decision')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">🤔 Difficult Decision</button>
-        <button onclick="quickSeek('struggling to forgive')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">💛 Struggling to Forgive</button>
-        <button onclick="quickSeek('grow spiritually')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">🌿 Grow Spiritually</button>
-        <button onclick="quickSeek('serve god')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">🙌 Want to Serve God</button>
-        <button onclick="quickSeek('need purpose')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-">🌅 Need Purpose</button>
+        <button onclick="quickSeek('afraid')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">😟 I'm Afraid</button>
+        <button onclick="quickSeek('grieving')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">😢 I'm Grieving</button>
+        <button onclick="quickSeek('angry')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">😡 I'm Angry</button>
+        <button onclick="quickSeek('financially struggling')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">💰 Financially Struggling</button>
+        <button onclick="quickSeek('marriage difficult')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">💍 Marriage Difficult</button>
+        <button onclick="quickSeek('being tempted')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">🚫 Being Tempted</button>
+        <button onclick="quickSeek('need guidance')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">🧭 Need Guidance</button>
+        <button onclick="quickSeek('feel alone')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">💔 Feel Alone</button>
+        <button onclick="quickSeek('need forgiveness')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">🤍 Need Forgiveness</button>
+        <button onclick="quickSeek('struggling faith')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">✝ Struggling Faith</button>
+        <button onclick="quickSeek('need encouragement')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">🌱 Need Encouragement</button>
+        <button onclick="quickSeek('difficult decision')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">🤔 Difficult Decision</button>
+        <button onclick="quickSeek('struggling to forgive')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">💛 Struggling to Forgive</button>
+        <button onclick="quickSeek('grow spiritually')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">🌿 Grow Spiritually</button>
+        <button onclick="quickSeek('serve god')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">🙌 Want to Serve God</button>
+        <button onclick="quickSeek('need purpose')" class="bg-white/10 hover:bg-[#facc15] hover:text-black text-white px-3 py-1.5 rounded-full text-xs">🌅 Need Purpose</button>
       </div>
     </div>
     <div class="mt-8 bg-[#fefcf0] rounded-full p-2 flex gap-2 shadow-[0_10px_30px_rgba(0,0,0,0.3)] max-w-2xl mx-auto border-2 border-transparent focus-within:border-[#facc15]">
-      <input id="counselInput" type="text" placeholder="Type: I am afraid, I am grieving, My marriage is difficult..." class="flex-1 bg-transparent outline-none px-5 text- text-black placeholder:text-gray-400">
-      <button onclick="seekCounsel()" id="seekBtn" class="bg-[#0f172a] hover:bg-black text-white px-6 py-3 rounded-full text- font-black shrink-0">SEEK COUNSEL</button>
+      <input id="counselInput" type="text" placeholder="Type: I am afraid, I am grieving, My marriage is difficult..." class="flex-1 bg-transparent outline-none px-5 text-sm text-black placeholder:text-gray-400">
+      <button onclick="seekCounsel()" id="seekBtn" class="bg-[#0f172a] hover:bg-black text-white px-6 py-3 rounded-full text-xs font-black shrink-0">SEEK COUNSEL</button>
     </div>
     <div id="counselResult" class="hidden mt-6 bg-white rounded-[1.5rem] p-5 md:p-6 text-left border-4 border-[#facc15] shadow-[0_0_30px_rgba(250,204,21,0.3)] max-w-5xl mx-auto">
-      <div id="counselLoading" class="hidden text-center py-6"><p class="text- font-black animate-pulse">🙏 Searching 16 Life Guides...</p></div>
+      <div id="counselLoading" class="hidden text-center py-6"><p class="text-sm font-black animate-pulse">🙏 Searching 16 Life Guides...</p></div>
       <div id="counselContent"></div>
     </div>
   </div>
@@ -185,10 +183,10 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
     <h2 class="text-3xl font-bold text-white text-center mb-3" style="font-family:'Merriweather'">Sunday Service Schedule</h2>
     <div class="h-1 w-16 bg-yellow-400 mx-auto mb-10 rounded"></div>
     <div class="grid md:grid-cols-4 gap-5">
-      <div class="bg-white rounded-2xl p-6 shadow-xl"><div class="flex justify-between items-start mb-4"><div class="bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center">📖</div><span class="bg-yellow-400 text-black text- font-bold px-3 py-1 rounded-full">8:00 - 9:00 AM</span></div><h4 class="font-bold text-[#0a1931] mb-2">Sunday School</h4><p class="text-xs text-gray-600">Bible study for all ages.</p><div class="border-t mt-4 pt-3 text- text-gray-500 font-bold">EVERY SUNDAY</div></div>
-      <div class="bg-white rounded-2xl p-6 shadow-xl"><div class="flex justify-between items-start mb-4"><div class="bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center">🙏</div><span class="bg-yellow-400 text-black text- font-bold px-3 py-1 rounded-full">9:15 - 10:00 AM</span></div><h4 class="font-bold text-[#0a1931] mb-2">Intercessory Prayers</h4><p class="text-xs text-gray-600">Standing in the gap.</p><div class="border-t mt-4 pt-3 text- text-gray-500 font-bold">EVERY SUNDAY</div></div>
-      <div class="bg-white rounded-2xl p-6 shadow-xl"><div class="flex justify-between items-start mb-4"><div class="bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center">🎵</div><span class="bg-yellow-400 text-black text- font-bold px-3 py-1 rounded-full">10:00 - 11:00 AM</span></div><h4 class="font-bold text-[#0a1931] mb-2">Praise & Worship</h4><p class="text-xs text-gray-600">Uplifting worship.</p><div class="border-t mt-4 pt-3 text- text-gray-500 font-bold">EVERY SUNDAY</div></div>
-      <div class="bg-white rounded-2xl p-6 shadow-xl"><div class="flex justify-between items-start mb-4"><div class="bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center">✝</div><span class="bg-yellow-400 text-black text- font-bold px-3 py-1 rounded-full">11:00 - 12:00 PM</span></div><h4 class="font-bold text-[#0a1931] mb-2">Main Service</h4><p class="text-xs text-gray-600">Powerful word.</p><div class="border-t mt-4 pt-3 text- text-gray-500 font-bold">EVERY SUNDAY</div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-xl"><div class="flex justify-between items-start mb-4"><div class="bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center">📖</div><span class="bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">8:00 - 9:00 AM</span></div><h4 class="font-bold text-[#0a1931] mb-2">Sunday School</h4><p class="text-xs text-gray-600">Bible study for all ages.</p><div class="border-t mt-4 pt-3 text-xs text-gray-500 font-bold">EVERY SUNDAY</div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-xl"><div class="flex justify-between items-start mb-4"><div class="bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center">🙏</div><span class="bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">9:15 - 10:00 AM</span></div><h4 class="font-bold text-[#0a1931] mb-2">Intercessory Prayers</h4><p class="text-xs text-gray-600">Standing in the gap.</p><div class="border-t mt-4 pt-3 text-xs text-gray-500 font-bold">EVERY SUNDAY</div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-xl"><div class="flex justify-between items-start mb-4"><div class="bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center">🎵</div><span class="bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">10:00 - 11:00 AM</span></div><h4 class="font-bold text-[#0a1931] mb-2">Praise & Worship</h4><p class="text-xs text-gray-600">Uplifting worship.</p><div class="border-t mt-4 pt-3 text-xs text-gray-500 font-bold">EVERY SUNDAY</div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-xl"><div class="flex justify-between items-start mb-4"><div class="bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center">✝</div><span class="bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">11:00 - 12:00 PM</span></div><h4 class="font-bold text-[#0a1931] mb-2">Main Service</h4><p class="text-xs text-gray-600">Powerful word.</p><div class="border-t mt-4 pt-3 text-xs text-gray-500 font-bold">EVERY SUNDAY</div></div>
     </div>
   </div>
 </div>
@@ -206,7 +204,7 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
 <div class="relative overflow-hidden bg-cover bg-center py-20 px-6" style="background-image:url('{{ url_for('static', filename=images.bread) }}');">
   <div class="absolute inset-0 bg-black/40"></div>
   <div class="relative z-10 max-w-4xl mx-auto text-center text-white">
-    <div class="inline-block bg-white/20 backdrop-blur border border-white/30 text- tracking-widest px-4 py-1 rounded-full mb-6">DAILY BREAD SCRIPTURE</div>
+    <div class="inline-block bg-white/20 backdrop-blur border border-white/30 text-xs tracking-widest px-4 py-1 rounded-full mb-6">DAILY BREAD SCRIPTURE</div>
     <h2 class="text-2xl md:text-4xl font-bold leading-tight mb-4" style="font-family:'Merriweather'">"When your words came, I ate them; they<br>were my joy and my heart's delight."</h2>
     <p class="text-yellow-300 font-bold mb-6">— Jeremiah 15:16</p>
     <div class="inline-block bg-white text-[#0a1931] text-xs font-bold px-6 py-2 rounded-full mb-8">THE BREAD OF LIFE</div>
@@ -214,10 +212,10 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
   </div>
 </div>
 
-<footer class="bg-[#0a1931] text-center text- text-gray-300 py-6">
-  <div>South B Police Chapel © 2026 • Fast • Responsive • Multi-user Ready • ELEPHANT 8/7</div>
-  <div class="mt-1 text- text-yellow-300/80 tracking-widest">
-    Built with ❤ by <span class="font-bold text-white">Nelson.T. Tactics</span> • Lead Developer
+<footer class="bg-[#0a1931] text-center text-xs text-gray-300 py-6">
+  <div>South B Police Chapel © 2026</div>
+  <div class="mt-1 text-xs text-yellow-300/80 tracking-widest">
+    Built with ❤ by <span class="font-bold text-white">Nelson .T. Tactics</span> • Lead Developer
   </div>
 </footer>
 
@@ -234,17 +232,14 @@ const nextSunday = new Date("{{ next_sunday }}"); function updateCountdown(){con
 
 let bgAudio = null;
 function getBgAudio(){ if(!bgAudio) bgAudio=document.getElementById('welcomeBgSound'); return bgAudio; }
-function playPianoBg(){
-  const a=getBgAudio(); if(!a) return;
-  try{ a.volume = 0.38; a.currentTime = 0; const p=a.play(); if(p) p.catch(()=>{}); }catch(e){}
-}
+function playPianoBg(){ const a=getBgAudio(); if(!a) return; try{ a.volume = 0.38; a.currentTime = 0; const p=a.play(); if(p) p.catch(()=>{}); }catch(e){} }
 function setPianoVolume(v){ const a=getBgAudio(); if(!a) return; try{ a.volume = v; }catch(e){} }
 function stopPianoBg(){ const a=getBgAudio(); if(!a) return; try{ a.pause(); a.currentTime=0; }catch(e){} }
 
 function updateVoiceButtons(state){
   const playBtn=document.getElementById('playBtn'); const pauseBtn=document.getElementById('pauseBtn'); const resumeBtn=document.getElementById('resumeBtn'); const stopBtn=document.getElementById('stopBtn'); const status=document.getElementById('voiceStatus');
   if(!playBtn) return;
-  if(state==='playing'){ playBtn.classList.add('hidden'); pauseBtn.classList.remove('hidden'); stopBtn.classList.remove('hidden'); resumeBtn.classList.add('hidden'); status.innerText='🎹🎤 Piano + Voice same key — inline well...'; }
+  if(state==='playing'){ playBtn.classList.add('hidden'); pauseBtn.classList.remove('hidden'); stopBtn.classList.remove('hidden'); resumeBtn.classList.add('hidden'); status.innerText='🎹🎤 Piano + Voice same key...'; }
   else if(state==='paused'){ pauseBtn.classList.add('hidden'); resumeBtn.classList.remove('hidden'); status.innerText='⏸ Paused'; }
   else{ playBtn.classList.remove('hidden'); pauseBtn.classList.add('hidden'); resumeBtn.classList.add('hidden'); stopBtn.classList.add('hidden'); status.innerText=''; }
 }
@@ -299,7 +294,6 @@ document.addEventListener('visibilitychange', () => {
     updateVoiceButtons('paused');
   }
 });
-// --- 16 REAL LIFE GUIDES - OFFLINE WORKS ON RENDER - PRESERVES ALL ACHIEVED ---
 const LIFE_GUIDES = {
   'afraid': {verse:'Isaiah 41:10 - "Fear not, for I am with you; be not dismayed, for I am your God; I will strengthen you, I will help you, I will uphold you with my righteous right hand."', context:'God spoke to Israel when they faced mighty enemies and exile. They felt small and outnumbered.', principle:'God’s presence is stronger than what you fear. Fear shrinks when you remember Who holds you.', application:'1) Say Isaiah 41:10 aloud 3 times. 2) Write 3 times God helped you before. 3) Pray with a trusted believer today.', prayer:'Lord Jesus, I am afraid. But You are with me. You strengthen me. I receive Your peace now. Hold my hand. Amen.'},
   'grieving': {verse:'Psalm 34:18 - "The Lord is near to the brokenhearted and saves the crushed in spirit."', context:'David wrote this while running for his life, feeling abandoned.', principle:'God moves closest when your heart is broken. Tears are prayers too.', application:'1) Allow tears without shame. 2) Share memory of loved one with someone. 3) Listen to worship quietly.', prayer:'Father, my heart is broken. Come near. Wipe my tears. Heal my grief with Your love. Amen.'},
@@ -350,7 +344,7 @@ function seekCounsel(){
     loading.classList.add('hidden'); btn.innerText='SEEK COUNSEL'; btn.disabled=false;
     content.innerHTML = `
       <div class="flex justify-between items-start gap-3 mb-4">
-        <div><h3 class="font-black text-lg text-[#0a1931] capitalize">Guide for: ${key}</h3><p class="text- mt-1 bg-[#0a1931] text-white inline-block px-3 py-1 rounded-full">VERSE → CONTEXT → PRINCIPLE → APPLICATION → PRAYER • OFFLINE WORKS ON RENDER</p></div>
+        <div><h3 class="font-black text-lg text-[#0a1931] capitalize">Guide for: ${key}</h3><p class="text-xs mt-1 bg-[#0a1931] text-white inline-block px-3 py-1 rounded-full">VERSE → CONTEXT → PRINCIPLE → APPLICATION → PRAYER</p></div>
         <button onclick="document.getElementById('counselResult').classList.add('hidden')" class="bg-red-500 text-white w-8 h-8 rounded-full font-black">✕</button>
       </div>
       <div class="grid gap-3 text-sm leading-relaxed">
@@ -366,23 +360,22 @@ function seekCounsel(){
 }
 document.getElementById('counselInput')?.addEventListener('keydown', e=>{ if(e.key==='Enter') seekCounsel(); });
 
-// STEP 2 PRIVATE — ONLY ADMIN VIEW — UNDER TESTIMONY — PRESERVES PIANO — ELEPHANT 8/7 FIXED
 let map, lastLat=-1.305, lastLng=36.85;
 document.addEventListener('DOMContentLoaded', ()=>{
   try{
     map=L.map('encounterMap').setView([-1.305,36.85],14);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
-    L.marker([-1.305,36.85]).addTo(map).bindPopup('<b>South B Police Chapel</b><br>Near Naivas — Private pin only — ELEPHANT 8/7').openPopup();
+    L.marker([-1.305,36.85]).addTo(map).bindPopup('<b>South B Police Chapel</b><br>Near Naivas').openPopup();
     fetch('/api/encounters/public-count').then(r=>r.json()).then(j=>{
       let msg = `✨ ${j.count} Souls Encountered Jesus Near Here — Be Next! ✨`;
-      if(j.count>=5) msg = `🔥 ${j.count} Souls Encountered — Revival! Motto Glowing Gold! 🔥`;
-      if(j.count>=10) msg = `🌟 ${j.count} Souls — 10 Encounters! Glory to Jesus! 🌟`;
+      if(j.count>=5) msg = `🔥 ${j.count} Souls Encountered — Revival! 🔥`;
+      if(j.count>=10) msg = `🌟 ${j.count} Souls — Glory to Jesus! 🌟`;
       if(j.count>=50) msg = `👑 ${j.count} Souls — JUBILEE! South B Shining! 👑`;
       document.getElementById('publicEncounterCount').innerText=msg;
       if(j.count>0){ document.querySelector('.glow-animate').style.animationDuration=j.count>=10?'0.8s':'1.2s'; }
     });
     setTimeout(()=>{ map.invalidateSize(); }, 500);
-    map.on('click', e=>{ lastLat=e.latlng.lat; lastLng=e.latlng.lng; const msg=document.getElementById('encounterMsg'); msg.innerText=`📍 Private pin ${lastLat.toFixed(4)}, ${lastLng.toFixed(4)} — only admin sees`; msg.classList.remove('hidden'); L.marker([lastLat,lastLng]).addTo(map).bindPopup('Private — only pastoral team sees').openPopup(); });
+    map.on('click', e=>{ lastLat=e.latlng.lat; lastLng=e.latlng.lng; const msg=document.getElementById('encounterMsg'); msg.innerText=`📍 Private pin ${lastLat.toFixed(4)}, ${lastLng.toFixed(4)} — only pastoral team sees`; msg.classList.remove('hidden'); L.marker([lastLat,lastLng]).addTo(map).bindPopup('Private — only pastoral team sees').openPopup(); });
   }catch(e){}
 });
 async function addEncounter(){
@@ -397,12 +390,12 @@ async function addEncounter(){
     const j=await res.json();
     if(j.success){
       document.getElementById('encounterText').value='';
-      msg.innerText='✅ Saved PRIVATELY — only BN & CS + Admin view under Testimonies tab — thank you, God bless!';
+      msg.innerText='✅ Saved privately — only pastoral team views — thank you, God bless!';
       msg.classList.remove('hidden');
-      fetch('/api/encounters/public-count').then(r=>r.json()).then(j=>{ document.getElementById('publicEncounterCount').innerText=`✨ ${j.count} Souls Encountered Jesus — Be Next! — Light Glows ✨`; });
+      fetch('/api/encounters/public-count').then(r=>r.json()).then(j=>{ document.getElementById('publicEncounterCount').innerText=`✨ ${j.count} Souls Encountered Jesus — Be Next! ✨`; });
       msg.className='text-xs font-black text-green-600 mt-2';
     } else { msg.innerText='❌ '+(j.error||'Failed'); msg.classList.remove('hidden'); }
-  }catch(e){ msg.innerText='❌ Need app.py Step 2 private routes — /api/encounter'; msg.classList.remove('hidden'); }
+  }catch(e){ msg.innerText='❌ Failed to save'; msg.classList.remove('hidden'); }
 }
 </script>
 </body>
