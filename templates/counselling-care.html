@@ -20,28 +20,26 @@ body::before{content:"";position:fixed;inset:0;background:url("/static/Counselli
 
 <nav class="bg-[#1a2332]/90 backdrop-blur text-white px-8 py-3 sticky top-0 z-50 border-b border-[#facc15]/30">
   <div class="flex justify-between items-center">
-    <div class="text-[#5aa9ff] font-black text- leading-tight">SOUTH B POLICE CHAPEL <span class="text-[#facc15] text-">🔑 GOLDEN GLOW</span></div>
-    <div class="flex gap-5 text- font-bold tracking-wide items-center flex-wrap">
+    <div class="text-[#5aa9ff] font-black leading-tight">SOUTH B POLICE CHAPEL</div>
+    <div class="flex gap-5 font-bold tracking-wide items-center flex-wrap">
       <a href="/">HOME</a><a href="/events">EVENTS</a><a href="/sermons">SERMONS</a><a href="/prayer-wall">PRAYER WALL</a><a href="/contact">CONTACT</a><a href="/bible-quiz">BIBLE QUIZ</a>
       <a href="/counselling" class="bg-[#facc15] text-black px-4 py-1.5 rounded-full shadow-[0_0_15px_#facc15]">COUNSELLING CARE</a>
       <a href="/sunday-school">SUNDAY SCHOOL</a><a href="/gallery">GALLERY</a><a href="/videos">VIDEOS</a>
     </div>
   </div>
-  <div class="flex justify-center mt-3"><a href="/faith-arcade" class="text-[#fde047] bg-white/10 px-4 py-1 rounded-full border border-[#facc15]/30 text- font-bold tracking-widest">⚔ <span class="underline">FAITH ARCADE</span> ⚔</a></div>
+  <div class="flex justify-center mt-3"><a href="/faith-arcade" class="text-[#fde047] bg-white/10 px-4 py-1 rounded-full border border-[#facc15]/30 font-bold tracking-widest">⚔ <span class="underline">FAITH ARCADE</span> ⚔</a></div>
 </nav>
 
-<!-- SONG PLAYER - FLOATING BOTTOM - PRESERVED -->
-<div id="musicBar" class="fixed bottom-5 left-4 right-4 md:left-auto md:right-6 md:w- z-[60] glass-panel rounded-2xl p-3 flex items-center gap-3 border-2 border-[#facc15]">
+<div id="musicBar" class="fixed bottom-5 left-4 right-4 md:left-auto md:right-6 z-[60] glass-panel rounded-2xl p-3 flex items-center gap-3 border-2 border-[#facc15]">
   <div class="w-10 h-10 bg-[#1a2332] rounded-full flex items-center justify-center text-yellow-400 font-black">♫</div>
   <div class="flex-1 min-w-0">
     <p class="font-black text-xs text-[#1a2332] truncate">He brought me back to life</p>
-    <p class="text- text-gray-600">Counselling worship — tap to control</p>
+    <p class="text-xs text-gray-600">Counselling worship — tap to control</p>
   </div>
   <button id="musicToggle" onclick="toggleMusic()" class="bg-[#facc15] text-black px-4 py-1.5 rounded-full text-xs font-black shadow">▶ PLAY</button>
   <button onclick="stopMusic()" class="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-black">⏹ STOP</button>
 </div>
 
-<!-- AUTOPLAY PROMPT IF BLOCKED - PRESERVED -->
 <div id="autoPrompt" class="hidden fixed inset-0 z-[70] bg-black/70 backdrop-blur flex items-center justify-center p-4">
   <div class="bg-white rounded-[1.5rem] p-8 max-w-md w-full text-center border-4 border-[#facc15] shadow-[0_0_40px_#facc15]">
     <div class="text-4xl">🎹</div>
@@ -56,20 +54,19 @@ body::before{content:"";position:fixed;inset:0;background:url("/static/Counselli
   <div class="glass-panel rounded-[1.5rem] p-10 text-center border-2 border-[#facc15]/50 relative overflow-hidden">
     <img src="/static/Counselling.jpg" class="absolute inset-0 w-full h-full object-contain bg-white opacity-10 p-2">
     <div class="relative z-10">
-      <h1 class="text-4xl font-black text-[#1a2332]" style="font-family:'Merriweather'">🔑 You Don't Have to Carry This Alone</h1>
-      <p class="mt-3 text-gray-700 max-w-2xl mx-auto text-">Welcome to Our Online Spiritual Clinic — A Safe, Confidential Space to Heal, Grow, and Find Hope in God's Word.</p>
-      <p class="mt-2 text- font-black text-[#6B8F71] bg-white/80 px-3 py-1 rounded-full w-fit mx-auto border border-green-200">Matthew 11:28 - Come to Me, all you who labor and are heavy laden, and I will give you rest.</p>
+      <h1 class="text-4xl font-black text-[#1a2332]" style="font-family:'Merriweather'">You Don't Have to Carry This Alone</h1>
+      <p class="mt-3 text-gray-700 max-w-2xl mx-auto">Welcome to Our Online Spiritual Clinic — A Safe, Confidential Space to Heal, Grow, and Find Hope in God's Word.</p>
+      <p class="mt-2 font-black text-[#6B8F71] bg-white/80 px-3 py-1 rounded-full w-fit mx-auto border border-green-200">Matthew 11:28 - Come to Me, all you who labor and are heavy laden, and I will give you rest.</p>
     </div>
   </div>
 </div>
 
-<!-- 1. TESTIMONY RECORDER - NEW - UNDER COUNSELLING CARE - SAME GOLDEN GLOW -->
 <div class="max-w-7xl mx-auto px-4 mt-8">
   <div class="glass-panel rounded-[1.5rem] p-6 md:p-8 border-2 border-[#facc15] shadow-[0_0_25px_rgba(250,204,21,0.3)] relative overflow-hidden">
-    <div class="absolute top-0 right-0 bg-[#facc15] text-black text- font-black px-3 py-1 rounded-bl-xl">NEW • STEP 1</div>
+    <div class="absolute top-0 right-0 bg-[#facc15] text-black text-xs font-black px-3 py-1 rounded-bl-xl">STEP 1</div>
     <div class="flex flex-col md:flex-row gap-6 items-start">
       <div class="flex-1">
-        <h2 class="text-xl font-black text-[#1a2332]" style="font-family:'Merriweather'">🎙️ He Brought Me Back To Life — Record Your Testimony</h2>
+        <h2 class="text-xl font-black text-[#1a2332]" style="font-family:'Merriweather'">🎙 He Brought Me Back To Life — Record Your Testimony</h2>
         <p class="text-xs text-gray-600 mt-2 leading-relaxed">You heard the song? Now tell how Jesus brought YOU back. 30 seconds voice — easier than typing for police, youth, mama. Only pastoral team hears it. Confidential like counselling.</p>
         <div class="mt-4 flex flex-wrap gap-2 items-center">
           <button id="recBtn" onclick="toggleRec()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full text-xs font-black shadow">● Record Testimony (30s max)</button>
@@ -84,17 +81,17 @@ body::before{content:"";position:fixed;inset:0;background:url("/static/Counselli
           </div>
           <p id="recMsg" class="hidden mt-3 text-center font-black text-green-600 text-xs bg-green-50 p-2 rounded-xl border border-green-200"></p>
         </div>
-        <p class="text- text-gray-500 mt-3">🔒 Confidential — saved as <span class="font-bold">/static/testimonies/</span> — only BN & CS access. Your voice matters.</p>
+        <p class="text-xs text-gray-500 mt-3">🔒 Confidential — only pastoral team access. Your voice matters.</p>
       </div>
-      <div class="w-full md:w- bg-[#1a2332] rounded-2xl p-5 text-white border-2 border-[#facc15]/30">
+      <div class="w-full md:w-80 bg-[#1a2332] rounded-2xl p-5 text-white border-2 border-[#facc15]/30">
         <p class="text-yellow-300 font-black text-xs">Why voice?</p>
-        <ul class="text- mt-2 leading-relaxed text-white/80 list-disc ml-4">
+        <ul class="text-xs mt-2 leading-relaxed text-white/80 list-disc ml-4">
           <li>Police on duty — no time to type</li>
           <li>More real than text — hear tears, joy</li>
           <li>Same key as song — worship flows</li>
           <li>Pastor prays hearing YOUR voice</li>
         </ul>
-        <div class="mt-4 bg-white/10 rounded-xl p-3 text- border border-yellow-400/20">
+        <div class="mt-4 bg-white/10 rounded-xl p-3 text-xs border border-yellow-400/20">
           <span class="text-yellow-300 font-black">Tip:</span> Hold phone, say: "I was... Jesus brought me back when..."
         </div>
       </div>
@@ -111,60 +108,58 @@ body::before{content:"";position:fixed;inset:0;background:url("/static/Counselli
     <div class="glass-panel bg-[#1e293b]/90 rounded-[1.5rem] p-8 text-white shadow-xl border-2 border-[#facc15]/20">
       <h3 class="text-[#facc15] font-black text-sm">Our Approach</h3>
       <div class="h-1 w-12 bg-gradient-to-r from-[#facc15] to-yellow-600 mt-2 mb-5 rounded-full"></div>
-      <div class="mb-5"><p class="text-[#facc15] text- font-black flex gap-2">📖 Biblical Foundation:</p><p class="text- text-gray-300 mt-1 leading-relaxed">We base our counseling on God's Word, which provides truth for every path.</p></div>
-      <div class="mb-5"><p class="text-[#facc15] text- font-black flex gap-2">❤ Compassionate Care:</p><p class="text- text-gray-300 mt-1 leading-relaxed">We listen with absolute empathy, creating a safe room to heal.</p></div>
-      <div><p class="text-[#facc15] text- font-black flex gap-2">🔒 Secure & Confidential:</p><p class="text- text-gray-300 mt-1 leading-relaxed">Your privacy is highly important. All talks are kept strictly secure.</p></div>
+      <div class="mb-5"><p class="text-[#facc15] font-black flex gap-2">📖 Biblical Foundation:</p><p class="text-gray-300 mt-1 leading-relaxed">We base our counseling on God's Word, which provides truth for every path.</p></div>
+      <div class="mb-5"><p class="text-[#facc15] font-black flex gap-2">❤ Compassionate Care:</p><p class="text-gray-300 mt-1 leading-relaxed">We listen with absolute empathy, creating a safe room to heal.</p></div>
+      <div><p class="text-[#facc15] font-black flex gap-2">🔒 Secure & Confidential:</p><p class="text-gray-300 mt-1 leading-relaxed">Your privacy is highly important. All talks are kept strictly secure.</p></div>
     </div>
     <div class="glass-panel bg-[#1e293b]/90 rounded-[1.5rem] p-8 text-white shadow-xl border-2 border-[#facc15]/20">
       <h3 class="text-[#facc15] font-black text-sm">Meet Our Counselors</h3>
       <div class="h-1 w-12 bg-gradient-to-r from-[#facc15] to-yellow-600 mt-2 mb-5 rounded-full"></div>
       <div class="space-y-4">
         <div class="bg-white/5 border-l-4 border-[#facc15] rounded-xl p-4 flex gap-4 items-center backdrop-blur">
-          <div class="bg-gradient-to-br from-[#c77a1e] to-orange-600 w-11 h-11 rounded-full flex items-center justify-center font-black text-white text- shadow-[0_0_15px_#facc15]">BN</div>
-          <div><p class="font-black text-">Barsdley Nyange</p><p class="text- text-gray-400">Licensed Christian Counselor & Chaplain</p><a href="tel:0721679609" class="text-[#facc15] text- font-black mt-1 inline-block">0721679609</a></div>
+          <div class="bg-gradient-to-br from-[#c77a1e] to-orange-600 w-11 h-11 rounded-full flex items-center justify-center font-black text-white shadow-[0_0_15px_#facc15]">BN</div>
+          <div><p class="font-black">Barsdley Nyange</p><p class="text-xs text-gray-400">Licensed Christian Counselor & Chaplain</p><a href="tel:0721679609" class="text-[#facc15] font-black mt-1 inline-block">0721679609</a></div>
         </div>
         <div class="bg-white/5 border-l-4 border-[#facc15] rounded-xl p-4 flex gap-4 items-center backdrop-blur">
-          <div class="bg-gradient-to-br from-[#c77a1e] to-orange-600 w-11 h-11 rounded-full flex items-center justify-center font-black text-white text- shadow-[0_0_15px_#facc15]">CS</div>
-          <div><p class="font-black text-">Caudensha Sawe</p><p class="text- text-gray-400">Licensed Family & Spiritual Counselor</p><a href="tel:0721424392" class="text-[#facc15] text- font-black mt-1 inline-block">0721424392</a></div>
+          <div class="bg-gradient-to-br from-[#c77a1e] to-orange-600 w-11 h-11 rounded-full flex items-center justify-center font-black text-white shadow-[0_0_15px_#facc15]">CS</div>
+          <div><p class="font-black">Caudensha Sawe</p><p class="text-xs text-gray-400">Licensed Family & Spiritual Counselor</p><a href="tel:0721424392" class="text-[#facc15] font-black mt-1 inline-block">0721424392</a></div>
         </div>
       </div>
-      <p class="text- text-gray-400 mt-5 italic bg-white/5 p-2 rounded-xl">Matthew 11:28 - Come to me, all you who are weary and burdened, and I will give you rest.</p>
+      <p class="text-xs text-gray-400 mt-5 italic bg-white/5 p-2 rounded-xl">Matthew 11:28 - Come to me, all you who are weary and burdened, and I will give you rest.</p>
     </div>
   </div>
 </div>
 
 <div id="detailModal" class="hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur flex items-center justify-center p-4">
-  <div class="bg-white max-w-2xl w-full rounded-[1.5rem] p-7 max-h- overflow-y-auto border-4 border-[#facc15] shadow-[0_0_40px_#facc15]" id="modalContent"></div>
+  <div class="bg-white max-w-2xl w-full rounded-[1.5rem] p-7 max-h-[90vh] overflow-y-auto border-4 border-[#facc15] shadow-[0_0_40px_#facc15]" id="modalContent"></div>
 </div>
 
 <div id="booking" class="max-w-3xl mx-auto px-4 mt-12 mb-24">
   <div class="card-golden p-8 shadow-xl">
     <h2 class="text-2xl font-black text-center text-[#1a2332]">📝 Confidential Booking</h2>
-    <p class="text-center text- text-gray-500 mt-2">Only pastoral team sees this. Private and confidential.</p>
+    <p class="text-center text-gray-500 mt-2">Only pastoral team sees this. Private and confidential.</p>
     <form id="careForm" class="mt-6 grid gap-3">
-      <input id="name" required placeholder="Your Name (or Anonymous)" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl text- bg-white/90 outline-none">
-      <input id="phone" placeholder="Phone / WhatsApp" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl text- bg-white/90 outline-none">
+      <input id="name" required placeholder="Your Name (or Anonymous)" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl bg-white/90 outline-none">
+      <input id="phone" placeholder="Phone / WhatsApp" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl bg-white/90 outline-none">
       <div class="grid grid-cols-2 gap-3">
-        <select id="age_group" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl text- bg-white/90"><option>13-17 Youth</option><option>18-25 Youth</option><option>26-35 Young Adult</option><option>36-50 Parent</option><option>51+ Elder</option></select>
-        <select id="category" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl text- bg-white/90"><option>Youth Challenges</option><option>Parenting & Family</option><option>Marriage & Relationships</option><option>Work & Career</option><option>Education & Exams</option><option>Financial Struggles</option><option>Anxiety & Fear</option><option>Grief & Loss</option><option>Addiction & Habits</option><option>Purpose & Identity</option><option>Forgiveness & Anger</option><option>Loneliness</option></select>
+        <select id="age_group" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl bg-white/90"><option>13-17 Youth</option><option>18-25 Youth</option><option>26-35 Young Adult</option><option>36-50 Parent</option><option>51+ Elder</option></select>
+        <select id="category" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl bg-white/90"><option>Youth Challenges</option><option>Parenting & Family</option><option>Marriage & Relationships</option><option>Work & Career</option><option>Education & Exams</option><option>Financial Struggles</option><option>Anxiety & Fear</option><option>Grief & Loss</option><option>Addiction & Habits</option><option>Purpose & Identity</option><option>Forgiveness & Anger</option><option>Loneliness</option></select>
       </div>
-      <textarea id="description" rows="4" placeholder="Share briefly (optional)" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl text- bg-white/90 outline-none"></textarea>
-      <label class="text- flex gap-2 items-center font-bold"><input type="checkbox" id="is_anonymous" class="w-4 h-4"> Keep me Anonymous</label>
-      <button type="submit" class="bg-gradient-to-r from-[#1a2332] to-black text-white py-3 rounded-xl font-black text- shadow-[0_0_15px_rgba(250,204,21,0.4)]">Send Confidential Request 🙏</button>
-      <p id="formMsg" class="text-center font-black text-green-600 text-"></p>
+      <textarea id="description" rows="4" placeholder="Share briefly (optional)" class="border-2 border-yellow-100 focus:border-[#facc15] p-3 rounded-xl bg-white/90 outline-none"></textarea>
+      <label class="flex gap-2 items-center font-bold"><input type="checkbox" id="is_anonymous" class="w-4 h-4"> Keep me Anonymous</label>
+      <button type="submit" class="bg-gradient-to-r from-[#1a2332] to-black text-white py-3 rounded-xl font-black shadow-[0_0_15px_rgba(250,204,21,0.4)]">Send Confidential Request 🙏</button>
+      <p id="formMsg" class="text-center font-black text-green-600"></p>
     </form>
   </div>
 </div>
 
-<footer class="bg-[#0a1931]/90 backdrop-blur text-center text- text-gray-300 py-6 border-t border-[#facc15]/20">South B Police Chapel © 2026 - Pastoral Care is Confidential</footer>
+<footer class="bg-[#0a1931]/90 backdrop-blur text-center text-gray-300 py-6 border-t border-[#facc15]/20">South B Police Chapel © 2026 - Pastoral Care is Confidential</footer>
 
 </div>
 
-<!-- YOUR SONG ELEMENT - PRESERVED -->
 <audio id="counselSong" loop preload="auto" src="/static/uploads/he_brought_me_back_to_life.mp3"></audio>
 
 <script>
-// --- MUSIC LOGIC - HE BROUGHT ME BACK TO LIFE - PRESERVED 100% ---
 const song = document.getElementById('counselSong');
 const btn = document.getElementById('musicToggle');
 const promptBox = document.getElementById('autoPrompt');
@@ -180,169 +175,58 @@ function playSong(){
   try{
     song.volume = 0.45;
     const p = song.play();
-    if(p){
-      p.then(()=>{ isPlaying=true; updateBtn(); localStorage.setItem('counsel_music','playing'); }).catch(()=>{ showPrompt(); });
-    }
+    if(p){ p.then(()=>{ isPlaying=true; updateBtn(); localStorage.setItem('counsel_music','playing'); }).catch(()=>{ showPrompt(); }); }
   }catch(e){ showPrompt(); }
 }
-function pauseSong(){
-  if(!song) return;
-  song.pause();
-  isPlaying=false; updateBtn();
-}
-function stopMusic(){
-  if(!song) return;
-  song.pause(); song.currentTime=0;
-  isPlaying=false; updateBtn();
-  localStorage.setItem('counsel_music','stopped');
-  if(promptBox) promptBox.classList.add('hidden');
-}
-function toggleMusic(){
-  if(isPlaying) pauseSong(); else playSong();
-}
-function showPrompt(){
-  if(localStorage.getItem('counsel_music')==='stopped') return;
-  if(promptBox) promptBox.classList.remove('hidden');
-}
-function startMusicFromPrompt(){
-  if(promptBox) promptBox.classList.add('hidden');
-  playSong();
-}
-function dismissPrompt(){
-  if(promptBox) promptBox.classList.add('hidden');
-  localStorage.setItem('counsel_music','stopped');
-}
+function pauseSong(){ if(!song) return; song.pause(); isPlaying=false; updateBtn(); }
+function stopMusic(){ if(!song) return; song.pause(); song.currentTime=0; isPlaying=false; updateBtn(); localStorage.setItem('counsel_music','stopped'); if(promptBox) promptBox.classList.add('hidden'); }
+function toggleMusic(){ if(isPlaying) pauseSong(); else playSong(); }
+function showPrompt(){ if(localStorage.getItem('counsel_music')==='stopped') return; if(promptBox) promptBox.classList.remove('hidden'); }
+function startMusicFromPrompt(){ if(promptBox) promptBox.classList.add('hidden'); playSong(); }
+function dismissPrompt(){ if(promptBox) promptBox.classList.add('hidden'); localStorage.setItem('counsel_music','stopped'); }
 document.addEventListener('DOMContentLoaded', ()=>{
-  setTimeout(()=>{
-    if(localStorage.getItem('counsel_music')!=='stopped'){
-      playSong();
-      setTimeout(()=>{ if(!isPlaying) showPrompt(); }, 1500);
-    }
-  }, 800);
+  setTimeout(()=>{ if(localStorage.getItem('counsel_music')!=='stopped'){ playSong(); setTimeout(()=>{ if(!isPlaying) showPrompt(); }, 1500); } }, 800);
 });
 
-// --- TESTIMONY RECORDER - NEW STEP 1 - PRESERVES MUSIC DUCKING ---
 let mediaRecorder, audioChunks=[], recStream, recTimerInterval, recSeconds=0;
 let currentBlob=null;
-
-function updateTimer(){
-  recSeconds++;
-  const m=String(Math.floor(recSeconds/60)).padStart(2,'0');
-  const s=String(recSeconds%60).padStart(2,'0');
-  document.getElementById('recTimer').innerText=`${m}:${s} / 00:30`;
-  if(recSeconds>=30){ toggleRec(); }
-}
-
+function updateTimer(){ recSeconds++; const m=String(Math.floor(recSeconds/60)).padStart(2,'0'); const s=String(recSeconds%60).padStart(2,'0'); document.getElementById('recTimer').innerText=`${m}:${s} / 00:30`; if(recSeconds>=30){ toggleRec(); } }
 async function toggleRec(){
   const recBtn=document.getElementById('recBtn');
   const recStatus=document.getElementById('recStatus');
   const recTimer=document.getElementById('recTimer');
-
   if(mediaRecorder && mediaRecorder.state==='recording'){
-    // STOP
-    mediaRecorder.stop();
-    clearInterval(recTimerInterval);
-    recBtn.innerText='● Record Testimony (30s max)';
-    recBtn.classList.remove('recording','bg-black');
-    recBtn.classList.add('bg-red-500');
-    recStatus.innerText='Saved — listen below, then Send';
-    recStatus.className='text-xs font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200';
-    recTimer.classList.add('hidden');
-    // restore song volume if playing
-    if(song && isPlaying) song.volume=0.45;
-    return;
+    mediaRecorder.stop(); clearInterval(recTimerInterval);
+    recBtn.innerText='● Record Testimony (30s max)'; recBtn.classList.remove('recording','bg-black'); recBtn.classList.add('bg-red-500');
+    recStatus.innerText='Saved — listen below, then Send'; recStatus.className='text-xs font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200';
+    recTimer.classList.add('hidden'); if(song && isPlaying) song.volume=0.45; return;
   }
-
-  // START - duck song to 0.18 like modal does
   if(song && isPlaying) song.volume=0.18;
-
   try{
     recStream=await navigator.mediaDevices.getUserMedia({audio:true});
-    mediaRecorder=new MediaRecorder(recStream);
-    audioChunks=[]; recSeconds=0;
-    recTimer.innerText='00:00 / 00:30';
-    recTimer.classList.remove('hidden');
+    mediaRecorder=new MediaRecorder(recStream); audioChunks=[]; recSeconds=0;
+    recTimer.innerText='00:00 / 00:30'; recTimer.classList.remove('hidden');
     recTimerInterval=setInterval(updateTimer,1000);
-
     mediaRecorder.ondataavailable=e=>{ if(e.data.size>0) audioChunks.push(e.data); };
-    mediaRecorder.onstop=()=>{
-      const blob=new Blob(audioChunks,{type:'audio/webm'});
-      currentBlob=blob;
-      const url=URL.createObjectURL(blob);
-      const pb=document.getElementById('recPlayback');
-      pb.src=url;
-      pb.classList.remove('hidden');
-      document.getElementById('recActions').classList.remove('hidden');
-      // stop mic
-      if(recStream){ recStream.getTracks().forEach(t=>t.stop()); }
-    };
-    mediaRecorder.start();
-    recBtn.innerText='⏹ Stop Recording';
-    recBtn.classList.remove('bg-red-500');
-    recBtn.classList.add('recording','bg-black');
-    recStatus.innerText='🔴 Recording... He brought me back to life — speak now';
-    recStatus.className='text-xs font-bold text-red-700 bg-red-50 px-3 py-1 rounded-full border border-red-200';
-  }catch(e){
-    alert('Microphone permission needed — allow mic to record testimony. On iPhone, use Safari.');
-    if(song && isPlaying) song.volume=0.45;
-  }
+    mediaRecorder.onstop=()=>{ const blob=new Blob(audioChunks,{type:'audio/webm'}); currentBlob=blob; const url=URL.createObjectURL(blob); const pb=document.getElementById('recPlayback'); pb.src=url; pb.classList.remove('hidden'); document.getElementById('recActions').classList.remove('hidden'); if(recStream){ recStream.getTracks().forEach(t=>t.stop()); } };
+    mediaRecorder.start(); recBtn.innerText='⏹ Stop Recording'; recBtn.classList.remove('bg-red-500'); recBtn.classList.add('recording','bg-black');
+    recStatus.innerText='🔴 Recording... He brought me back to life — speak now'; recStatus.className='text-xs font-bold text-red-700 bg-red-50 px-3 py-1 rounded-full border border-red-200';
+  }catch(e){ alert('Microphone permission needed — allow mic to record testimony.'); if(song && isPlaying) song.volume=0.45; }
 }
-
-function discardRec(){
-  currentBlob=null;
-  document.getElementById('recPlayback').classList.add('hidden');
-  document.getElementById('recPlayback').src='';
-  document.getElementById('recActions').classList.add('hidden');
-  document.getElementById('recStatus').innerText='Not recording — tap to start';
-  document.getElementById('recStatus').className='text-xs font-bold text-gray-600 bg-white/80 px-3 py-1 rounded-full border border-yellow-100';
-  document.getElementById('recMsg').classList.add('hidden');
-  recSeconds=0;
-}
-
+function discardRec(){ currentBlob=null; document.getElementById('recPlayback').classList.add('hidden'); document.getElementById('recPlayback').src=''; document.getElementById('recActions').classList.add('hidden'); document.getElementById('recStatus').innerText='Not recording — tap to start'; document.getElementById('recStatus').className='text-xs font-bold text-gray-600 bg-white/80 px-3 py-1 rounded-full border border-yellow-100'; document.getElementById('recMsg').classList.add('hidden'); recSeconds=0; }
 async function sendRec(){
   if(!currentBlob){ alert('Record first'); return; }
-  const btn=document.getElementById('sendRecBtn');
-  const msg=document.getElementById('recMsg');
-  btn.innerText='Sending...'; btn.disabled=true;
-
-  const fd=new FormData();
-  fd.append('audio', currentBlob, 'testimony_'+Date.now()+'.webm');
-  fd.append('name', document.getElementById('name')?.value || 'Anonymous');
-  fd.append('phone', document.getElementById('phone')?.value || '');
-
-  try{
-    const res=await fetch('/api/testimony',{method:'POST',body:fd});
-    const j=await res.json();
-    if(j.success){
-      msg.innerText=`✅ Testimony saved ${j.filename} — Pastor will pray listening to your voice!`;
-      msg.classList.remove('hidden');
-      btn.innerText='Sent 🙏';
-      // restore song
-      if(song && isPlaying) song.volume=0.45;
-    } else {
-      msg.innerText='❌ Failed: '+(j.error||'unknown');
-      msg.classList.remove('hidden');
-      btn.innerText='Send to Pastoral Team 🙏'; btn.disabled=false;
-    }
-  }catch(e){
-    msg.innerText='❌ Network error — saved locally, try again. (Need Flask route /api/testimony)';
-    msg.classList.remove('hidden');
-    btn.innerText='Send to Pastoral Team 🙏'; btn.disabled=false;
-  }
+  const btn=document.getElementById('sendRecBtn'); const msg=document.getElementById('recMsg'); btn.innerText='Sending...'; btn.disabled=true;
+  const fd=new FormData(); fd.append('audio', currentBlob, 'testimony_'+Date.now()+'.webm'); fd.append('name', document.getElementById('name')?.value || 'Anonymous'); fd.append('phone', document.getElementById('phone')?.value || '');
+  try{ const res=await fetch('/api/testimony',{method:'POST',body:fd}); const j=await res.json(); if(j.success){ msg.innerText=`✅ Testimony saved — Pastor will pray listening to your voice!`; msg.classList.remove('hidden'); btn.innerText='Sent 🙏'; if(song && isPlaying) song.volume=0.45; } else { msg.innerText='❌ Failed: '+(j.error||'unknown'); msg.classList.remove('hidden'); btn.innerText='Send to Pastoral Team 🙏'; btn.disabled=false; } }catch(e){ msg.innerText='❌ Network error — try again.'; msg.classList.remove('hidden'); btn.innerText='Send to Pastoral Team 🙏'; btn.disabled=false; }
 }
-
-// --- MODAL + GRID PRESERVED ---
 function openDetail(i){
   if(song && isPlaying) song.volume = 0.18;
   const c=topics[i];
-  document.getElementById('modalContent').innerHTML=`<div class="flex justify-between"><h2 class="text-xl font-black">${c.e} ${c.t}</h2><button onclick="closeModal()" class="bg-gray-100 w-8 h-8 rounded-full font-black">✕</button></div><p class="text- text-gray-600 mt-3">${c.d}. You are not alone.</p><h4 class="font-black mt-4 text-xs">📖 Bible Says</h4><ul class="text- mt-1 list-disc ml-5">${c.v.map(v=>`<li>${v}</li>`).join('')}</ul><h4 class="font-black mt-4 text-xs">✅ Wisdom</h4><ul class="text- mt-1 list-disc ml-5">${c.s.map(s=>`<li>${s}</li>`).join('')}</ul><div class="mt-4 bg-[#fff8f0] p-4 rounded-xl text- border-2 border-[#facc15]/30"><b>🙏 Prayer:</b> <em>${c.p}</em></div><button onclick="document.getElementById('category').value='${c.t}';closeModal();document.getElementById('booking').scrollIntoView({behavior:'smooth'})" class="w-full mt-4 bg-[#1a2332] text-white py-3 rounded-xl text- font-black">Book for This - Confidential</button>`;
+  document.getElementById('modalContent').innerHTML=`<div class="flex justify-between"><h2 class="text-xl font-black">${c.e} ${c.t}</h2><button onclick="closeModal()" class="bg-gray-100 w-8 h-8 rounded-full font-black">✕</button></div><p class="text-sm text-gray-600 mt-3">${c.d}. You are not alone.</p><h4 class="font-black mt-4 text-xs">📖 Bible Says</h4><ul class="text-sm mt-1 list-disc ml-5">${c.v.map(v=>`<li>${v}</li>`).join('')}</ul><h4 class="font-black mt-4 text-xs">✅ Wisdom</h4><ul class="text-sm mt-1 list-disc ml-5">${c.s.map(s=>`<li>${s}</li>`).join('')}</ul><div class="mt-4 bg-[#fff8f0] p-4 rounded-xl text-sm border-2 border-[#facc15]/30"><b>🙏 Prayer:</b> <em>${c.p}</em></div><button onclick="document.getElementById('category').value='${c.t}';closeModal();document.getElementById('booking').scrollIntoView({behavior:'smooth'})" class="w-full mt-4 bg-[#1a2332] text-white py-3 rounded-xl text-sm font-black">Book for This - Confidential</button>`;
   document.getElementById('detailModal').classList.remove('hidden');
 }
-function closeModal(){
-  document.getElementById('detailModal').classList.add('hidden');
-  if(song && isPlaying) song.volume = 0.45;
-}
-
+function closeModal(){ document.getElementById('detailModal').classList.add('hidden'); if(song && isPlaying) song.volume = 0.45; }
 const topics=[
 {t:"Youth Challenges",e:"🧒",d:"Peer pressure, identity, anxiety",v:["1 Timothy 4:12","Jeremiah 29:11","Psalm 119:9"],s:["Pray daily","Choose good friends","Identity in Christ"],p:"Lord, guide this young heart. Amen."},
 {t:"Parenting & Family",e:"👨👩👧",d:"Children not listening",v:["Proverbs 22:6","Ephesians 6:4","Joshua 24:15"],s:["Pray with children","Listen more","Family altar"],p:"Father, bring peace to this home. Amen."},
@@ -358,7 +242,7 @@ const topics=[
 {t:"Loneliness",e:"🤍",d:"Feeling alone",v:["Heb 13:5","Psalm 68:6","Matt 28:20"],s:["Church is family","Call someone","God present"],p:"Immanuel with you. Amen."}
 ];
 const grid=document.getElementById('grid');
-topics.forEach((c,i)=>{grid.innerHTML+=`<div onclick="openDetail(${i})" class="card-golden p-6 shadow cursor-pointer"><div class="text-3xl">${c.e}</div><h3 class="font-black mt-2 text-[#1a2332] text-sm">${c.t}</h3><p class="text- text-gray-500 mt-1">${c.d}</p><span class="mt-3 inline-block text- bg-green-50 text-green-700 px-3 py-1 rounded-full font-black border border-green-200">GET COMFORT →</span></div>`;});
+topics.forEach((c,i)=>{grid.innerHTML+=`<div onclick="openDetail(${i})" class="card-golden p-6 shadow cursor-pointer"><div class="text-3xl">${c.e}</div><h3 class="font-black mt-2 text-[#1a2332] text-sm">${c.t}</h3><p class="text-xs text-gray-500 mt-1">${c.d}</p><span class="mt-3 inline-block text-xs bg-green-50 text-green-700 px-3 py-1 rounded-full font-black border border-green-200">GET COMFORT →</span></div>`;});
 document.getElementById('careForm').addEventListener('submit',async(e)=>{e.preventDefault();const payload={name:document.getElementById('name').value,phone:document.getElementById('phone').value,age_group:document.getElementById('age_group').value,category:document.getElementById('category').value,description:document.getElementById('description').value,is_anonymous:document.getElementById('is_anonymous').checked,preferred_time:"Any"};const res=await fetch('/api/counselling-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const j=await res.json();if(j.success){document.getElementById('formMsg').innerText=`✅ Saved ${j.id} - Pastor will contact privately!`;e.target.reset();}});
 </script>
 </body>
