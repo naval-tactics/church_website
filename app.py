@@ -30,16 +30,102 @@ TZ = pytz.timezone('Africa/Nairobi')
 DATA_DIR = 'data'
 QR_SECRET = os.getenv('QR_SECRET', app.secret_key)
 
+# --- Armor + Cloudinary ---
+try:
+    import cloudinary
+    import cloudinary.uploader
+    cloudinary.config(
+        cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.environ.get("CLOUDINARY_API_KEY"),
+        api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+        secure=True
+    )
+    CLOUDINARY_ENABLED = bool(os.environ.get("CLOUDINARY_CLOUD_NAME") and os.environ.get("CLOUDINARY_API_KEY"))
+    print(f"Cloudinary enabled: {CLOUDINARY_ENABLED} cloud={os.environ.get('CLOUDINARY_CLOUD_NAME')}")
+except Exception as e:
+    print(f"Cloudinary not configured: {e}")
+    CLOUDINARY_ENABLED = False
+
 try:
     from flask_caching import Cache
-    cache = Cache(app, config={'CACHE_TYPE':'SimpleCache','CACHE_DEFAULT_TIMEOUT':60})
-except:
+    cache = Cache(app, config={'CACHE_TYPE':'SimpleCache','CACHE_DEFAULT_TIMEOUT':300})
+except Exception:
     cache = None
+
 try:
     from flask_compress import Compress
     Compress(app)
 except:
     pass
+
+try:
+    from flask_limiter import Limiter
+    from flask_limiter.util import get_remote_address
+    limiter = Limiter(
+        get_remote_address,
+        app=app,
+        default_limits=["500 per day", "100 per hour"],
+        storage_uri="memory://"
+    )
+except Exception as e:
+    print(f"Limiter init failed: {e}")
+    limiter = None
+
+def armor_limit(limit_str):
+    def decorator(f):
+        if limiter:
+            return limiter.limit(limit_str)(f)
+        return f
+    return decorator
+
+def cache_page(timeout=300):
+    def decorator(f):
+        if cache:
+            return cache.cached(timeout=timeout)(f)
+        return f
+    return decorator
+
+def upload_to_cloudinary(file_obj, folder="south_b_chapel"):
+    """Returns secure_url if cloudinary enabled, else saves locally and returns local path"""
+    if not file_obj or file_obj.filename == "":
+        return ""
+    # Try Cloudinary first
+    if CLOUDINARY_ENABLED:
+        try:
+            # Reset pointer
+            try: file_obj.stream.seek(0)
+            except: pass
+            res = cloudinary.uploader.upload(file_obj, folder=folder, resource_type="auto")
+            url = res.get('secure_url')
+            if url:
+                print(f"Cloudinary upload OK: {url}")
+                return url
+        except Exception as e:
+            print(f"Cloudinary upload failed, fallback local: {e}")
+    # Fallback local
+    try:
+        fn = secure_filename(f"{int(time.time()*1000)}_{file_obj.filename}")
+        # map folder
+        if 'videos' in folder: local_folder = 'static/uploads/videos'
+        elif 'gallery' in folder: local_folder = 'static/uploads/gallery'
+        elif 'members' in folder: local_folder = 'static/uploads/members'
+        elif 'events' in folder: local_folder = 'static/uploads/events'
+        elif 'sermons' in folder: local_folder = 'static/uploads/sermons'
+        elif 'notes' in folder: local_folder = 'static/uploads/notes'
+        elif 'testimonies' in folder: local_folder = 'static/testimonies'
+        elif 'sunday' in folder: local_folder = 'static/uploads/notes'
+        else: local_folder = 'static/uploads/gallery'
+        os.makedirs(local_folder, exist_ok=True)
+        try: file_obj.stream.seek(0)
+        except: pass
+        path = os.path.join(local_folder, fn)
+        file_obj.save(path)
+        if 'testimonies' in local_folder:
+            return fn
+        return f"{local_folder.replace('static/','')}/{fn}".replace("\\","/")
+    except Exception as e:
+        print(f"Local save failed: {e}")
+        return ""
 
 ADMIN_USERNAME = os.getenv('ADMIN_USER', "admin")
 ADMIN_PASSWORD_HASH = generate_password_hash(os.getenv('ADMIN_PASS', "SouthB@2026!Chapel#Secure"))
@@ -97,6 +183,8 @@ def clear_image_cache():
     try:
         find_file_cached.cache_clear()
         get_images_dict_cached.cache_clear()
+        if cache:
+            cache.clear()
     except: pass
 
 def admin_required(f):
@@ -257,22 +345,27 @@ if not os.path.exists(QUIZ_FILE): save_json(QUIZ_FILE, DEFAULT_QUIZ)
 def get_quiz(): return load_json(QUIZ_FILE, DEFAULT_QUIZ)
 
 @app.route('/')
+@cache_page(timeout=300)
 def home():
     return render_template('index.html', next_sunday=get_next_sunday_8am(), images=get_images_dict(), holiday=get_holiday_info())
 
 @app.route('/events')
+@cache_page(timeout=300)
 def events_page():
     return render_template('events.html', images=get_images_dict(), holiday=get_holiday_info(), events=load_json('data/events.json', []), next_sunday=get_next_sunday_8am())
 
 @app.route('/sermons')
+@cache_page(timeout=300)
 def sermons_page():
     return render_template('sermons.html', images=get_images_dict(), holiday=get_holiday_info(), sermons=load_json('data/sermons.json', []), next_sunday=get_next_sunday_8am())
 
 @app.route('/videos')
+@cache_page(timeout=300)
 def videos_page():
     return render_template('videos.html', images=get_images_dict(), holiday=get_holiday_info(), next_sunday=get_next_sunday_8am(), items=load_json('data/videos.json', []), videos=load_json('data/videos.json', []))
 
 @app.route('/gallery')
+@cache_page(timeout=300)
 def gallery_page():
     albums = load_json('data/gallery.json', [])
     for a in albums:
@@ -282,6 +375,7 @@ def gallery_page():
     return render_template('gallery.html', images=get_images_dict(), holiday=get_holiday_info(), next_sunday=get_next_sunday_8am(), gallery=albums, items=albums)
 
 @app.route('/prayer-wall')
+@cache_page(timeout=60)
 def prayer_wall():
     return render_template('prayer.html', images=get_images_dict(), holiday=get_holiday_info(), next_sunday=get_next_sunday_8am(), prayers=[p for p in load_json('data/prayers.json', []) if p.get('visibility', 'public') == 'public'])
 
@@ -369,7 +463,6 @@ def method_not_allowed(e):
 @app.route('/api/videos')
 def api_videos(): return jsonify(load_json('data/videos.json', []))
 
-# FIXED: public API filters private
 @app.route('/api/gallery')
 def api_gallery():
     albums = load_json('data/gallery.json', [])
@@ -423,15 +516,19 @@ def api_quiz(level):
     return jsonify({"questions": pick})
 
 @app.route('/prayer/submit', methods=['POST'])
+@armor_limit("10 per minute")
 def submit_prayer_wall():
     if not check_rate(request.remote_addr, 'prayer', 5, 60):
         return jsonify({"ok": False, "error": "Too fast"}), 429
     prayers = load_json('data/prayers.json', [])
     prayers.append({"id": int(time.time() * 1000),"category": sanitize_text(request.form.get('category','General'),50),"name": sanitize_text(request.form.get('name',''),100),"anonymous": bool(request.form.get('anonymous')),"visibility": request.form.get('visibility','public') if request.form.get('visibility') in ['public','private'] else 'public',"content": sanitize_text(request.form.get('content',''),1000),"contact": bool(request.form.get('contact')),"date": datetime.now(TZ).strftime('%Y-%m-%d'),"pray_count": 0})
     save_json('data/prayers.json', prayers)
+    if cache:
+        cache.delete_memoized(prayer_wall)
     return jsonify({"ok": True})
 
 @app.route('/prayer/pray/<int:pid>', methods=['POST'])
+@armor_limit("30 per minute")
 def pray_count_wall(pid):
     prayers = load_json('data/prayers.json', []); count=0
     for p in prayers:
@@ -440,6 +537,7 @@ def pray_count_wall(pid):
     return jsonify({"count": count})
 
 @app.route('/api/counselling-request', methods=['POST'])
+@armor_limit("5 per minute")
 def save_counselling():
     if not check_rate(request.remote_addr, 'counselling', 5, 120):
         return jsonify({"success": False, "error": "Too many requests"}), 429
@@ -449,6 +547,7 @@ def save_counselling():
     return jsonify({"success": True, "id": msgs[0]['id']})
 
 @app.route('/api/testimony', methods=['POST'])
+@armor_limit("3 per minute")
 def api_testimony():
     if not check_rate(request.remote_addr, 'testimony', 3, 300):
         return jsonify(success=False, error='Too many uploads, try later'), 429
@@ -459,16 +558,16 @@ def api_testimony():
         f = request.files['audio']
         if f.filename == '':
             return jsonify(success=False, error='Empty filename'), 400
-        ext = f.filename.rsplit('.',1)[-1].lower() if '.' in f.filename else 'webm'
-        if ext not in ['webm','wav','mp3','m4a','ogg']: ext = 'webm'
-        filename = secure_filename(f"testimony_{int(time.time()*1000)}.{ext}")
-        save_path = os.path.join('static/testimonies', filename)
-        f.save(save_path)
+        cloud_url = upload_to_cloudinary(f, folder="south_b_chapel/testimonies")
+        if cloud_url.startswith('http'):
+            filename = cloud_url
+        else:
+            filename = cloud_url.split('/')[-1] if '/' in cloud_url else cloud_url
         name = sanitize_text(request.form.get('name','Anonymous'),100) or 'Anonymous'
         phone = sanitize_text(request.form.get('phone',''),20)
         records = load_json(TESTIMONY_FILE, [])
         new_id = int(time.time()*1000)
-        records.insert(0, {"id": new_id,"filename": filename,"path": f"testimonies/{filename}","name": name,"phone": phone,"date": datetime.now(TZ).strftime("%Y-%m-%d"),"time": datetime.now(TZ).strftime("%H:%M:%S")})
+        records.insert(0, {"id": new_id,"filename": filename,"path": f"testimonies/{filename}" if not filename.startswith('http') else filename,"cloud_url": filename if filename.startswith('http') else "","name": name,"phone": phone,"date": datetime.now(TZ).strftime("%Y-%m-%d"),"time": datetime.now(TZ).strftime("%H:%M:%S")})
         save_json(TESTIMONY_FILE, records)
         transcripts = load_json(TRANSCRIPTS_FILE, [])
         transcripts.append({"testimony_id": new_id, "text": f"[{name}] — He brought me back to life — private", "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M")})
@@ -517,6 +616,7 @@ def delete_testimony(tid):
     return jsonify({"ok": True})
 
 @app.route('/api/encounter', methods=['POST'])
+@armor_limit("10 per minute")
 def api_encounter_save():
     if not check_rate(request.remote_addr, 'encounter', 10, 120):
         return jsonify(success=False, error='Too fast'), 429
@@ -593,6 +693,7 @@ def delete_encounter(eid):
     return jsonify({"ok": True})
 
 @app.route('/api/member/register', methods=['POST'])
+@armor_limit("5 per minute")
 def api_member_register():
     if not check_rate(request.remote_addr, 'register', 3, 300):
         return jsonify({"ok":False,"error":"Too many registrations"}),429
@@ -602,10 +703,7 @@ def api_member_register():
             photo_file = request.files.get('photo')
             if photo_file and photo_file.filename!= "":
                 if allowed_file(photo_file.filename, {'jpg','jpeg','png','webp','gif'}):
-                    fn = secure_filename(f"{int(time.time()*1000)}_{photo_file.filename}")
-                    save_to = os.path.join('static/uploads/members', fn)
-                    photo_file.save(save_to)
-                    photo_path = f"uploads/members/{fn}"
+                    photo_path = upload_to_cloudinary(photo_file, folder="south_b_chapel/members")
                     clear_image_cache()
             raw = request.form.get('data')
             if raw: data = json.loads(raw)
@@ -619,10 +717,15 @@ def api_member_register():
             if data.get('photo_base64'):
                 try:
                     import base64
-                    fn = secure_filename(f"{int(time.time()*1000)}_member.jpg")
-                    save_to = os.path.join('static/uploads/members', fn)
-                    with open(save_to, 'wb') as f: f.write(base64.b64decode(data.get('photo_base64').split(',')[-1]))
-                    photo_path = f"uploads/members/{fn}"
+                    b64data = data.get('photo_base64').split(',')[-1]
+                    if CLOUDINARY_ENABLED:
+                        res = cloudinary.uploader.upload(f"data:image/jpeg;base64,{b64data}", folder="south_b_chapel/members")
+                        photo_path = res.get('secure_url')
+                    else:
+                        fn = secure_filename(f"{int(time.time()*1000)}_member.jpg")
+                        save_to = os.path.join('static/uploads/members', fn)
+                        with open(save_to, 'wb') as f: f.write(base64.b64decode(b64data))
+                        photo_path = f"uploads/members/{fn}"
                     clear_image_cache()
                 except: photo_path = ""
         members = load_json(MEMBERS_FILE, [])
@@ -640,6 +743,7 @@ def api_member_register():
         return jsonify({"ok":False,"error":str(e)}),500
 
 @app.route('/api/member/login', methods=['POST'])
+@armor_limit("10 per minute")
 def api_member_login():
     if not check_rate(request.remote_addr, 'member_login', 5, 60):
         return jsonify({"ok":False,"error":"Too many attempts"}),429
@@ -717,7 +821,7 @@ def admin_upload_video():
     title = sanitize_text(request.form.get('title'),200); category = sanitize_text(request.form.get('category','sermon'),50); description = sanitize_text(request.form.get('description',''),1000); yt_raw = request.form.get('yt',''); yt = extract_yt_id(yt_raw); file = request.files.get('file'); filename=""
     if file and file.filename!= "":
         if allowed_file(file.filename, {'mp4','mov','webm','avi','mkv'}):
-            filename = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/videos', filename)); filename = f"uploads/videos/{filename}"
+            filename = upload_to_cloudinary(file, folder="south_b_chapel/videos")
     vids = load_json('data/videos.json', []); vids.append({"id": int(time.time()*1000),"title": title,"yt": yt,"yt_raw": sanitize_text(yt_raw,100),"local_file": filename,"category": category,"description": description,"date": datetime.now(TZ).strftime('%Y-%m-%d')}); save_json('data/videos.json', vids); clear_image_cache(); return jsonify({"ok": True})
 
 @app.route('/api/admin/upload-gallery', methods=['POST'])
@@ -728,7 +832,8 @@ def admin_upload_gallery():
     files = request.files.getlist('files'); urls_raw = request.form.get('images',''); saved=[]
     for f in files:
         if f and f.filename!= '' and allowed_file(f.filename, {'jpg','jpeg','png','webp','gif'}):
-            fn = secure_filename(f"{int(time.time()*1000)}_{f.filename}"); f.save(os.path.join('static/uploads/gallery', fn)); saved.append(f"uploads/gallery/{fn}")
+            url = upload_to_cloudinary(f, folder="south_b_chapel/gallery")
+            saved.append(url)
     if urls_raw:
         for u in urls_raw.split(','):
             if u.strip(): saved.append(sanitize_text(u.strip(),500))
@@ -752,7 +857,7 @@ def admin_upload_note():
     title = sanitize_text(request.form.get('title'),200); content = sanitize_text(request.form.get('content'),2000); file = request.files.get('file'); saved=""
     if file and file.filename!= "":
         if allowed_file(file.filename, {'pdf','docx','txt','pptx'}):
-            fn = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/notes', fn)); saved = f"uploads/notes/{fn}"
+            saved = upload_to_cloudinary(file, folder="south_b_chapel/notes")
     notes = load_json('data/sunday_school_notes.json', []); notes.append({"id": int(time.time()*1000),"title": title,"content": content,"file": saved,"size": f"{random.randint(500, 2000)} KB","date": datetime.now(TZ).strftime('%Y-%m-%d')}); save_json('data/sunday_school_notes.json', notes); return jsonify({"ok": True})
 
 @app.route('/api/admin/sunday-upload-video', methods=['POST'])
@@ -761,7 +866,7 @@ def admin_upload_sunday_video():
     title = sanitize_text(request.form.get('title'),200); yt_raw = request.form.get('yt',''); yt = extract_yt_id(yt_raw); file = request.files.get('file'); saved=""
     if file and file.filename!= "":
         if allowed_file(file.filename, {'mp4','mov','webm'}):
-            fn = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/videos', fn)); saved = f"uploads/videos/{fn}"
+            saved = upload_to_cloudinary(file, folder="south_b_chapel/sunday_videos")
     vids = load_json('data/sunday_school_videos.json', []); vids.append({"id": int(time.time()*1000),"title": title,"yt": yt,"local_file": saved,"date": datetime.now(TZ).strftime('%Y-%m-%d')}); save_json('data/sunday_school_videos.json', vids); return jsonify({"ok": True})
 
 @app.route('/api/admin/upload-sermon', methods=['POST'])
@@ -769,7 +874,7 @@ def admin_upload_sunday_video():
 def admin_upload_sermon():
     title = sanitize_text(request.form.get('title'),200); speaker = sanitize_text(request.form.get('speaker'),100); stype = request.form.get('type','video'); series = sanitize_text(request.form.get('series',''),100); desc = sanitize_text(request.form.get('description',''),2000); yt_raw = request.form.get('yt',''); yt = extract_yt_id(yt_raw); file = request.files.get('file'); saved=""
     if file and file.filename!= "":
-        fn = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/sermons', fn)); saved = f"uploads/sermons/{fn}"
+        saved = upload_to_cloudinary(file, folder="south_b_chapel/sermons")
     sermons = load_json('data/sermons.json', []); sermons.append({"id": int(time.time()*1000),"title": title,"speaker": speaker,"type": stype,"series": series,"description": desc,"yt": yt,"yt_raw": sanitize_text(yt_raw,100),"local_file": saved,"date": datetime.now(TZ).strftime('%Y-%m-%d')}); save_json('data/sermons.json', sermons); return jsonify({"ok": True})
 
 @app.route('/api/admin/delete-video/<int:vid>', methods=['POST'])
@@ -805,7 +910,7 @@ def update_sermon(sid):
         if s['id'] == sid:
             s['title'] = sanitize_text(data.get('title', s['title']),200); s['speaker'] = sanitize_text(data.get('speaker', s['speaker']),100); s['type'] = data.get('type', s['type']); s['series'] = sanitize_text(data.get('series', s['series']),100); s['description'] = sanitize_text(data.get('description', s['description']),2000)
             if data.get('yt','').strip(): s['yt'] = extract_yt_id(data.get('yt','')); s['yt_raw'] = sanitize_text(data.get('yt',''),100)
-            if file and file.filename!= "": fn = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/sermons', fn)); s['local_file'] = f"uploads/sermons/{fn}"
+            if file and file.filename!= "": s['local_file'] = upload_to_cloudinary(file, folder="south_b_chapel/sermons")
             break
     save_json('data/sermons.json', sermons); return jsonify({"ok": True})
 
@@ -817,7 +922,7 @@ def update_video(vid):
         if v['id'] == vid:
             v['title'] = sanitize_text(data.get('title', v['title']),200); v['category'] = sanitize_text(data.get('category', v['category']),50); v['description'] = sanitize_text(data.get('description', v.get('description','')),1000)
             if data.get('yt','').strip(): v['yt'] = extract_yt_id(data.get('yt','')); v['yt_raw'] = sanitize_text(data.get('yt',''),100)
-            if file and file.filename!= "": fn = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/videos', fn)); v['local_file'] = f"uploads/videos/{fn}"
+            if file and file.filename!= "": v['local_file'] = upload_to_cloudinary(file, folder="south_b_chapel/videos")
             break
     save_json('data/videos.json', vids); return jsonify({"ok": True})
 
@@ -840,7 +945,7 @@ def update_note(nid):
     for n in notes:
         if n['id'] == nid:
             n['title'] = sanitize_text(data.get('title', n['title']),200); n['content'] = sanitize_text(data.get('content', n.get('content','')),5000)
-            if file and file.filename!= "": fn = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/notes', fn)); n['file'] = f"uploads/notes/{fn}"
+            if file and file.filename!= "": n['file'] = upload_to_cloudinary(file, folder="south_b_chapel/notes")
             break
     save_json('data/sunday_school_notes.json', notes); return jsonify({"ok": True})
 
@@ -854,7 +959,7 @@ def admin_upload_event():
     title = sanitize_text(request.form.get('title'),200); date = sanitize_text(request.form.get('date'),20); time_e = sanitize_text(request.form.get('time',''),20); location = sanitize_text(request.form.get('location',''),200); desc = sanitize_text(request.form.get('description',''),2000); file = request.files.get('file'); saved=""
     if file and file.filename!= "":
         if allowed_file(file.filename, {'jpg','jpeg','png','webp'}):
-            fn = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/events', fn)); saved = f"uploads/events/{fn}"
+            saved = upload_to_cloudinary(file, folder="south_b_chapel/events")
     events = load_json('data/events.json', []); events.append({"id": int(time.time()*1000),"title": title,"date": date,"time": time_e,"location": location,"description": desc,"image": saved,"created": datetime.now(TZ).strftime('%Y-%m-%d')}); save_json('data/events.json', events); clear_image_cache(); return jsonify({"ok": True})
 
 @app.route('/api/admin/delete-event/<int:eid>', methods=['POST'])
@@ -869,11 +974,12 @@ def update_event(eid):
     for ev in events:
         if ev['id'] == eid:
             ev['title'] = sanitize_text(data.get('title', ev['title']),200); ev['date'] = sanitize_text(data.get('date', ev['date']),20); ev['time'] = sanitize_text(data.get('time', ev['time']),20); ev['location'] = sanitize_text(data.get('location', ev['location']),200); ev['description'] = sanitize_text(data.get('description', ev['description']),2000)
-            if file and file.filename!= "": fn = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/events', fn)); ev['image'] = f"uploads/events/{fn}"
+            if file and file.filename!= "": ev['image'] = upload_to_cloudinary(file, folder="south_b_chapel/events")
             break
     save_json('data/events.json', events); return jsonify({"ok": True})
 
 @app.route('/api/events/register', methods=['POST'])
+@armor_limit("10 per minute")
 def register_event():
     data = request.get_json(); regs = load_json('data/event_registrations.json', [])
     regs.append({"id": int(time.time() * 1000),"event_id": data.get('event_id'),"event_title": sanitize_text(data.get('event_title'),200),"name": sanitize_text(data.get('name'),100),"phone": sanitize_text(data.get('phone'),20),"email": sanitize_text(data.get('email',''),100),"people": int(data.get('people',1)),"date": datetime.now(TZ).strftime('%Y-%m-%d %H:%M')}); save_json('data/event_registrations.json', regs); return jsonify({"ok": True})
@@ -930,6 +1036,7 @@ def delete_quiz_q():
     data = request.get_json(); level = data.get('level'); idd = data.get('id'); quiz = get_quiz(); quiz[level] = [q for q in quiz.get(level, []) if q['id']!= idd]; save_json(QUIZ_FILE, quiz); return jsonify({"ok": True})
 
 @app.route('/contact/send', methods=['POST'])
+@armor_limit("5 per minute")
 def contact_send():
     if not check_rate(request.remote_addr, 'contact', 5, 120):
         return jsonify({"ok": False, "error": "Too fast"}), 429
@@ -982,7 +1089,7 @@ def update_sunday_video(vid):
         if v['id'] == vid:
             v['title'] = sanitize_text(data.get('title', v['title']),200)
             if data.get('yt','').strip(): v['yt'] = extract_yt_id(data.get('yt',''))
-            if file and file.filename!= "": fn = secure_filename(f"{int(time.time()*1000)}_{file.filename}"); file.save(os.path.join('static/uploads/videos', fn)); v['local_file'] = f"uploads/videos/{fn}"
+            if file and file.filename!= "": v['local_file'] = upload_to_cloudinary(file, folder="south_b_chapel/sunday_videos")
             break
     save_json('data/sunday_school_videos.json', vids); return jsonify({"ok": True})
 
@@ -1013,7 +1120,6 @@ def api_member_my_qr():
     b64 = base64.urlsafe_b64encode(token.encode()).decode().rstrip('=')
     return jsonify({"ok": True, "id": mid, "token": b64, "expires_in": 300, "expiry": expiry})
 
-# SINGLE SECURE CHECKIN - handles raw ID + signed token - NO DUPLICATE
 @app.route('/api/admin/checkin', methods=['POST'])
 @admin_required
 def api_admin_checkin_secure():
@@ -1024,7 +1130,6 @@ def api_admin_checkin_secure():
     raw = str(raw).strip()
     mid = 0
     try:
-        # try base64 signed token
         s = raw
         pad = '=' * (-len(s) % 4)
         try:

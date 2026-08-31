@@ -4,3 +4,7 @@ pytz==2024.1
 Werkzeug==3.0.1
 qrcode==7.4.2
 Pillow==11.1.0
+Flask-Limiter
+Flask-Caching
+Flask-Compress
+cloudinary
