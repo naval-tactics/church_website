@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Events - South B Police Chapel - FULL NAV PRESERVED</title>
+<title>Events - South B Police Chapel</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -14,15 +14,12 @@ body{font-family:Inter,sans-serif}
 .cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;cursor:pointer;position:relative}
 .cal-day.has-event{background:#fef9c3;border:2px solid #facc15;box-shadow:0 0 10px rgba(250,204,21,0.4);font-weight:900}
 .cal-day.has-event::after{content:'•';color:#eab308;position:absolute;bottom:2px;font-size:16px}
-.nav-link{white-space:nowrap}
-.nav-link:hover{color:#facc15}
+.nav-link{white-space:nowrap}.nav-link:hover{color:#facc15}
 </style>
 </head>
 <body class="bg-[#faf8f5] min-h-screen flex flex-col">
 
-<!-- FULL NAV - PRESERVED FROM SCREENSHOT + ALL LINKS - LIKE HOME -->
 <nav class="bg-[#111c2e] text-white px-4 md:px-6 py-3 sticky top-0 z-50 border-b border-white/5">
-  <!-- Top Row: Logo + Main Nav Links -->
   <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-2">
     <div class="text-[#5aa9ff] font-black text-[11px] leading-[1.1] tracking-wide shrink-0">
       SOUTH B POLICE<br>CHAPEL
@@ -40,7 +37,6 @@ body{font-family:Inter,sans-serif}
       <a href="/videos" class="nav-link">VIDEOS</a>
     </div>
   </div>
-  <!-- Second Row: Register Button + Faith Arcade Centered - LIKE SCREENSHOT -->
   <div class="mt-3 flex flex-col gap-2">
     <div class="flex justify-start">
       <a href="/members/register" class="bg-[#facc15] text-black px-5 py-2 rounded-full text-[11px] font-black shadow-[0_0_20px_rgba(250,204,21,0.6)] hover:scale-105 transition flex items-center gap-1">
@@ -60,56 +56,53 @@ body{font-family:Inter,sans-serif}
     <h1 style="letter-spacing:0.35em; font-weight:900; font-size:32px;">EVENTS</h1>
     <p class="text-xs mt-3 opacity-70">Stay connected. Be involved. Grow in faith together.</p>
     <div class="mt-5 flex justify-center gap-3 flex-wrap">
-      <span class="bg-white/10 border border-white/20 px-5 py-2 rounded-full text- font-bold"><i class="far fa-calendar"></i> <span id="eventCount">0</span> Events</span>
-      <button onclick="openCalendar()" class="bg-[#facc15] text-black px-6 py-2.5 rounded-full text- font-black shadow-[0_0_20px_#facc15] hover:scale-105 transition"><i class="fas fa-calendar-alt"></i> VIEW CALENDAR</button>
+      <span class="bg-white/10 border border-white/20 px-5 py-2 rounded-full text-xs font-bold"><i class="far fa-calendar"></i> <span id="eventCount">0</span> Events</span>
+      <button onclick="openCalendar()" class="bg-[#facc15] text-black px-6 py-2.5 rounded-full text-xs font-black shadow-[0_0_20px_#facc15] hover:scale-105 transition"><i class="fas fa-calendar-alt"></i> VIEW CALENDAR</button>
     </div>
   </div>
 </div>
 
 <div class="max-w-7xl mx-auto px-8 w-full mt-10 flex-1">
-  <div class="flex justify-between items-center"><h2 class="font-black text-[#5a1a1a] text- tracking-widest">UPCOMING EVENTS - CLICK DETAILS / JOIN - PRESERVED</h2><button onclick="loadEvents()" class="bg-[#1a2332] text-white text- px-4 py-2 rounded-full font-bold">REFRESH</button></div>
+  <div class="flex justify-between items-center"><h2 class="font-black text-[#5a1a1a] text-xs tracking-widest">UPCOMING EVENTS</h2><button onclick="loadEvents()" class="bg-[#1a2332] text-white text-xs px-4 py-2 rounded-full font-bold">REFRESH</button></div>
   <div id="eventsGrid" class="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-  <div id="emptyEvents" class="hidden text-center py-24 bg-white rounded-[1.5rem] border-2 border-dashed border-yellow-200 mt-6"><div class="text-5xl">📅</div><p class="font-black mt-4">No events yet — Admin → EVENTS tab - FULL CRUD AUTHORITY</p></div>
+  <div id="emptyEvents" class="hidden text-center py-24 bg-white rounded-[1.5rem] border-2 border-dashed border-yellow-200 mt-6"><div class="text-5xl">📅</div><p class="font-black mt-4">No events yet</p></div>
 </div>
 
 <footer class="bg-[#1a2332] text-white text-center py-10 text-xs mt-16">
-  <div>© 2026 South B Police Chapel — Fast • Responsive • Multi-user Ready</div>
-  <div class="mt-1 text-[9px] text-yellow-300/80 tracking-widest">Built with ❤️ by <span class="font-bold text-white">YOU</span> • Website Developer - PRESERVED</div>
+  <div>© 2026 South B Police Chapel</div>
+  <div class="mt-1 text-[10px] text-yellow-300/80 tracking-widest">Built with ❤ by <span class="font-bold text-white">Naval T Tactics</span></div>
 </footer>
 
-<!-- DETAILS MODAL - PRESERVED -->
 <div id="detailModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[90] flex items-center justify-center p-4">
-  <div class="bg-white rounded-[1.5rem] max-w-2xl w-full overflow-hidden border-4 border-[#facc15] shadow-[0_0_40px_#facc15] max-h- overflow-y-auto">
-    <div class="relative"><img id="detailImg" class="w-full h-auto max-h- object-contain bg-white p-4"><button onclick="closeDetail()" class="absolute top-3 right-3 w-9 h-9 bg-red-500 text-white rounded-full font-black">✕</button></div>
-    <div class="p-6"><h2 id="detailTitle" class="font-black text-xl text-[#1a2332]"></h2><div class="flex gap-2 mt-3 flex-wrap"><span id="detailDate" class="bg-[#5a1a1a] text-white text- px-3 py-1 rounded-full font-bold"></span><span id="detailTime" class="bg-[#facc15] text-black text- px-3 py-1 rounded-full font-black"></span><span id="detailLoc" class="bg-gray-800 text-white text- px-3 py-1 rounded-full"></span></div><p id="detailDesc" class="text- text-gray-600 mt-5 leading-relaxed"></p><div class="mt-6 flex gap-2"><button onclick="closeDetail(); openJoinFromDetail()" class="flex-1 bg-gradient-to-r from-[#facc15] to-yellow-600 text-black py-3 rounded-full font-black text-xs shadow-[0_0_15px_rgba(250,204,21,0.4)]">JOIN THIS EVENT</button><button onclick="closeDetail()" class="flex-1 bg-[#1a2332] text-white py-3 rounded-full font-bold text-xs">CLOSE</button></div></div>
+  <div class="bg-white rounded-[1.5rem] max-w-2xl w-full overflow-hidden border-4 border-[#facc15] shadow-[0_0_40px_#facc15] max-h-[90vh] overflow-y-auto">
+    <div class="relative"><img id="detailImg" class="w-full h-auto max-h-[400px] object-contain bg-white p-4"><button onclick="closeDetail()" class="absolute top-3 right-3 w-9 h-9 bg-red-500 text-white rounded-full font-black">✕</button></div>
+    <div class="p-6"><h2 id="detailTitle" class="font-black text-xl text-[#1a2332]"></h2><div class="flex gap-2 mt-3 flex-wrap"><span id="detailDate" class="bg-[#5a1a1a] text-white text-xs px-3 py-1 rounded-full font-bold"></span><span id="detailTime" class="bg-[#facc15] text-black text-xs px-3 py-1 rounded-full font-black"></span><span id="detailLoc" class="bg-gray-800 text-white text-xs px-3 py-1 rounded-full"></span></div><p id="detailDesc" class="text-sm text-gray-600 mt-5 leading-relaxed"></p><div class="mt-6 flex gap-2"><button onclick="closeDetail(); openJoinFromDetail()" class="flex-1 bg-gradient-to-r from-[#facc15] to-yellow-600 text-black py-3 rounded-full font-black text-xs shadow-[0_0_15px_rgba(250,204,21,0.4)]">JOIN THIS EVENT</button><button onclick="closeDetail()" class="flex-1 bg-[#1a2332] text-white py-3 rounded-full font-bold text-xs">CLOSE</button></div></div>
   </div>
 </div>
 
-<!-- JOIN MODAL - PRESERVED -->
 <div id="joinModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[91] flex items-center justify-center p-4">
   <div class="bg-white rounded-[1.5rem] max-w-md w-full p-6 border-4 border-[#facc15] shadow-[0_0_40px_#facc15]">
-    <div class="flex justify-between items-center mb-4"><h3 class="font-black text-sm">JOIN EVENT - Register - PRESERVED</h3><button onclick="closeJoin()" class="w-8 h-8 bg-red-500 text-white rounded-full font-black">✕</button></div>
-    <p class="text- text-gray-500 mb-3">You are joining: <span id="joinEventName" class="font-black text-black"></span></p>
+    <div class="flex justify-between items-center mb-4"><h3 class="font-black text-sm">JOIN EVENT - Register</h3><button onclick="closeJoin()" class="w-8 h-8 bg-red-500 text-white rounded-full font-black">✕</button></div>
+    <p class="text-xs text-gray-500 mb-3">You are joining: <span id="joinEventName" class="font-black text-black"></span></p>
     <form id="joinForm" class="space-y-3">
       <input type="hidden" id="joinEventId"><input type="hidden" id="joinEventTitle">
       <input id="joinName" placeholder="Your Full Name*" required class="w-full border-2 border-yellow-200 p-3 rounded-xl text-xs">
       <input id="joinPhone" placeholder="Phone* e.g. 0722..." required class="w-full border-2 border-yellow-200 p-3 rounded-xl text-xs">
       <input id="joinEmail" placeholder="Email (optional)" type="email" class="w-full border-2 border-yellow-200 p-3 rounded-xl text-xs">
       <select id="joinPeople" class="w-full border-2 border-yellow-200 p-3 rounded-xl text-xs"><option value="1">1 Person</option><option value="2">2 People</option><option value="3">3 People</option><option value="4">4+ People</option></select>
-      <button type="submit" class="w-full bg-gradient-to-r from-[#5a1a1a] to-red-700 text-white py-3 rounded-full font-black text-xs">✅ CONFIRM JOIN — Admin will see you - FULL CRUD</button>
+      <button type="submit" class="w-full bg-gradient-to-r from-[#5a1a1a] to-red-700 text-white py-3 rounded-full font-black text-xs">✅ CONFIRM JOIN</button>
     </form>
-    <p class="text- text-gray-400 mt-3 text-center">Your registration will appear in Admin Dashboard → EVENTS → Registrations - PRESERVED</p>
+    <p class="text-xs text-gray-400 mt-3 text-center">Your registration will appear in Admin Dashboard → EVENTS → Registrations</p>
   </div>
 </div>
 
-<!-- CALENDAR MODAL - PRESERVED -->
 <div id="calModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[92] flex items-center justify-center p-4">
   <div class="bg-white rounded-[1.5rem] max-w-lg w-full p-6 border-4 border-[#facc15] shadow-[0_0_40px_#facc15]">
     <div class="flex justify-between items-center mb-4"><h3 class="font-black text-sm flex items-center gap-2"><i class="fas fa-calendar-alt text-red-600"></i> EVENT CALENDAR - <span id="calMonth"></span></h3><button onclick="closeCalendar()" class="w-8 h-8 bg-red-500 text-white rounded-full font-black">✕</button></div>
-    <div class="grid grid-cols-7 gap-1 text- font-black text-gray-400 text-center mb-2"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+    <div class="grid grid-cols-7 gap-1 text-xs font-black text-gray-400 text-center mb-2"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
     <div id="calGrid" class="grid grid-cols-7 gap-1"></div>
     <div id="calEventsList" class="mt-4 space-y-2 max-h-40 overflow-y-auto"></div>
-    <div class="mt-4 text- text-gray-500 bg-yellow-50 p-3 rounded-xl border border-yellow-200"><span class="w-3 h-3 bg-[#fef9c3] border-2 border-[#facc15] inline-block rounded mr-1"></span> Yellow = Event day — Click date to see details - PRESERVED</div>
+    <div class="mt-4 text-xs text-gray-500 bg-yellow-50 p-3 rounded-xl border border-yellow-200"><span class="w-3 h-3 bg-[#fef9c3] border-2 border-[#facc15] inline-block rounded mr-1"></span> Yellow = Event day — Click date to see details</div>
   </div>
 </div>
 
@@ -126,15 +119,15 @@ async function loadEvents(){
     <div class="golden-card rounded-[1.5rem] overflow-hidden flex flex-col">
       <div class="w-full bg-white flex items-center justify-center relative" style="min-height:280px;">
         <img src="${fixUrl(ev.image)}" loading="lazy" class="no-crop-img p-3" style="max-height:450px;" onerror="this.src='/static/uploads/god_key.jpg'">
-        <div class="absolute top-3 left-3 flex gap-1"><span class="bg-[#5a1a1a] text-white text- px-3 py-1.5 rounded-full font-black">${ev.date||'TBA'}</span>${ev.time?`<span class="bg-[#facc15] text-black text- px-3 py-1.5 rounded-full font-black">${ev.time}</span>`:''}</div>
+        <div class="absolute top-3 left-3 flex gap-1"><span class="bg-[#5a1a1a] text-white text-xs px-3 py-1.5 rounded-full font-black">${ev.date||'TBA'}</span>${ev.time?`<span class="bg-[#facc15] text-black text-xs px-3 py-1.5 rounded-full font-black">${ev.time}</span>`:''}</div>
       </div>
       <div class="p-5 flex-1 flex flex-col">
-        <h3 class="font-black text-">${ev.title}</h3>
-        <p class="text- text-gray-500 mt-1"><i class="fas fa-map-marker-alt"></i> ${ev.location||'Main Hall'}</p>
-        <p class="text- text-gray-600 mt-3 line-clamp-2">${ev.description||''}</p>
+        <h3 class="font-black text-sm">${ev.title}</h3>
+        <p class="text-xs text-gray-500 mt-1"><i class="fas fa-map-marker-alt"></i> ${ev.location||'Main Hall'}</p>
+        <p class="text-xs text-gray-600 mt-3 line-clamp-2">${ev.description||''}</p>
         <div class="mt-5 flex gap-2">
-          <button onclick="openDetail(${ev.id})" class="flex-1 bg-[#1a2332] hover:bg-black text-white py-3 rounded-full text- font-black">DETAILS</button>
-          <button onclick="openJoin(${ev.id})" class="flex-1 bg-gradient-to-r from-[#facc15] to-yellow-600 text-black py-3 rounded-full text- font-black shadow-[0_0_15px_rgba(250,204,21,0.4)]">JOIN EVENT</button>
+          <button onclick="openDetail(${ev.id})" class="flex-1 bg-[#1a2332] hover:bg-black text-white py-3 rounded-full text-xs font-black">DETAILS</button>
+          <button onclick="openJoin(${ev.id})" class="flex-1 bg-gradient-to-r from-[#facc15] to-yellow-600 text-black py-3 rounded-full text-xs font-black shadow-[0_0_15px_rgba(250,204,21,0.4)]">JOIN EVENT</button>
         </div>
       </div>
     </div>`).join('');
@@ -173,7 +166,7 @@ document.getElementById('joinForm').onsubmit=async(e)=>{
     people: document.getElementById('joinPeople').value
   };
   const r=await fetch('/api/events/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-  if(r.ok){ alert('✅ Joined! Admin will see your registration in Admin Dashboard → EVENTS - FULL CRUD'); closeJoin(); e.target.reset(); }
+  if(r.ok){ alert('✅ Joined! Admin will see your registration.'); closeJoin(); e.target.reset(); }
 };
 
 function openCalendar(){
@@ -189,10 +182,10 @@ function openCalendar(){
     const dateStr=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dayEvents=allEvents.filter(ev=>ev.date===dateStr);
     const has=dayEvents.length>0;
-    html+=`<div class="cal-day text- ${has?'has-event':''} hover:bg-gray-100" onclick="${has?`showDayEvents('${dateStr}')`:''}">${d}</div>`;
+    html+=`<div class="cal-day text-xs ${has?'has-event':''} hover:bg-gray-100" onclick="${has?`showDayEvents('${dateStr}')`:''}">${d}</div>`;
   }
   document.getElementById('calGrid').innerHTML=html;
-  document.getElementById('calEventsList').innerHTML=allEvents.length?allEvents.map(ev=>`<div class="text- bg-yellow-50 border border-yellow-200 p-2 rounded-xl flex justify-between"><span class="font-bold">${ev.date} - ${ev.title}</span><button onclick="openDetail(${ev.id}); closeCalendar()" class="text-blue-600 underline">View</button></div>`).join(''):'<p class="text- text-gray-500">No events this month</p>';
+  document.getElementById('calEventsList').innerHTML=allEvents.length?allEvents.map(ev=>`<div class="text-xs bg-yellow-50 border border-yellow-200 p-2 rounded-xl flex justify-between"><span class="font-bold">${ev.date} - ${ev.title}</span><button onclick="openDetail(${ev.id}); closeCalendar()" class="text-blue-600 underline">View</button></div>`).join(''):'<p class="text-xs text-gray-500">No events this month</p>';
 }
 function showDayEvents(dateStr){
   const evs=allEvents.filter(e=>e.date===dateStr);
