@@ -117,28 +117,47 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
   </div>
 </div>
 
+
 <div class="max-w-7xl mx-auto px-4 mt-8">
-  <div class="relative rounded-[1.5rem] p-6 border-2 border-[#facc15]/50 shadow-xl overflow-hidden bg-cover bg-center" style="background-image:url('/static/uploads/encounter_bg.webp');">
-    <div class="absolute inset-0 bg-white/88 backdrop-blur-sm"></div>
+  <div class="relative rounded-[2rem] p-8 md:p-10 border-2 border-[#facc15]/40 shadow-2xl overflow-hidden bg-gradient-to-br from-white via-[#fefce8] to-[#fef9c3]">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-[#facc15]/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#1a2332]/5 rounded-full blur-3xl"></div>
     <div class="relative z-10">
-      <h2 class="font-black text-xl text-[#0a1931]" style="font-family:'Merriweather'">🗺 Where Did You Encounter Him?</h2>
-      <p class="text-xs text-gray-600 mt-1">Your pin is private — only pastoral team sees details</p>
-      <div id="encounterMap" class="w-full h-[320px] rounded-xl mt-4 border-2 border-yellow-200 z-0"></div>
-      <div class="flex flex-col md:flex-row gap-2 mt-3">
-        <input id="encounterText" placeholder="I encountered Jesus at South B bus stop — He healed me..." class="flex-1 border-2 border-yellow-100 p-3 rounded-full text-xs bg-white">
-        <input id="encounterName" placeholder="Your name (or Anonymous)" class="border-2 border-yellow-100 p-3 rounded-full text-xs w-full md:w-48 bg-white">
-        <button onclick="addEncounter()" class="bg-[#0a1931] text-white px-6 py-3 rounded-full text-xs font-black">📍 Send Privately to Pastors</button>
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="font-black text-2xl md:text-3xl text-[#0a1931]" style="font-family:'Merriweather'">🗺 Where Did You Encounter Him?</h2>
+          <p class="text-sm text-gray-600 mt-2 max-w-2xl">Our motto: <i>"We will sing, rejoice, praise and worship God, until people hear, and when they come to see what is going on, they encounter Jesus Christ."</i> — Share your private encounter story.</p>
+        </div>
+        <div class="bg-[#0a1931] text-white px-6 py-3 rounded-full text-center shadow-lg">
+          <p class="text-[10px] tracking-widest opacity-70">SOULS ENCOUNTERED</p>
+          <p id="publicEncounterCount" class="font-black text-xl text-[#facc15]">✨ Loading...</p>
+        </div>
       </div>
-      <div class="flex items-center gap-2 mt-2">
-        <input id="encounterPray" type="checkbox" class="w-4 h-4">
-        <label for="encounterPray" class="text-xs text-gray-700">🙏 Pray for me about this encounter (private)</label>
+
+      <div class="grid md:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white rounded-2xl p-5 border border-yellow-100 shadow-sm flex gap-3 items-start"><div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">🔒</div><div><h4 class="font-black text-sm">100% Private</h4><p class="text-xs text-gray-500 mt-1">Only pastoral team sees your story. Public sees count only.</p></div></div>
+        <div class="bg-white rounded-2xl p-5 border border-yellow-100 shadow-sm flex gap-3 items-start"><div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">💬</div><div><h4 class="font-black text-sm">Testimony</h4><p class="text-xs text-gray-500 mt-1">Your story encourages our pastors to pray for you.</p></div></div>
+        <div class="bg-white rounded-2xl p-5 border border-yellow-100 shadow-sm flex gap-3 items-start"><div class="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center">🙏</div><div><h4 class="font-black text-sm">Prayer Support</h4><p class="text-xs text-gray-500 mt-1">Check "Pray for me" and pastors will lift you up privately.</p></div></div>
       </div>
-      <p id="encounterMsg" class="text-xs font-black text-green-600 mt-2 hidden"></p>
-      <p id="publicEncounterCount" class="text-xs font-black text-[#0a1931] bg-[#fefce8] border border-yellow-200 px-3 py-2 rounded-full text-center mt-3">✨ Loading encounters...</p>
-      <p class="text-[11px] text-gray-400 mt-3 text-center">🔒 Confidential — Only pastoral team views details — public sees count only</p>
+
+      <div class="bg-white rounded-[1.5rem] p-6 md:p-8 border-2 border-[#facc15]/30 shadow-xl">
+        <div class="flex flex-col md:flex-row gap-3">
+          <input id="encounterText" placeholder="I encountered Jesus at South B bus stop — He healed me, saved me..." class="flex-1 border-2 border-yellow-100 focus:border-[#facc15] p-4 rounded-full text-sm bg-[#fffef5] outline-none">
+          <input id="encounterName" placeholder="Your name (or Anonymous)" class="border-2 border-yellow-100 focus:border-[#facc15] p-4 rounded-full text-sm w-full md:w-56 bg-white outline-none">
+          <button onclick="addEncounter()" class="bg-gradient-to-r from-[#0a1931] to-black text-white px-8 py-4 rounded-full text-sm font-black shadow-[0_0_20px_rgba(250,204,21,0.3)] hover:scale-105 transition whitespace-nowrap">📍 Send Privately</button>
+        </div>
+        <div class="flex items-center gap-2 mt-4 bg-yellow-50 border border-yellow-200 p-3 rounded-full w-fit">
+          <input id="encounterPray" type="checkbox" class="w-4 h-4 accent-yellow-500">
+          <label for="encounterPray" class="text-xs text-gray-700 font-bold">🙏 Pray for me about this encounter (private)</label>
+        </div>
+        <p id="encounterMsg" class="text-sm font-black text-green-600 mt-3 hidden bg-green-50 border border-green-200 p-3 rounded-xl"></p>
+      </div>
+
+      <p class="text-[11px] text-gray-400 mt-4 text-center">🔒 Confidential — Only pastoral team views under Testimonies tab in Admin • Inspired by our church motto</p>
     </div>
   </div>
 </div>
+
 
 <section id="ai-guide" class="py-16 bg-[#2f3e56] px-4 mt-8">
   <div class="max-w-5xl mx-auto text-center">
@@ -360,30 +379,23 @@ function seekCounsel(){
 }
 document.getElementById('counselInput')?.addEventListener('keydown', e=>{ if(e.key==='Enter') seekCounsel(); });
 
-let map, lastLat=-1.305, lastLng=36.85;
+// No map - beautiful testimony counter only
+let lastLat=-1.3145, lastLng=36.8303;
 document.addEventListener('DOMContentLoaded', ()=>{
-  try{
-    map=L.map('encounterMap').setView([-1.305,36.85],14);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
-    L.marker([-1.305,36.85]).addTo(map).bindPopup('<b>South B Police Chapel</b><br>Near Naivas').openPopup();
-    fetch('/api/encounters/public-count').then(r=>r.json()).then(j=>{
-      let msg = `✨ ${j.count} Souls Encountered Jesus Near Here — Be Next! ✨`;
-      if(j.count>=5) msg = `🔥 ${j.count} Souls Encountered — Revival! 🔥`;
-      if(j.count>=10) msg = `🌟 ${j.count} Souls — Glory to Jesus! 🌟`;
-      if(j.count>=50) msg = `👑 ${j.count} Souls — JUBILEE! South B Shining! 👑`;
-      document.getElementById('publicEncounterCount').innerText=msg;
-      if(j.count>0){ document.querySelector('.glow-animate').style.animationDuration=j.count>=10?'0.8s':'1.2s'; }
-    });
-    setTimeout(()=>{ map.invalidateSize(); }, 500);
-    map.on('click', e=>{ lastLat=e.latlng.lat; lastLng=e.latlng.lng; const msg=document.getElementById('encounterMsg'); msg.innerText=`📍 Private pin ${lastLat.toFixed(4)}, ${lastLng.toFixed(4)} — only pastoral team sees`; msg.classList.remove('hidden'); L.marker([lastLat,lastLng]).addTo(map).bindPopup('Private — only pastoral team sees').openPopup(); });
-  }catch(e){}
+  fetch('/api/encounters/public-count').then(r=>r.json()).then(j=>{
+    let msg = `✨ ${j.count} Souls Encountered`;
+    if(j.count>=5) msg = `🔥 ${j.count} Souls Encountered`;
+    if(j.count>=10) msg = `🌟 ${j.count} Souls`;
+    if(j.count>=50) msg = `👑 ${j.count} Souls — JUBILEE!`;
+    document.getElementById('publicEncounterCount').innerText=msg;
+  }).catch(()=>{ document.getElementById('publicEncounterCount').innerText=`✨ Be the first to share!`; });
 });
 async function addEncounter(){
   const txt=document.getElementById('encounterText').value.trim();
   const name=document.getElementById('encounterName').value.trim()||'Anonymous';
   const msg=document.getElementById('encounterMsg');
   if(!txt){ alert('Type testimony first'); return; }
-  if(lastLat===-1.305 && lastLng===36.85){ lastLat=-1.305+(Math.random()-0.5)*0.02; lastLng=36.85+(Math.random()-0.5)*0.02; }
+  lastLat=-1.3145+(Math.random()-0.5)*0.01; lastLng=36.8303+(Math.random()-0.5)*0.01;
   try{
     const pray = document.getElementById('encounterPray').checked;
     const res=await fetch('/api/encounter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:txt, lat:lastLat, lng:lastLng, name:name, pray:pray})});
