@@ -1195,6 +1195,16 @@ def seek_counsel():
     if not verses: verses=[{"ref":"Jeremiah 29:11","text":"For I know the plans I have for you...","counsel":"God has a good plan for you."},{"ref":"Psalm 23:1","text":"The Lord is my shepherd, I lack nothing."}]
     return jsonify({"verses": verses})
 
+from flask import send_from_directory
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('static', 'sitemap.xml')
+
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory('static', 'robots.txt')
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
