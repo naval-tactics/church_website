@@ -37,18 +37,66 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
 }
 .glow-animate { animation: holyGlow 2.8s ease-in-out infinite; }
 
-/* Add to your <style> in base or index.html */
+/* PREMIUM Faith Arcade - matches encounter glow premium */
 @keyframes faithArcadeGlow {
-  0%, 100% { text-shadow: 0 0 10px rgba(167,139,250,0.5), 0 0 20px rgba(250,204,21,0.3); transform: scale(1); }
-  50% { text-shadow: 0 0 20px rgba(167,139,250,0.8), 0 0 40px rgba(250,204,21,0.6); transform: scale(1.05); }
+  0% { 
+    box-shadow: 0 0 15px rgba(155,124,255,0.35), 0 0 30px rgba(250,204,21,0.15), inset 0 0 10px rgba(155,124,255,0.1);
+    border-color: rgba(155,124,255,0.4);
+    transform: scale(1);
+  }
+  25% { 
+    box-shadow: 0 0 25px rgba(155,124,255,0.55), 0 0 50px rgba(250,204,21,0.25), inset 0 0 15px rgba(250,204,21,0.1);
+    border-color: rgba(250,204,21,0.6);
+    transform: scale(1.02);
+  }
+  50% { 
+    box-shadow: 0 0 35px rgba(155,124,255,0.8), 0 0 70px rgba(250,204,21,0.4), inset 0 0 20px rgba(250,204,21,0.15), 0 0 90px rgba(155,124,255,0.2);
+    border-color: rgba(250,204,21,0.9);
+    transform: scale(1.06);
+  }
+  75% { 
+    box-shadow: 0 0 25px rgba(155,124,255,0.55), 0 0 50px rgba(250,204,21,0.25), inset 0 0 15px rgba(250,204,21,0.1);
+    border-color: rgba(250,204,21,0.6);
+    transform: scale(1.02);
+  }
+  100% { 
+    box-shadow: 0 0 15px rgba(155,124,255,0.35), 0 0 30px rgba(250,204,21,0.15), inset 0 0 10px rgba(155,124,255,0.1);
+    border-color: rgba(155,124,255,0.4);
+    transform: scale(1);
+  }
 }
 .faith-arcade-glow {
-  animation: faithArcadeGlow 2.5s ease-in-out infinite;
+  animation: faithArcadeGlow 3s ease-in-out infinite;
   display: inline-flex;
-  padding: 4px 12px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
   border-radius: 999px;
-  border: 1px solid rgba(167,139,250,0.3);
-  background: rgba(167,139,250,0.08);
+  border: 2px solid rgba(155,124,255,0.5);
+  background: linear-gradient(135deg, rgba(155,124,255,0.15), rgba(10,25,49,0.9), rgba(250,204,21,0.12));
+  backdrop-filter: blur(10px);
+  color: #facc15 !important;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 10px rgba(250,204,21,0.8), 0 0 20px rgba(155,124,255,0.6);
+  position: relative;
+  overflow: hidden;
+}
+.faith-arcade-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, transparent, rgba(250,204,21,0.3), transparent);
+  transform: translateX(-100%);
+  animation: shine 3s ease-in-out infinite;
+}
+@keyframes shine {
+  0% { transform: translateX(-100%); }
+  50%,100% { transform: translateX(100%); }
+}
+.faith-arcade-glow:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 0 40px rgba(155,124,255,1), 0 0 80px rgba(250,204,21,0.6) !important;
 }
 
 </style>
@@ -97,9 +145,8 @@ body{font-family:'Inter',sans-serif}.fit{word-break:break-word;overflow-wrap:any
     <a href="/videos" class="bg-white/10 px-3 py-2 rounded-full text-center">VIDEOS</a>
     <a href="/member-qualifications" class="bg-[#facc15] text-black px-3 py-2 rounded-full text-center col-span-2">REGISTER AS MEMBER →</a>
   </div>
-  <div class="flex justify-center mt-3"><a href="/faith-arcade" class="text-[#9b7cff] hover:text-[#facc15] faith-arcade-glow faith-arcade-glow text-xs font-bold tracking-widest flex items-center gap-2"><span>⚔</span><span class="underline">FAITH ARCADE</span><span>⚔</span></a></div>
+  <div class="flex justify-center mt-3"><a href="/faith-arcade" class="faith-arcade-glow text-xs tracking-widest"><span>⚔️</span><span>FAITH ARCADE</span><span>⚔️</span></a></div>
 </nav>
-
 <div class="max-w-7xl mx-auto mt-4 px-4">
   <div class="flex bg-black text-white rounded overflow-hidden text-xs items-center">
     <div class="bg-amber-600 px-4 py-2.5 font-bold leading-tight">WORD OF<br>GRACE</div>
@@ -504,7 +551,7 @@ function renderDailyVerse(){
 document.addEventListener('DOMContentLoaded', renderDailyVerse);
 </script>
 
-<!-- Add this modal after Daily Bread section -->
+<!-- Share Modal -->
 <div id="shareModal" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center">
     <h3 class="font-black">Share Daily Bread</h3>
@@ -525,26 +572,19 @@ function generateShareImage(){
   const canvas = document.getElementById('shareCanvas');
   const ctx = canvas.getContext('2d');
   const v = DAILY_BREAD_VERSES[getTodayIndex()];
-  // Background gradient gold
   const grad = ctx.createRadialGradient(540, 540, 0, 540, 540, 800);
   grad.addColorStop(0, '#fef9c3');
   grad.addColorStop(0.5, '#facc15');
   grad.addColorStop(1, '#a16207');
   ctx.fillStyle = grad;
   ctx.fillRect(0,0,1080,1080);
-  
-  // Dark overlay
   ctx.fillStyle = 'rgba(0,0,0,0.45)';
   ctx.fillRect(0,0,1080,1080);
-  
-  // Text
   ctx.fillStyle = 'white';
   ctx.textAlign = 'center';
-  
   ctx.font = 'bold 28px Inter';
   ctx.fillStyle = '#facc15';
   ctx.fillText('DAILY BREAD SCRIPTURE', 540, 180);
-  
   ctx.font = 'bold 42px Merriweather';
   ctx.fillStyle = 'white';
   const words = v.text.split(' ');
@@ -555,15 +595,12 @@ function generateShareImage(){
   lines.push(line);
   let y = 400;
   lines.forEach(l=>{ ctx.fillText(l, 540, y); y+=60; });
-  
   ctx.font = 'bold 32px Inter';
   ctx.fillStyle = '#facc15';
   ctx.fillText('— ' + v.ref, 540, y+40);
-  
   ctx.font = '600 20px Inter';
   ctx.fillStyle = 'rgba(255,255,255,0.7)';
   ctx.fillText('South B Police Chapel • ' + new Date().toLocaleDateString(), 540, 1000);
-  
   ctx.font = '900 24px Inter';
   ctx.fillStyle = 'white';
   ctx.fillText('THE BREAD OF LIFE', 540, 900);
@@ -575,8 +612,6 @@ function downloadShareImage(){
   link.href = canvas.toDataURL();
   link.click();
 }
-
-// Add share button to daily bread section onclick
 document.addEventListener('DOMContentLoaded', ()=>{
   const breadSection = document.querySelector('#dailyVerseText')?.parentElement;
   if(breadSection){
@@ -584,7 +619,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     btn.innerText = '📤 Share as Image';
     btn.className = 'mt-3 bg-white/20 hover:bg-white/30 text-white px-5 py-2 rounded-full text-xs font-bold border border-white/20';
     btn.onclick = openShareImageModal;
-    breadSection.querySelector('div.inline-block')?.parentElement?.appendChild(btn);
+    const existing = breadSection.querySelector('button');
+    if(!existing || !existing.innerText.includes('Share')) breadSection.appendChild(btn);
   }
 });
 </script>
