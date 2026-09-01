@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://southbpolicechapel.org/sitemap.xml
+Sitemap: https://south-b-police-chapel.onrender.com/sitemap.xml
