@@ -1195,15 +1195,44 @@ def seek_counsel():
     if not verses: verses=[{"ref":"Jeremiah 29:11","text":"For I know the plans I have for you...","counsel":"God has a good plan for you."},{"ref":"Psalm 23:1","text":"The Lord is my shepherd, I lack nothing."}]
     return jsonify({"verses": verses})
 
-from flask import send_from_directory
+import os
+from flask import send_from_directory, Response
 
 @app.route('/sitemap.xml')
 def sitemap():
-    return send_from_directory('static', 'sitemap.xml')
+    try:
+        # Try static folder first
+        static_path = os.path.join(app.root_path, 'static')
+        if os.path.exists(os.path.join(static_path, 'sitemap.xml')):
+            return send_from_directory(static_path, 'sitemap.xml')
+        # Fallback to root
+        if os.path.exists(os.path.join(app.root_path, 'sitemap.xml')):
+            return send_from_directory(app.root_path, 'sitemap.xml')
+        # If still not found, serve directly
+        sitemap_content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://schemas.xmlsoap.org/schemas/schemas/sitemap/0.9">
+  <url><loc>https://south-b-police-chapel.onrender.com/</loc><priority>1.0</priority></url>
+  <url><loc>https://south-b-police-chapel.onrender.com/events</loc><priority>0.9</priority></url>
+  <url><loc>https://south-b-police-chapel.onrender.com/sermons</loc><priority>0.8</priority></url>
+  <url><loc>https://south-b-police-chapel.onrender.com/prayer-wall</loc><priority>0.8</priority></url>
+  <url><loc>https://south-b-police-chapel.onrender.com/contact</loc><priority>0.6</priority></url>
+  <url><loc>https://south-b-police-chapel.onrender.com/bible-quiz</loc><priority>0.7</priority></url>
+  <url><loc>https://south-b-police-chapel.onrender.com/counselling-care</loc><priority>0.7</priority></url>
+</urlset>"""
+        return Response(sitemap_content, mimetype='application/xml')
+    except Exception as e:
+        return str(e), 500
 
 @app.route('/robots.txt')
 def robots():
-    return send_from_directory('static', 'robots.txt')
+    try:
+        static_path = os.path.join(app.root_path, 'static')
+        if os.path.exists(os.path.join(static_path, 'robots.txt')):
+            return send_from_directory(static_path, 'robots.txt')
+        robots_content = "User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: https://south-b-police-chapel.onrender.com/sitemap.xml\n"
+        return Response(robots_content, mimetype='text/plain')
+    except Exception as e:
+        return str(e), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
