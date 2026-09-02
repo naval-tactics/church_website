@@ -3,76 +3,96 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}">
-<title>Member Dashboard - South B Police Chapel - 12/7 SECURE FINAL MATCHES APP.PY</title>
+<title>Member Dashboard - South B Police Chapel - Simplified 4 Fields</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 body{font-family:Inter,sans-serif}
 .heaven-bg{background:url('/static/uploads/god_key.jpg') no-repeat center center fixed;background-size:cover}
-.glass-panel{backdrop-filter:blur(18px);background:rgba(255,255,255,0.92);border:2px solid rgba(250,204,21,0.5);box-shadow:0 0 20px rgba(250,204,21,0.3)}
-.golden-photo{border:4px solid #facc15;box-shadow:0 0 20px #facc15, 0 4px 20px rgba(0,0,0,0.2)}
+.glass-panel{backdrop-filter:blur(18px);background:rgba(255,255,255,0.94);border:2px solid rgba(250,204,21,0.5);box-shadow:0 0 25px rgba(250,204,21,0.3)}
+.golden-photo{border:4px solid #facc15;box-shadow:0 0 25px #facc15, 0 8px 25px rgba(0,0,0,0.2)}
 #qrcode{min-height:220px;display:flex;align-items:center;justify-content:center}
 </style>
 </head>
 <body class="heaven-bg min-h-screen"><div class="min-h-screen bg-gradient-to-br from-[#0f172a]/10 to-black/20">
-<nav class="bg-[#1a2332]/90 backdrop-blur text-white px-6 py-3 flex justify-between items-center sticky top-0 z-50 border-b border-[#facc15]/20">
-  <div class="font-black text-xs md:text-sm">MEMBER DASHBOARD — SOUTH B POLICE CHAPEL <span class="text-[#facc15]">🔑</span> — 12/7 SECURE MATCHES MERGED CHECKIN</div>
+<nav class="bg-[#1a2332]/90 backdrop-blur text-white px-4 md:px-6 py-3 flex justify-between items-center sticky top-0 z-50 border-b border-[#facc15]/20 flex-wrap gap-3">
+  <div class="font-black text-xs md:text-sm">MEMBER DASHBOARD — SOUTH B POLICE CHAPEL <span class="text-[#facc15]">🔑 SIMPLIFIED</span></div>
   <div class="flex gap-2 flex-wrap">
-    <a href="/gallery" class="bg-[#facc15] text-black px-4 py-1.5 rounded-full text-xs font-black shadow-[0_0_10px_#facc15]">GALLERY ✓ UNLOCKED</a>
-    <a href="/" class="bg-white/10 px-4 py-1.5 rounded-full text-xs font-bold">HOME</a>
-    <button onclick="logout()" class="bg-red-600 px-4 py-1.5 rounded-full text-xs font-black">LOGOUT</button>
+    <a href="/gallery" class="bg-[#facc15] text-black px-4 py-2 rounded-full text-xs font-black shadow-[0_0_12px_#facc15]">GALLERY ✓ UNLOCKED</a>
+    <a href="/faith-arcade" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-xs font-bold">🎮 FAITH ARCADE</a>
+    <a href="/" class="bg-white/10 px-4 py-2 rounded-full text-xs font-bold">HOME</a>
+    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full text-xs font-black">LOGOUT</button>
   </div>
 </nav>
 
 <div class="max-w-5xl mx-auto px-4 mt-8 pb-10">
-  <div class="glass-panel rounded-[1.5rem] p-8">
-    <div class="flex gap-6 items-center flex-wrap">
+  <div class="glass-panel rounded-[1.5rem] p-6 md:p-8">
+    <div class="flex gap-6 items-start flex-wrap">
       {% set raw_photo = member.photo if member.photo else '' %}
       {% set safe_photo = '' %}
       {% if raw_photo and raw_photo.startswith('uploads/members/') and '..' not in raw_photo %}
         {% set safe_photo = '/static/' + raw_photo %}
       {% endif %}
       <img id="dashPhoto" src="{{ safe_photo if safe_photo else 'https://via.placeholder.com/150x150.png?text=No+Photo' }}" class="w-32 h-32 rounded-full golden-photo object-cover bg-white" onerror="this.onerror=null;this.src='https://via.placeholder.com/150x150.png?text=No+Photo'">
-      <div class="flex-1 min-w-0">
-        <h2 class="text-2xl md:text-3xl font-black text-[#1a2332]">Welcome, {{ member.username|e }} 🙏</h2>
-        <p class="text-xs text-gray-500 mt-2 bg-green-50 border border-green-200 px-3 py-1.5 rounded-full w-fit font-bold text-green-700">✅ Approved Member — Gallery Unlocked — QR Secure Signed 12/7</p>
-        <div class="mt-3 text-xs space-y-1">
-          <p><b>Username:</b> {{ member.username|e }}</p>
-          <p><b>Email:</b> {{ member.email|e }}</p>
-          <p><b>Member ID:</b> {{ member.id }}</p>
-          <p><b>Full Name:</b> {{ member.personal.fullName|e if member.personal else 'N/A' }}</p>
+      <div class="flex-1 min-w-[250px]">
+        <h2 class="text-2xl md:text-3xl font-black text-[#1a2332]">Welcome, {{ member.personal.fullName|e if member.personal and member.personal.fullName else member.username|e }} 🙏</h2>
+        <p class="text-[11px] text-green-700 mt-2 bg-green-50 border border-green-200 px-3 py-1.5 rounded-full w-fit font-bold">✅ Approved Member • Simplified 4-Field Registration • Gallery Unlocked</p>
+        
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div class="bg-blue-50 border border-blue-100 rounded-xl p-3">
+            <p class="font-black text-[10px] text-blue-600 tracking-widest">FULL NAMES</p>
+            <p class="font-bold text-sm mt-1">{{ member.personal.fullName|e if member.personal and member.personal.fullName else member.username|e }}</p>
+          </div>
+          <div class="bg-purple-50 border border-purple-100 rounded-xl p-3">
+            <p class="font-black text-[10px] text-purple-600 tracking-widest">MINISTRY / DEPARTMENT</p>
+            <p class="font-bold text-sm mt-1">{{ member.ministry.department|e if member.ministry and member.ministry.department else member.personal.ministry|e if member.personal and member.personal.ministry else 'Not set' }} 🎶</p>
+          </div>
+          <div class="bg-yellow-50 border border-yellow-100 rounded-xl p-3">
+            <p class="font-black text-[10px] text-yellow-700 tracking-widest">MEMBER ID & USERNAME</p>
+            <p class="font-bold text-sm mt-1">{{ member.username|e }} • ID: {{ member.id }}</p>
+          </div>
+          <div class="bg-red-50 border border-red-100 rounded-xl p-3">
+            <p class="font-black text-[10px] text-red-600 tracking-widest">EMERGENCY CONTACT</p>
+            <p class="font-bold text-sm mt-1">{{ member.emergency.name|e if member.emergency and member.emergency.name else member.personal.emergencyName|e if member.personal and member.personal.emergencyName else 'N/A' }} • {{ member.emergency.phone|e if member.emergency and member.emergency.phone else member.personal.emergencyPhone|e if member.personal and member.personal.emergencyPhone else '' }}</p>
+          </div>
         </div>
+        <p class="text-[10px] text-gray-400 mt-3">🔒 Simplified: Only 4 fields - Full Name, Photo, Ministry, Emergency Contact • Built by Nelson .T. Tactics</p>
       </div>
-      <div class="bg-gradient-to-br from-[#facc15] to-yellow-600 text-black p-4 rounded-2xl text-center min-w-">
-        <p class="text-xs font-black">MEMBER STATUS</p>
+      <div class="bg-gradient-to-br from-[#facc15] to-yellow-600 text-black p-5 rounded-2xl text-center min-w-[140px] shadow-[0_0_20px_#facc15]">
+        <p class="text-[10px] font-black tracking-widest">STATUS</p>
         <p class="text-2xl font-black mt-1">APPROVED</p>
-        <p class="text-xs mt-1">Gallery Unlocked 🔓<br>QR Signed 🔐 12/7</p>
+        <p class="text-[11px] mt-1 font-bold">Gallery Unlocked 🔓<br>QR Signed 🔐</p>
+        <div class="mt-3 bg-black/10 rounded-full px-3 py-1 text-[9px] font-black">4 FIELDS • 2 MINS</div>
       </div>
     </div>
 
     <div class="mt-8 grid md:grid-cols-2 gap-4">
-      <div class="bg-white border-2 border-blue-300 rounded-2xl p-5 shadow-[0_0_20px_rgba(59,130,246,0.2)] text-center">
-        <h3 class="font-black text-xs md:text-sm text-blue-700">📱 YOUR SUNDAY QR — SHOW AT GATE — SIGNED + 5 MIN EXPIRY — 12/7 FINAL</h3>
-        <div id="qrcode" class="flex justify-center bg-white p-4 rounded-xl border-2 border-dashed border-[#facc15] mt-3 min-h- items-center">
+      <div class="bg-white border-2 border-blue-300 rounded-2xl p-5 shadow-[0_0_20px_rgba(59,130,246,0.15)] text-center">
+        <h3 class="font-black text-xs text-blue-700">📱 YOUR SUNDAY QR — SHOW AT GATE — SIGNED + 5 MIN EXPIRY</h3>
+        <div id="qrcode" class="flex justify-center bg-white p-4 rounded-xl border-2 border-dashed border-[#facc15] mt-3">
           <p class="text-xs animate-pulse">Generating secure signed QR...</p>
         </div>
         <p id="qrText" class="text-xs font-black mt-3 bg-yellow-50 border border-yellow-200 p-2 rounded-xl">Loading secure token...</p>
-        <p id="qrExpiry" class="text-xs font-bold mt-1 text-blue-600">Expires in 5:00 — Auto refreshes every 4 mins — Rogue-proof</p>
-        <p class="text-xs text-gray-500 mt-2">Gate scans signed token, not raw ID. Matches merged checkin endpoint.</p>
+        <p id="qrExpiry" class="text-xs font-bold mt-1 text-blue-600">Expires in 5:00 — Auto refreshes every 4 mins</p>
         <div class="mt-3 flex gap-2 justify-center">
           <button onclick="downloadQR()" class="bg-[#1a2332] text-white px-4 py-2 rounded-full text-xs font-black">⬇ Download QR</button>
-          <button onclick="loadQR()" class="bg-[#facc15] text-black px-4 py-2 rounded-full text-xs font-black">↻ Refresh Now</button>
+          <button onclick="loadQR()" class="bg-[#facc15] text-black px-4 py-2 rounded-full text-xs font-black">↻ Refresh</button>
         </div>
       </div>
       <div class="bg-[#f0fdf4] border-2 border-green-200 rounded-2xl p-5">
-        <h3 class="font-black text-sm text-green-700">✅ Check-in Info — Sunday 8AM — Secure 12/7</h3>
-        <p class="text-xs mt-2 text-gray-600">Present QR at gate — Admin scans with camera — Token verified + expiry checked — Works with raw ID fallback too.</p>
-        <div id="myCheckins" class="mt-3 space-y-2 text-xs">
-          <p class="bg-green-50 border border-green-200 p-2 rounded-xl font-bold">✅ Secure QR Ready — Show at gate! ID {{ member.id }}</p>
-          <p class="bg-blue-50 border border-blue-200 p-2 rounded-xl">🔐 Rogue-proof: Token expires in 5 mins, can't be reused tomorrow</p>
-          <p class="bg-yellow-50 border border-yellow-200 p-2 rounded-xl">📍 South B Police Band, near Naivas — Sunday 8AM — 12/7 SEALED</p>
+        <h3 class="font-black text-sm text-green-700">✅ Sunday Check-in — 8AM Service</h3>
+        <p class="text-xs mt-2 text-gray-600">Present QR at gate — Admin scans — Token verified + expiry checked.</p>
+        <div class="mt-3 space-y-2 text-xs">
+          <p class="bg-green-50 border border-green-200 p-2.5 rounded-xl font-bold">✅ Secure QR Ready — ID {{ member.id }} • Ministry: {{ member.ministry.department|e if member.ministry else 'N/A' }}</p>
+          <p class="bg-blue-50 border border-blue-200 p-2.5 rounded-xl">🔐 Rogue-proof: Token expires in 5 mins</p>
+          <p class="bg-yellow-50 border border-yellow-200 p-2.5 rounded-xl">📍 South B Police Band, near Naivas — Sunday 8AM</p>
+          <p class="bg-[#0a1931] text-white p-2.5 rounded-xl text-[11px]">🎮 New! Try Faith Arcade - 8 Bible games - Mobile Pro!</p>
         </div>
-        <a href="/gallery" class="mt-4 inline-block bg-green-600 text-white px-5 py-2 rounded-full text-xs font-black">📁 VIEW GALLERY (Members Only) →</a>
+        <div class="mt-4 flex gap-2">
+          <a href="/gallery" class="flex-1 bg-green-600 text-white px-4 py-2.5 rounded-full text-xs font-black text-center">📁 GALLERY →</a>
+          <a href="/faith-arcade" class="flex-1 bg-[#0a1931] text-white px-4 py-2.5 rounded-full text-xs font-black text-center">🎮 ARCADE →</a>
+        </div>
       </div>
     </div>
 
@@ -83,12 +103,13 @@ body{font-family:Inter,sans-serif}
         <a href="/gallery" class="mt-4 inline-block bg-green-600 text-white px-5 py-2 rounded-full text-xs font-black">GO TO GALLERY →</a>
       </div>
       <div class="bg-yellow-50 border-2 border-yellow-200 p-5 rounded-2xl">
-        <p class="font-black text-sm">📸 Private Albums</p>
-        <p class="text-xs text-gray-600 mt-2">Access private fellowship photos approved for members only.</p>
+        <p class="font-black text-sm">🎮 Faith Arcade</p>
+        <p class="text-xs text-gray-600 mt-2">8 playable Bible games - Mobile Pro with joystick!</p>
+        <a href="/faith-arcade" class="mt-4 inline-block bg-[#0a1931] text-white px-5 py-2 rounded-full text-xs font-black">PLAY NOW →</a>
       </div>
       <div class="bg-blue-50 border-2 border-blue-200 p-5 rounded-2xl">
         <p class="font-black text-sm">🔐 Change Password</p>
-        <p class="text-xs text-gray-600 mt-2">Secure your account — CSRF protected — 12/7</p>
+        <p class="text-xs text-gray-600 mt-2">Secure your account — CSRF protected</p>
         <button onclick="document.getElementById('pwdModal').classList.remove('hidden')" class="mt-4 bg-[#1a2332] text-white px-5 py-2 rounded-full text-xs font-black">CHANGE PASSWORD</button>
       </div>
     </div>
@@ -113,17 +134,13 @@ function getCsrf(){ return document.querySelector('meta[name="csrf-token"]')?.co
 let memberId = {{ member.id|tojson }};
 let currentToken = null;
 let expiryTimer = null;
-
-async function logout(){
-  await fetch('/api/member/logout',{method:'POST', headers:{'X-CSRF-Token': getCsrf()}, credentials:'same-origin'});
-  location.href='/';
-}
+async function logout(){ await fetch('/api/member/logout',{method:'POST', headers:{'X-CSRF-Token': getCsrf()}, credentials:'same-origin'}); location.href='/';}
 async function changePwd(){
   const oldPwd=document.getElementById('oldPwd').value;
   const newPwd=document.getElementById('newPwd').value;
   const confirmPwd=document.getElementById('confirmPwd').value;
   const msg=document.getElementById('pwdMsg');
-  if(newPwd!==confirmPwd){ msg.innerText='❌ New passwords do not match'; msg.className='text-xs font-bold text-center text-red-600'; return; }
+  if(newPwd!==confirmPwd){ msg.innerText='❌ Passwords do not match'; msg.className='text-xs font-bold text-center text-red-600'; return; }
   if(newPwd.length<6){ msg.innerText='❌ Min 6 chars'; msg.className='text-xs font-bold text-center text-red-600'; return; }
   const r=await fetch('/api/member/change-password',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token': getCsrf()},body:JSON.stringify({old_password:oldPwd,new_password:newPwd}), credentials:'same-origin'});
   const j=await r.json();
@@ -138,7 +155,7 @@ function startExpiryCountdown(seconds){
     remaining--;
     if(remaining<=0){ el.textContent='Expired — Refreshing...'; clearInterval(expiryTimer); loadQR(); return; }
     const m = Math.floor(remaining/60); const s = remaining%60;
-    el.textContent=`Expires in ${m}:${String(s).padStart(2,'0')} — Auto refreshes every 4 mins — Rogue-proof 12/7`;
+    el.textContent=`Expires in ${m}:${String(s).padStart(2,'0')} — Auto refreshes every 4 mins`;
   },1000);
 }
 async function loadQR(){
@@ -152,9 +169,8 @@ async function loadQR(){
       if(infoRes.ok){
         document.getElementById('qrcode').innerHTML='';
         new QRCode(document.getElementById('qrcode'), {text: String(infoRes.id), width: 220, height: 220, colorDark:"#000", colorLight:"#fff", correctLevel:QRCode.CorrectLevel.H});
-        document.getElementById('qrText').textContent=`ID:${infoRes.id} — Fallback — Update to signed QR`;
+        document.getElementById('qrText').textContent=`ID:${infoRes.id} — Fallback`;
         currentToken = String(infoRes.id);
-        document.getElementById('qrExpiry').textContent='Fallback QR — upgrade server';
         return;
       }
       throw new Error(data.error||'Failed');
@@ -162,7 +178,7 @@ async function loadQR(){
     currentToken = data.token;
     document.getElementById('qrcode').innerHTML='';
     new QRCode(document.getElementById('qrcode'), {text: data.token, width: 220, height: 220, colorDark:"#000", colorLight:"#fff", correctLevel:QRCode.CorrectLevel.H});
-    document.getElementById('qrText').textContent=`Secure Signed QR — ID:${data.id} — APPROVED — Show at gate 12/7`;
+    document.getElementById('qrText').textContent=`Secure Signed QR — ID:${data.id} — APPROVED — 4-Field Member`;
     startExpiryCountdown(data.expires_in||300);
   }catch(e){
     document.getElementById('qrText').textContent='Failed: '+(e.message||'error')+' — ID:'+memberId;
@@ -173,15 +189,10 @@ async function loadQR(){
 function downloadQR(){
   if(!currentToken){ alert('QR not ready'); return; }
   let canvas=document.querySelector('#qrcode canvas');
-  if(canvas){
-    let a=document.createElement('a'); a.href=canvas.toDataURL(); a.download=`Secure-QR-${memberId}-${new Date().toISOString().slice(0,10)}.png`; a.click();
-  } else {
-    let img=document.querySelector('#qrcode img');
-    if(img){ let a=document.createElement('a'); a.href=img.src; a.download=`Secure-QR-${memberId}.png`; a.click(); } else alert('QR not ready');
-  }
+  if(canvas){ let a=document.createElement('a'); a.href=canvas.toDataURL(); a.download=`Secure-QR-${memberId}-${new Date().toISOString().slice(0,10)}.png`; a.click(); }
+  else { let img=document.querySelector('#qrcode img'); if(img){ let a=document.createElement('a'); a.href=img.src; a.download=`Secure-QR-${memberId}.png`; a.click(); } }
 }
-loadQR();
-setInterval(loadQR, 4*60*1000);
+loadQR(); setInterval(loadQR, 4*60*1000);
 </script>
 </body>
 </html>
