@@ -2,28 +2,44 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Member Login - South B Police Chapel - 12/7 FINAL SEALED</title>
+<title>Member Login - South B Police Chapel</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 body{font-family:Inter,sans-serif}
 .heaven-bg{background:url('/static/uploads/god_key.jpg') no-repeat center center fixed;background-size:cover}
-.glass-panel{backdrop-filter:blur(18px);background:rgba(255,255,255,0.92);border:2px solid rgba(250,204,21,0.5);box-shadow:0 0 20px rgba(250,204,21,0.3)}
-.input{border:2px solid #fef08a;padding:12px;border-radius:12px;font-size:12px;width:100%;background:white;outline:none}
-.input:focus{border-color:#facc15}
+.glass-panel{backdrop-filter:blur(20px);background:rgba(255,255,255,0.94);border:2px solid rgba(250,204,21,0.5);box-shadow:0 0 30px rgba(250,204,21,0.3), 0 10px 40px rgba(0,0,0,0.1)}
+.input{border:2px solid #fef08a;padding:14px 16px;border-radius:14px;font-size:13px;width:100%;background:white;outline:none;transition:all 0.2s}
+.input:focus{border-color:#facc15; box-shadow:0 0 0 3px rgba(250,204,21,0.2)}
 </style>
 </head>
 <body class="heaven-bg min-h-screen"><div class="min-h-screen bg-gradient-to-br from-[#0f172a]/10 to-black/20 flex items-center justify-center p-4">
-<div class="glass-panel rounded-[1.5rem] p-8 w-full max-w-md border-2 border-[#facc15]/50">
-  <h2 class="text-2xl font-black text-center text-[#1a2332]">🔑 Member Login — 12/7 SEALED</h2>
-  <p class="text-center text-xs text-gray-500 mt-2">Login to access members-only gallery photos for viewing and downloading — Secure + Rate Limited 12/7</p>
-  <form id="loginForm" class="mt-6 space-y-3">
-    <input id="login" required placeholder="Username or Email" class="input">
-    <div class="relative"><input id="password" type="password" required placeholder="Password" class="input pr-12"><button type="button" onclick="togglePwd()" class="absolute right-3 top-3 text-xs font-black">👁</button></div>
-    <button type="submit" id="loginBtn" class="w-full bg-[#1a2332] text-white py-3 rounded-xl font-black text-xs">LOGIN AS MEMBER — SECURE 12/7</button>
-    <p id="msg" class="text-center font-black text-xs min-h-"></p>
+<div class="glass-panel rounded-[1.8rem] p-8 w-full max-w-md">
+  <div class="text-center">
+    <div class="w-14 h-14 mx-auto bg-gradient-to-br from-[#facc15] to-yellow-600 rounded-full flex items-center justify-center text-2xl shadow-[0_0_20px_#facc15]">🔑</div>
+    <h2 class="text-2xl font-black mt-4 text-[#1a2332]">Member Login</h2>
+    <p class="text-[11px] text-gray-500 mt-2 leading-relaxed">Secure 12/7 • Access members-only gallery • Simplified 4-field membership</p>
+    <div class="mt-3 inline-flex items-center gap-2 bg-green-50 border border-green-200 px-3 py-1 rounded-full text-[10px] font-bold text-green-700">
+      <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> SECURE • RATE LIMITED • SEALED
+    </div>
+  </div>
+  <form id="loginForm" class="mt-7 space-y-4">
+    <div>
+      <label class="text-[11px] font-black text-gray-700 ml-1">USERNAME OR EMAIL</label>
+      <input id="login" required placeholder="e.g. nelson.tactics or email" class="input mt-1">
+    </div>
+    <div>
+      <label class="text-[11px] font-black text-gray-700 ml-1">PASSWORD</label>
+      <div class="relative mt-1"><input id="password" type="password" required placeholder="••••••••" class="input pr-12"><button type="button" onclick="togglePwd()" class="absolute right-3 top-3.5 text-xs font-black bg-gray-100 px-2 py-1 rounded-full">👁</button></div>
+    </div>
+    <button type="submit" id="loginBtn" class="w-full bg-[#0a1931] hover:bg-black text-white py-3.5 rounded-xl font-black text-xs tracking-wide shadow-lg hover:shadow-xl transition">LOGIN AS MEMBER →</button>
+    <p id="msg" class="text-center font-black text-xs min-h-[20px]"></p>
   </form>
-  <p class="text-center text-xs mt-4">Not a member? <a href="/member-qualifications" class="text-blue-600 font-black underline">Register as Member</a> — with photo</p>
-  <p class="text-center text-xs mt-2"><a href="/" class="text-gray-500">← Back to Home</a> • <a href="/gallery" class="text-green-600 font-black">Gallery</a></p>
+  <div class="mt-6 pt-5 border-t border-yellow-100 text-center space-y-2">
+    <p class="text-xs">Not a member? <a href="/member-qualifications" class="text-blue-600 font-black underline hover:text-blue-800">Register in 2 mins (4 fields only)</a></p>
+    <p class="text-[11px] text-gray-400"><a href="/" class="hover:text-black">← Back to Home</a> • <a href="/gallery" class="text-green-600 font-black">Gallery</a> • <a href="/faith-arcade" class="text-[#0a1931] font-black">🎮 Faith Arcade</a></p>
+  </div>
+  <p class="text-center text-[10px] text-gray-400 mt-4">Built with ❤ by Nelson .T. Tactics • Confidential</p>
 </div>
 </div>
 <script>
@@ -31,18 +47,24 @@ function togglePwd(){ const p=document.getElementById('password'); p.type = p.ty
 document.getElementById('loginForm').addEventListener('submit', async(e)=>{
   e.preventDefault();
   const btn=document.getElementById('loginBtn');
-  btn.innerText='⏳ Checking...'; btn.disabled=true;
+  btn.innerText='⏳ Checking secure login...'; btn.disabled=true;
+  try{
   const r=await fetch('/api/member/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:document.getElementById('login').value.trim(),password:document.getElementById('password').value}), credentials:'same-origin'});
   const j=await r.json();
   if(j.ok){
-    document.getElementById('msg').innerText='✅ Login success! Redirecting to dashboard — Gallery Unlocked...';
+    document.getElementById('msg').innerText='✅ Success! Unlocking gallery...';
     document.getElementById('msg').className='text-center font-black text-xs text-green-600';
     setTimeout(()=>{ location.href='/members/dashboard'; },800);
   }
   else{
     document.getElementById('msg').innerText='❌ '+(j.error||'Failed')+(j.status?' - '+j.status:'');
     document.getElementById('msg').className='text-center font-black text-xs text-red-600';
-    btn.innerText='LOGIN AS MEMBER — SECURE 12/7'; btn.disabled=false;
+    btn.innerText='LOGIN AS MEMBER →'; btn.disabled=false;
+  }
+  }catch(err){
+    document.getElementById('msg').innerText='❌ Network error - try again';
+    document.getElementById('msg').className='text-center font-black text-xs text-red-600';
+    btn.innerText='LOGIN AS MEMBER →'; btn.disabled=false;
   }
 });
 </script>
