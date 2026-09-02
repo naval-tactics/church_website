@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, jsonify, send_from_directory, redirect, url_for
+from flask import Flask, render_template, request, session, jsonify, send_from_directory, redirect, url_for, Response
 from datetime import datetime, timedelta
 import pytz
 from pathlib import Path
@@ -23,12 +23,14 @@ TZ = pytz.timezone('Africa/Nairobi')
 DATA_DIR = 'data'
 QR_SECRET = os.getenv('QR_SECRET', app.secret_key)
 
+# --- GOOGLE VERIFICATION - 4 FIELDS SEO ---
+GOOGLE_VERIFICATION = "tY5CbaEWI9pyFRc4Qmr0ya7EXdJqFOA52OX_mbQvXZU"
+
 try:
     import cloudinary, cloudinary.uploader
     cloudinary.config(cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"), api_key=os.environ.get("CLOUDINARY_API_KEY"), api_secret=os.environ.get("CLOUDINARY_API_SECRET"), secure=True)
     CLOUDINARY_ENABLED = bool(os.environ.get("CLOUDINARY_CLOUD_NAME") and os.environ.get("CLOUDINARY_API_KEY"))
 except Exception as e:
-    print(f"Cloudinary not configured: {e}")
     CLOUDINARY_ENABLED = False
 
 try:
@@ -45,7 +47,6 @@ try:
     from flask_limiter.util import get_remote_address
     limiter = Limiter(get_remote_address, app=app, default_limits=["500 per day", "100 per hour"], storage_uri="memory://")
 except Exception as e:
-    print(f"Limiter init failed: {e}")
     limiter = None
 
 def armor_limit(limit_str):
@@ -69,7 +70,7 @@ def upload_to_cloudinary(file_obj, folder="south_b_chapel"):
             url = res.get('secure_url')
             if url: return url
         except Exception as e:
-            print(f"Cloudinary upload failed, fallback local: {e}")
+            print(f"Cloudinary failed: {e}")
     try:
         fn = secure_filename(f"{int(time.time()*1000)}_{file_obj.filename}")
         if 'videos' in folder: local_folder = 'static/uploads/videos'
@@ -238,6 +239,16 @@ def get_next_sunday_8am():
 
 @app.after_request
 def after_request(response):
+    # GOOGLE VERIFICATION INJECTION
+    if response.content_type and 'text/html' in response.content_type:
+        try:
+            data = response.get_data(as_text=True)
+            if '<head>' in data and 'google-site-verification' not in data:
+                meta = f'<meta name="google-site-verification" content="{GOOGLE_VERIFICATION}" />'
+                data = data.replace('<head>', f'<head>\n{meta}', 1)
+                response.set_data(data)
+        except: pass
+
     if request.path.startswith('/static/'): response.headers["Cache-Control"] = "public, max-age=604800"
     elif request.path.startswith('/api/'): response.headers["Cache-Control"] = "no-store"
     else: response.headers["Cache-Control"] = "public, max-age=60"
@@ -521,7 +532,7 @@ def delete_encounter(eid):
     save_json(ENCOUNTER_FILE, encounters)
     return jsonify({"ok": True})
 
-# SIMPLIFIED REGISTER - ONLY 4 FIELDS - Nelson .T. Tactics
+# SIMPLIFIED REGISTER - ONLY 4 FIELDS
 @app.route('/api/member/register', methods=['POST'])
 @armor_limit("5 per minute")
 def api_member_register():
@@ -977,15 +988,13 @@ def seek_counsel():
     if not verses: verses=[{"ref":"Jeremiah 29:11","text":"For I know the plans I have for you...","counsel":"God has a good plan for you."},{"ref":"Psalm 23:1","text":"The Lord is my shepherd, I lack nothing."}]
     return jsonify({"verses": verses})
 
-import os
-from flask import send_from_directory, Response
 @app.route('/sitemap.xml')
 def sitemap():
     try:
         static_path = os.path.join(app.root_path, 'static')
         if os.path.exists(os.path.join(static_path, 'sitemap.xml')): return send_from_directory(static_path, 'sitemap.xml')
         if os.path.exists(os.path.join(app.root_path, 'sitemap.xml')): return send_from_directory(app.root_path, 'sitemap.xml')
-        sitemap_content = """<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://schemas.xmlsoap.org/schemas/schemas/sitemap/0.9"><url><loc>https://south-b-police-chapel.onrender.com/</loc><priority>1.0</priority></url></urlset>"""
+        sitemap_content = """<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://schemas.xmlsoap.org/schemas/sitemap/0.9"><url><loc>https://south-b-police-chapel.onrender.com/</loc><priority>1.0</priority></url><url><loc>https://south-b-police-chapel.onrender.com/members/register</loc><priority>0.9</priority></url></urlset>"""
         return Response(sitemap_content, mimetype='application/xml')
     except Exception as e: return str(e), 500
 @app.route('/robots.txt')
@@ -996,6 +1005,10 @@ def robots():
         robots_content = "User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: https://south-b-police-chapel.onrender.com/sitemap.xml\n"
         return Response(robots_content, mimetype='text/plain')
     except Exception as e: return str(e), 500
+
+@app.route('/google-site-verification.html')
+def google_verif_file():
+    return Response(f"google-site-verification: google{GOOGLE_VERIFICATION}.html", mimetype='text/plain')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
