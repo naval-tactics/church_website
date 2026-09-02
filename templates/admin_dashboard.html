@@ -72,9 +72,9 @@
     <div id="tab-members" class="tabContent hidden">
       <div class="glass-panel p-5 rounded-2xl">
         <h2 class="font-semibold text-sm">Members</h2>
-        <p class="text-[11px] text-gray-500 mt-1">4 fields: Name, Photo, Ministry, Emergency Contact</p>
+        <p class="text-[11px] text-gray-500 mt-1">Name, Phone, Photo, Ministry, Emergency Contact</p>
         <div class="mt-4 flex flex-col md:flex-row gap-2">
-          <div class="flex-1 relative"><input id="memberSearch" oninput="filterMembers()" placeholder="Search name, ministry, emergency..." class="w-full border border-gray-200 p-3 pl-10 rounded-full bg-white text-xs focus:outline-none focus:border-yellow-400"><span class="absolute left-3 top-3 text-gray-400 text-xs">🔍</span></div>
+          <div class="flex-1 relative"><input id="memberSearch" oninput="filterMembers()" placeholder="Search name, phone, ministry, emergency..." class="w-full border border-gray-200 p-3 pl-10 rounded-full bg-white text-xs focus:outline-none focus:border-yellow-400"><span class="absolute left-3 top-3 text-gray-400 text-xs">🔍</span></div>
           <div class="flex gap-2 flex-wrap items-center">
             <span id="memberCount" class="bg-white border px-3 py-2 rounded-full text-xs">0 total</span>
             <span id="memberPending" class="bg-orange-50 border border-orange-100 px-3 py-2 rounded-full text-xs">0 pending</span>
@@ -199,7 +199,6 @@ function fixUrl(u){ if(!u) return ''; u=String(u).trim(); if(u.startsWith('http'
 function fixMemberPhoto(p){ if(!p) return 'https://via.placeholder.com/200x200.png?text=No+Photo'; return fixUrl(p); }
 function getCsrf(){ return document.querySelector('meta[name="csrf-token"]')?.content||''; }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function getThumb(u){ const url=fixUrl(u); if(!url) return ''; return url; }
 window._memberCache={}; let html5QrcodeScanner=null;
 
 function showTab(name){
@@ -217,15 +216,15 @@ function filterMembers(){
   if(!q){ renderMembersList(window._allMembers); return; }
   const filtered=window._allMembers.filter(x=>{
     const fn=(x.personal?.fullName||x.fullName||'').toLowerCase();
+    const ph=(x.personal?.phone||x.phone||x.contact?.phone||'').toLowerCase();
     const mn=(x.ministry?.department||x.ministry?.preferredMinistry||x.personal?.ministry||'').toLowerCase();
     const en=(x.emergency?.name||x.personal?.emergencyName||'').toLowerCase();
     const ep=(x.emergency?.phone||x.personal?.emergencyPhone||'').toLowerCase();
     const un=(x.username||'').toLowerCase();
-    return `${fn} ${mn} ${en} ${ep} ${un}`.includes(q);
+    return `${fn} ${ph} ${mn} ${en} ${ep} ${un}`.includes(q);
   });
   renderMembersList(filtered);
 }
-function clearMemberSearch(){ document.getElementById('memberSearch').value=''; renderMembersList(window._allMembers||[]); }
 
 function renderMembersList(list){
   const el=document.getElementById('membersList');
@@ -233,15 +232,16 @@ function renderMembersList(list){
   window._memberCache={}; list.forEach(m=>window._memberCache[m.id]=m);
   el.innerHTML=list.map(x=>{
     const fullName=x.personal?.fullName||x.fullName||x.username||'No Name';
+    const phone=x.personal?.phone||x.phone||x.contact?.phone||'Not provided';
     const ministry=x.ministry?.department||x.ministry?.preferredMinistry||x.personal?.ministry||'Not set';
     const eName=x.emergency?.name||x.personal?.emergencyName||'N/A';
     const ePhone=x.emergency?.phone||x.personal?.emergencyPhone||'';
     const isPending=x.status==='pending';
     return `<div class="bg-white rounded-xl p-4 border flex gap-4 items-center">
-      <img src="${fixMemberPhoto(x.photo)}" class="w-14 h-14 rounded-full object-cover bg-gray-100 shrink-0" onerror="this.src='https://via.placeholder.com/200x200.png?text=No+Photo'">
+      <img src="${fixMemberPhoto(x.photo)}" class="w-14 h-14 rounded-full object-cover bg-gray-100 shrink-0">
       <div class="flex-1 min-w-0">
         <div class="flex gap-2 items-center flex-wrap"><h3 class="font-semibold text-sm truncate">${esc(fullName)}</h3><span class="text-[10px] px-2 py-1 rounded-full ${isPending?'bg-orange-100 text-orange-700':'bg-green-100 text-green-700'}">${esc(x.status)}</span></div>
-        <div class="mt-1.5 flex flex-wrap gap-2 text-[11px] text-gray-600"><span>Ministry: ${esc(ministry)}</span><span>•</span><span>Emergency: ${esc(eName)} ${esc(ePhone)}</span></div>
+        <div class="mt-1.5 flex flex-wrap gap-2 text-[11px] text-gray-600"><span>Ministry: ${esc(ministry)}</span><span>•</span><span>Phone: ${esc(phone)}</span><span>•</span><span>Emergency: ${esc(eName)} ${esc(ePhone)}</span></div>
         <p class="text-[10px] text-gray-400 mt-1">ID:${x.id} • ${esc(x.username)}</p>
       </div>
       <div class="flex flex-col gap-1.5"><button onclick="openMemberView(${x.id})" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">View</button>${isPending?`<button onclick="approveMember(${x.id})" class="bg-green-600 text-white px-4 py-1.5 rounded-full text-xs">Approve</button>`:''}</div>
@@ -252,6 +252,7 @@ function renderMembersList(list){
 function openMemberView(id){
   const x=window._memberCache[id]|| (window._allMembers||[]).find(m=>m.id===id); if(!x) return;
   const fullName=x.personal?.fullName||x.fullName||x.username||'No Name';
+  const phone=x.personal?.phone||x.phone||x.contact?.phone||'Not provided';
   const ministry=x.ministry?.department||x.ministry?.preferredMinistry||x.personal?.ministry||'Not set';
   const eName=x.emergency?.name||x.personal?.emergencyName||'N/A';
   const ePhone=x.emergency?.phone||x.personal?.emergencyPhone||'N/A';
@@ -260,12 +261,13 @@ function openMemberView(id){
   document.getElementById('memberViewModal').classList.remove('hidden'); document.body.style.overflow='hidden';
   document.getElementById('memberViewContent').innerHTML=`
   <div class="bg-white rounded-2xl p-6 max-w-3xl mx-auto border shadow-2xl">
-    <div class="text-center"><img src="${photo}" class="w-28 h-28 rounded-full mx-auto object-cover border"><h2 class="font-semibold text-lg mt-3">${esc(fullName)}</h2><p class="text-xs mt-2 inline-block px-3 py-1 rounded-full ${x.status==='pending'?'bg-orange-100 text-orange-700':'bg-green-100 text-green-700'}">${esc(x.status)}</p><p class="text-[11px] text-gray-400 mt-2">ID:${x.id} • ${esc(x.username)} • ${esc(x.email)}</p></div>
+    <div class="text-center"><img src="${photo}" class="w-28 h-28 rounded-full mx-auto object-cover border"><h2 class="font-semibold text-lg mt-3">${esc(fullName)}</h2><p class="text-xs mt-2 inline-block px-3 py-1 rounded-full ${x.status==='pending'?'bg-orange-100 text-orange-700':'bg-green-100 text-green-700'}">${esc(x.status)}</p><p class="text-[11px] text-gray-400 mt-2">ID:${x.id} • ${esc(x.username)} • ${esc(x.email||'')}</p></div>
     <div class="mt-6 grid md:grid-cols-2 gap-4">
       <div class="bg-gray-50 border rounded-xl p-4"><h3 class="text-[11px] font-semibold text-gray-500">Full Names</h3><p class="font-medium text-sm mt-2">${esc(fullName)}</p></div>
-      <div class="bg-gray-50 border rounded-xl p-4 text-center"><h3 class="text-[11px] font-semibold text-gray-500 text-left">Photo</h3><img src="${photo}" class="w-20 h-20 rounded-full mx-auto mt-3 object-cover border"><a href="${photo}" target="_blank" class="mt-3 inline-block text-[11px] bg-white border px-3 py-1 rounded-full">Open Full Photo</a></div>
-      <div class="bg-gray-50 border rounded-xl p-4"><h3 class="text-[11px] font-semibold text-gray-500">Ministry</h3><p class="font-medium text-sm mt-2">${esc(ministry)}</p></div>
-      <div class="bg-gray-50 border rounded-xl p-4"><h3 class="text-[11px] font-semibold text-gray-500">Emergency Contact</h3><p class="font-medium text-sm mt-2">${esc(eName)}</p><p class="text-xs text-gray-600 mt-1">${esc(ePhone)} ${eRel?`• ${esc(eRel)}`:''}</p></div>
+      <div class="bg-gray-50 border rounded-xl p-4"><h3 class="text-[11px] font-semibold text-gray-500">Phone Number</h3><p class="font-medium text-sm mt-2">${esc(phone)}</p><a href="tel:${esc(phone)}" class="mt-2 inline-block text-[11px] bg-white border px-3 py-1 rounded-full">Call</a></div>
+      <div class="bg-gray-50 border rounded-xl p-4 text-center"><h3 class="text-[11px] font-semibold text-gray-500 text-left">Photo</h3><img src="${photo}" class="w-20 h-20 rounded-full mx-auto mt-3 object-cover border"><a href="${photo}" target="_blank" class="mt-3 inline-block text-[11px] bg-white border px-3 py-1 rounded-full">Open Photo</a></div>
+      <div class="bg-gray-50 border rounded-xl p-4"><h3 class="text-[11px] font-semibold text-gray-500">Ministry / Department</h3><p class="font-medium text-sm mt-2">${esc(ministry)}</p></div>
+      <div class="bg-gray-50 border rounded-xl p-4 md:col-span-2"><h3 class="text-[11px] font-semibold text-gray-500">Emergency Contact</h3><p class="font-medium text-sm mt-2">${esc(eName)}</p><p class="text-xs text-gray-600 mt-1">${esc(ePhone)} ${eRel?`• ${esc(eRel)}`:''}</p></div>
     </div>
     <div class="mt-6 flex gap-2 justify-center">${x.status==='pending'?`<button onclick="approveMember(${x.id})" class="bg-green-600 text-white px-6 py-2.5 rounded-full text-xs">Approve</button><button onclick="rejectMember(${x.id})" class="bg-white border px-5 py-2.5 rounded-full text-xs">Reject</button>`:''}<button onclick="deleteMember(${x.id})" class="bg-red-600 text-white px-5 py-2.5 rounded-full text-xs">Delete</button><button onclick="closeMemberView()" class="bg-gray-100 px-5 py-2.5 rounded-full text-xs">Close</button></div>
   </div>`;
@@ -329,14 +331,14 @@ async function loadTabData(name){
     let g=await fetch('/api/admin/gallery/all').then(r=>r.json()).catch(()=>[]);
     document.getElementById('galleryList').innerHTML=g.map(al=>{
       const cover = fixUrl(al.cover || (al.images&&al.images[0]) || '');
-      return `<div class="bg-white border rounded-xl overflow-hidden hover:shadow-md transition">
-        <div class="gallery-thumb"><img src="${cover}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300.png?text=No+Image'"><div class="absolute top-2 left-2 bg-white/90 backdrop-blur text-[9px] px-2 py-1 rounded-full">${esc(al.visibility||'public')}</div><div class="absolute bottom-2 right-2 bg-black/70 text-white text-[9px] px-2 py-1 rounded-full">${al.images?.length||0} photos</div></div>
+      return `<div class="bg-white border rounded-xl overflow-hidden">
+        <div class="gallery-thumb"><img src="${cover}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300.png?text=No+Image'"><div class="absolute top-2 left-2 bg-white/90 text-[9px] px-2 py-1 rounded-full">${esc(al.visibility||'public')}</div><div class="absolute bottom-2 right-2 bg-black/70 text-white text-[9px] px-2 py-1 rounded-full">${al.images?.length||0} photos</div></div>
         <div class="p-3"><p class="font-medium text-xs truncate">${esc(al.title)}</p><p class="text-[10px] text-gray-500 mt-1">${esc(al.category||'')} • ${esc(al.visibility||'public')}</p><div class="mt-3 flex gap-1.5 flex-wrap"><button onclick="openEditGallery(${al.id})" class="bg-gray-900 text-white px-3 py-1 rounded-full text-[10px]">Edit</button><button onclick="toggleGalleryVisibility(${al.id},'${al.visibility==='public'?'members':'public'}')" class="bg-white border px-3 py-1 rounded-full text-[10px]">${al.visibility==='public'?'To Members':'To Public'}</button><button onclick="deleteGallery(${al.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div></div></div>`;
     }).join('') || '<p class="text-xs text-gray-400">No albums</p>';
   }
   if(name==='events'){
     let e=await fetch('/api/events').then(r=>r.json()).catch(()=>[]);
-    document.getElementById('eventsList').innerHTML=e.map(ev=>`<div class="bg-white border rounded-xl p-3 flex gap-3"><img src="${fixUrl(ev.image)}" class="w-20 h-20 rounded-xl object-cover bg-gray-100" loading="lazy"><div class="flex-1 min-w-0"><p class="font-medium text-xs truncate">${esc(ev.title)}</p><p class="text-[10px] text-gray-500 mt-1">${esc(ev.date)} ${esc(ev.time)} • ${esc(ev.location)}</p><div class="mt-2 flex gap-1.5"><button onclick="openEditEvent(${ev.id})" class="bg-gray-900 text-white px-3 py-1 rounded-full text-[10px]">Edit</button><button onclick="deleteEvent(${ev.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div></div></div>`).join('') || '<p class="text-xs text-gray-400">No events</p>';
+    document.getElementById('eventsList').innerHTML=e.map(ev=>`<div class="bg-white border rounded-xl p-3 flex gap-3"><img src="${fixUrl(ev.image)}" class="w-20 h-20 rounded-xl object-cover bg-gray-100"><div class="flex-1 min-w-0"><p class="font-medium text-xs truncate">${esc(ev.title)}</p><p class="text-[10px] text-gray-500 mt-1">${esc(ev.date)} ${esc(ev.time)} • ${esc(ev.location)}</p><div class="mt-2 flex gap-1.5"><button onclick="openEditEvent(${ev.id})" class="bg-gray-900 text-white px-3 py-1 rounded-full text-[10px]">Edit</button><button onclick="deleteEvent(${ev.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div></div></div>`).join('') || '<p class="text-xs text-gray-400">No events</p>';
     let regs=await fetch('/api/events/registrations').then(r=>r.json()).catch(()=>[]);
     document.getElementById('registrationsList').innerHTML=regs.slice(0,30).map(rg=>`<div class="bg-white border p-2.5 rounded-xl flex justify-between items-center"><div><p class="font-medium text-xs">${esc(rg.name)} • ${esc(rg.event_title)}</p><p class="text-[10px] text-gray-500">${esc(rg.phone)} • ${rg.people} people</p></div><button onclick="deleteRegistration(${rg.id})" class="bg-white border px-2 py-1 rounded-full text-[9px]">Remove</button></div>`).join('') || '<p class="text-[10px] text-gray-400">No registrations</p>';
   }
@@ -352,14 +354,14 @@ async function loadTabData(name){
   }
   if(name==='prayer'){
     let pubs=await fetch('/api/prayers').then(r=>r.json()).catch(()=>[]);
-    document.getElementById('publicPrayersAdmin').innerHTML=pubs.slice(0,60).map(p=>`<div class="bg-white border rounded-xl p-3"><p class="font-medium text-xs">${esc(p.category)} • ${esc(p.name)}</p><p class="text-[12px] mt-2 line-clamp-3">${esc(p.content).substring(0,250)}</p><div class="mt-2 flex gap-1.5"><button onclick="openEditPrayer(${p.id})" class="bg-gray-900 text-white px-3 py-1 rounded-full text-[10px]">Edit</button><button onclick="deletePrayer(${p.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div></div>`).join('') || '<p class="text-xs text-gray-400">No prayers</p>';
+    document.getElementById('publicPrayersAdmin').innerHTML=pubs.slice(0,60).map(p=>`<div class="bg-white border rounded-xl p-3"><p class="font-medium text-xs">${esc(p.category)} • ${esc(p.name)}</p><p class="text-[12px] mt-2">${esc(p.content).substring(0,250)}</p><div class="mt-2 flex gap-1.5"><button onclick="openEditPrayer(${p.id})" class="bg-gray-900 text-white px-3 py-1 rounded-full text-[10px]">Edit</button><button onclick="deletePrayer(${p.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div></div>`).join('') || '<p class="text-xs text-gray-400">No prayers</p>';
   }
   if(name==='contact'){
     let c=await fetch('/api/contact/messages').then(r=>r.json()).catch(()=>[]);
     document.getElementById('contactsList').innerHTML=c.map(ct=>`<div class="bg-white border rounded-xl p-3"><p class="font-medium text-xs">${esc(ct.name)} • ${esc(ct.email)}</p><p class="text-[12px] mt-2">${esc(ct.message).substring(0,350)}</p><p class="text-[10px] text-gray-400 mt-2">${esc(ct.date)}</p><button onclick="deleteContact(${ct.id})" class="mt-2 bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div>`).join('') || '<p class="text-xs text-gray-400">No messages</p>';
   }
   if(name==='testimonies'){
-    let t=await fetch('/api/admin/testimonies/list').then(r=>r.json()).catch(()=>[]); 
+    let t=await fetch('/api/admin/testimonies/list').then(r=>r.json()).catch(()=>[]);
     if(!Array.isArray(t)){ t=await secureFetch('/api/admin/testimonies',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(r=>r.json()).catch(()=>[]); }
     document.getElementById('testimoniesList').innerHTML=Array.isArray(t)?t.slice(0,60).map(tm=>`<div class="bg-white border rounded-xl p-3"><p class="font-medium text-xs">${esc(tm.name||tm.title||'Anonymous')} • ${esc(tm.date||'')}</p><audio controls src="${fixUrl(tm.path||tm.filename||tm.cloud_url||tm.audio_url||'')}" class="w-full h-8 mt-2"></audio><button onclick="deleteTestimony(${tm.id})" class="mt-2 bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div>`).join(''):'<p class="text-xs text-gray-400">No testimonies</p>';
     let tr=await fetch('/api/admin/transcripts').then(r=>r.json()).catch(()=>[]);
@@ -396,9 +398,9 @@ async function loadCounselling(){
   const pwd=document.getElementById('counselPwd').value; if(!pwd) return alert('Enter password');
   let res=await secureFetch('/api/admin/counselling/private',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd})});
   let data=await res.json(); if(data.error) return alert(data.error);
-  document.getElementById('counsellingList').innerHTML=data.map(c=>`<div class="bg-white border rounded-xl p-3"><p class="font-medium text-xs">${esc(c.name)} • ${esc(c.phone)} • ${esc(c.category)}</p><p class="text-[12px] mt-2">${esc(c.description).substring(0,500)}</p><p class="text-[10px] text-gray-400 mt-2">${esc(c.date||'')} ${c.is_anonymous?'• Anonymous':''}</p><button onclick="deleteCounselling(${c.id})" class="mt-2 bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div>`).join('') || '<p class="text-xs text-gray-400">No requests</p>';
+  document.getElementById('counsellingList').innerHTML=data.map(c=>`<div class="bg-white border rounded-xl p-3"><p class="font-medium text-xs">${esc(c.name)} • ${esc(c.phone)} • ${esc(c.category)}</p><p class="text-[12px] mt-2">${esc(c.description).substring(0,500)}</p><p class="text-[10px] text-gray-400 mt-2">${esc(c.date||'')}</p><button onclick="deleteCounselling(${c.id})" class="mt-2 bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div>`).join('') || '<p class="text-xs text-gray-400">No requests</p>';
 }
-async function deleteCounselling(id){ const pwd=document.getElementById('counselPwd').value; if(!pwd) return alert('Enter password first'); if(confirm('Delete counselling?')){ await secureFetch('/api/admin/delete-counselling/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd})}); loadCounselling(); } }
+async function deleteCounselling(id){ const pwd=document.getElementById('counselPwd').value; if(!pwd) return alert('Enter password first'); if(confirm('Delete?')){ await secureFetch('/api/admin/delete-counselling/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd})}); loadCounselling(); } }
 
 function closeEditModal(){ document.getElementById('editModal').classList.add('hidden'); }
 function openEditModal(title, html){ document.getElementById('editModalTitle').innerText=title; document.getElementById('editModalContent').innerHTML=html; document.getElementById('editModal').classList.remove('hidden'); }
@@ -441,7 +443,7 @@ async function openEditPrayer(id){
   document.getElementById('editPrayerForm').onsubmit=async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); await secureFetch('/api/admin/update-prayer/'+id,{method:'POST',body:fd}); closeEditModal(); loadTabData('prayer'); };
 }
 
-document.getElementById('videoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await secureFetch('/api/admin/upload-video',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ e.target.reset(); loadTabData('videos'); } else alert('Failed'); });
+document.getElementById('videoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await secureFetch('/api/admin/upload-video',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ e.target.reset(); loadTabData('videos'); } });
 document.getElementById('galleryForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await secureFetch('/api/admin/upload-gallery',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ e.target.reset(); loadTabData('gallery'); } });
 document.getElementById('eventForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await secureFetch('/api/admin/upload-event',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ e.target.reset(); loadTabData('events'); } });
 document.getElementById('sermonForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await secureFetch('/api/admin/upload-sermon',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ e.target.reset(); loadTabData('sermons'); } });
