@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token }}">
-<title>ADMIN - South B Police Chapel</title>
+<title>ADMIN - South B Police Chapel - Simplified Members</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -31,122 +31,70 @@
 <body class="heaven-bg min-h-screen">
 <div class="page-shell min-h-screen bg-gradient-to-br from-[#0f172a]/20 to-black/20">
 <div class="glass-dark text-white px-4 py-3 flex justify-between items-center sticky top-0 z-50">
-  <div class="flex items-center gap-2"><img src="/static/uploads/god_key.jpg" class="w-9 h-9 rounded-full border-2 border-[#facc15]"><h1 class="font-black text-xs">SOUTH B POLICE CHAPEL — ADMIN DASHBOARD</h1></div>
+  <div class="flex items-center gap-2"><img src="/static/uploads/god_key.jpg" class="w-9 h-9 rounded-full border-2 border-[#facc15]"><h1 class="font-black text-xs">SOUTH B POLICE CHAPEL — ADMIN DASHBOARD — SIMPLIFIED 4 FIELDS</h1></div>
   <a href="/admin/logout" class="bg-red-600 px-4 py-1.5 rounded-full text-xs font-black">LOGOUT</a>
 </div>
 <div class="flex main-flex">
   <div class="sidebar w-full md:w-60 glass-dark text-white md:min-h-[calc(100vh-56px)] p-2.5 space-y-1 m-2 rounded-2xl shrink-0 overflow-y-auto">
     <button onclick="showTab('overview')" id="btn-overview" class="tabBtn tab-active w-full text-left px-3 py-2.5 rounded-xl text-xs"><i class="fas fa-crown w-5"></i> OVERVIEW</button>
+    <button onclick="showTab('members')" id="btn-members" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs border border-yellow-500/30 bg-yellow-500/10"><i class="fas fa-users w-5 text-yellow-400"></i> MEMBERS — 4 FIELDS</button>
+    <button onclick="showTab('checkin')" id="btn-checkin" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs border border-blue-400/50 bg-blue-500/10"><i class="fas fa-qrcode w-5 text-blue-300"></i> QR CHECK-IN</button>
     <button onclick="showTab('videos')" id="btn-videos" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-video w-5"></i> VIDEOS</button>
     <button onclick="showTab('gallery')" id="btn-gallery" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-images w-5"></i> GALLERY</button>
     <button onclick="showTab('events')" id="btn-events" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-calendar w-5"></i> EVENTS</button>
-    <button onclick="showTab('sermons')" id="btn-sermons" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10 border border-blue-400/30"><i class="fas fa-book-bible w-5 text-blue-300"></i> SERMONS</button>
+    <button onclick="showTab('sermons')" id="btn-sermons" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-book-bible w-5 text-blue-300"></i> SERMONS</button>
     <button onclick="showTab('sunday')" id="btn-sunday" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-child w-5"></i> SUNDAY SCHOOL</button>
     <button onclick="showTab('quiz')" id="btn-quiz" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-brain w-5"></i> QUIZ</button>
     <button onclick="showTab('prayer')" id="btn-prayer" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-pray w-5"></i> PRAYER</button>
     <button onclick="showTab('contact')" id="btn-contact" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-envelope w-5"></i> CONTACTS</button>
     <button onclick="showTab('counselling')" id="btn-counselling" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs border border-green-500/30"><i class="fas fa-hand-holding-heart w-5 text-green-400"></i> COUNSELLING</button>
-    <button onclick="showTab('testimonies')" id="btn-testimonies" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs border border-[#facc15]/50 bg-[#facc15]/10"><i class="fas fa-microphone w-5 text-yellow-400"></i> TESTIMONIES + MAP</button>
-    <button onclick="showTab('checkin')" id="btn-checkin" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs border border-blue-400/50 bg-blue-500/10"><i class="fas fa-qrcode w-5 text-blue-300"></i> QR CHECK-IN</button>
-    <button onclick="showTab('members')" id="btn-members" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs border border-yellow-500/30 bg-yellow-500/10"><i class="fas fa-users w-5 text-yellow-400"></i> MEMBERS</button>
+    <button onclick="showTab('testimonies')" id="btn-testimonies" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs border border-[#facc15]/50 bg-[#facc15]/10"><i class="fas fa-microphone w-5 text-yellow-400"></i> TESTIMONIES</button>
   </div>
-
-  <div id="holyGhostBanner" class="hidden fixed top-20 right-4 z-[150] bg-gradient-to-r from-[#facc15] to-yellow-400 text-black px-5 py-3 rounded-2xl shadow-[0_0_30px_#facc15] border-2 border-black font-black text-xs animate-bounce">
-    <span id="holyGhostText">NEW SOUL ENCOUNTERED!</span>
-    <button onclick="document.getElementById('holyGhostBanner').classList.add('hidden')" class="ml-3 bg-black text-white w-6 h-6 rounded-full">x</button>
-  </div>
-  <audio id="holyDing" preload="auto" src="/static/uploads/slide_custom.mp3"></audio>
 
   <div class="main-content flex-1 p-3 md:p-5 space-y-5">
-    <div id="tab-overview" class="tabContent"><div class="glass-panel p-5 rounded-2xl"><h2 class="font-black text-sm">DASHBOARD STATS - CLOUDINARY ENABLED</h2><div class="grid grid-cols-2 md:grid-cols-5 gap-3 mt-4"><div class="stat-card p-3 rounded-xl"><p>VIDEOS</p><h3 id="statVideos" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p>GALLERY</p><h3 id="statGallery" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p>EVENTS</p><h3 id="statEvents" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p>SERMONS</p><h3 id="statSermons" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p>NOTES</p><h3 id="statNotes" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p>PRAYERS</p><h3 id="statPrayers" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p>CONTACTS</p><h3 id="statContacts" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p>COUNSELLING</p><h3 id="statCounselling" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl border-2 border-[#facc15]"><p>VOICE + TRANSCRIPT</p><h3 id="statTestimonies" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl border-2 border-green-300"><p>PRIVATE ENCOUNTERS</p><h3 id="statEncounters" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl border-2 border-blue-300"><p>QR TODAY</p><h3 id="statCheckins" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p>MEMBERS</p><h3 id="statMembers" class="font-black text-xl">0</h3></div></div></div></div>
-
-    <div id="tab-checkin" class="tabContent hidden">
-      <div class="glass-panel p-5 rounded-2xl border-2 border-blue-300 shadow-[0_0_20px_#60a5fa]">
-        <h2 class="font-black text-sm">QR CHECK-IN — SIGNED TOKEN</h2>
-        <div class="mt-4 grid md:grid-cols-2 gap-4">
-          <div class="bg-white rounded-xl border-2 border-dashed border-blue-400 p-3">
-            <h3 class="font-black text-xs mb-2">Camera Scanner</h3>
-            <div id="reader" class="w-full h-60 rounded-xl overflow-hidden border-2 border-blue-200 bg-black flex items-center justify-center text-white text-xs">Click START to scan</div>
-            <div class="flex gap-2 mt-2"><button onclick="startScanner()" id="startScanBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-full text-xs font-black">START CAMERA SCAN</button><button onclick="stopScanner()" id="stopScanBtn" class="hidden bg-red-600 text-white px-4 py-2 rounded-full text-xs font-black">STOP</button></div>
-            <input id="scanInput" placeholder="Scanned token appears here or type ID..." class="w-full border-2 border-blue-200 p-3 rounded-xl text-xs font-black mt-2">
-            <div class="flex gap-2 mt-2"><button onclick="doCheckin()" class="flex-1 bg-green-600 text-white py-2 rounded-full text-xs font-black">MARK PRESENT</button><button onclick="clearScan()" class="bg-gray-200 px-4 py-2 rounded-full text-xs font-black">Clear</button></div>
-            <div id="scanResult" class="mt-3"></div>
-          </div>
-          <div class="bg-white rounded-xl border-2 border-green-200 p-3">
-            <div class="flex justify-between items-center"><h3 class="font-black text-xs">Today's Attendance — <span id="todayDate"></span></h3><span id="checkinCount" class="bg-green-100 border px-3 py-1 rounded-full text-xs font-black">0 present</span></div>
-            <div id="checkinList" class="mt-3 space-y-2 max-h-96 overflow-auto">Loading...</div>
-            <div class="flex gap-2 mt-3"><button onclick="loadCheckins()" class="bg-[#1a2332] text-white px-4 py-1 rounded-full text-xs font-black">Refresh</button><button onclick="exportCheckinsCSV()" class="bg-green-700 text-white px-4 py-1 rounded-full text-xs font-black">Export CSV</button></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="tab-videos" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h3 class="font-black text-sm">ADD VIDEO - CLOUDINARY PERMANENT</h3><form id="videoForm" enctype="multipart/form-data" class="grid md:grid-cols-4 gap-3 mt-4"><input name="title" placeholder="Title*" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs"><select name="category" class="border-2 border-yellow-200 p-3 rounded-xl text-xs"><option>sermon</option><option>worship</option></select><input name="yt" placeholder="YouTube ID or URL" class="border-2 border-yellow-200 p-3 rounded-xl text-xs"><div class="upload-zone p-3 rounded-xl"><input name="file" type="file" accept="video/*" class="w-full text-xs"></div><input name="description" placeholder="Desc" class="border-2 border-yellow-200 p-3 rounded-xl text-xs md:col-span-4"><button class="md:col-span-4 bg-[#facc15] text-black py-3 rounded-xl font-black text-xs">+ UPLOAD VIDEO TO CLOUDINARY</button></form></div><div id="videosList" class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4"></div></div>
-
-    <div id="tab-gallery" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl border-2 border-yellow-300"><h3 class="font-black text-sm">GALLERY — CLOUDINARY PERMANENT</h3><form id="galleryForm" enctype="multipart/form-data" class="grid md:grid-cols-3 gap-3 mt-4"><input name="title" placeholder="Album Title*" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs"><select name="category" class="border-2 border-yellow-200 p-3 rounded-xl text-xs"><option>Events</option><option>Worship</option><option>Sunday School</option></select><select name="visibility" class="border-2 border-yellow-200 p-3 rounded-xl text-xs font-black"><option value="public">PUBLIC</option><option value="members">MEMBERS ONLY</option></select><input name="cover" placeholder="Cover URL (optional)" class="border-2 border-yellow-200 p-3 rounded-xl text-xs md:col-span-3"><div class="md:col-span-3 upload-zone p-3 rounded-xl"><label class="text-xs font-black">Upload Images (multiple) — Cloudinary Permanent</label><input name="files" type="file" accept="image/*" multiple class="w-full text-xs bg-white p-2 rounded-lg border mt-1"></div><button class="md:col-span-3 bg-green-600 text-white py-3 rounded-xl font-black text-xs">+ CREATE ALBUM TO CLOUDINARY</button></form></div><div id="galleryList" class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4"></div></div>
-
-    <div id="tab-events" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h3 class="font-black text-sm">EVENTS - CLOUDINARY PERMANENT</h3><form id="eventForm" enctype="multipart/form-data" class="grid md:grid-cols-3 gap-3 mt-4"><input name="title" placeholder="Title*" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs"><input name="date" type="date" required class="border-2 border-yellow-200 p-3 rounded-xl text-xs"><input name="time" type="time" class="border-2 border-yellow-200 p-3 rounded-xl text-xs"><input name="location" placeholder="Location" class="border-2 border-yellow-200 p-3 rounded-xl text-xs"><div class="upload-zone p-3 rounded-xl"><input name="file" type="file" accept="image/*" class="w-full text-xs"></div><textarea name="description" placeholder="Description" class="border-2 border-yellow-200 p-3 rounded-xl text-xs md:col-span-3 h-20"></textarea><button class="md:col-span-3 bg-red-700 text-white py-3 rounded-xl font-black text-xs">+ CREATE EVENT TO CLOUDINARY</button></form></div><div id="eventsList" class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4"></div><div class="mt-8 glass-panel p-5 rounded-2xl"><div id="regsList">Loading...</div></div></div>
-
-    <div id="tab-sermons" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl border-2 border-blue-300"><h3 class="font-black text-sm">SERMONS - CLOUDINARY PERMANENT</h3><form id="sermonForm" enctype="multipart/form-data" class="grid md:grid-cols-3 gap-3 mt-4"><input name="title" placeholder="Title*" required class="border p-3 rounded-xl text-xs"><input name="speaker" placeholder="Speaker" class="border p-3 rounded-xl text-xs"><select name="type" class="border p-3 rounded-xl text-xs"><option>video</option><option>audio</option></select><input name="yt" placeholder="YT ID" class="border p-3 rounded-xl text-xs"><input name="series" placeholder="Series" class="border p-3 rounded-xl text-xs"><div class="upload-zone p-2 rounded-xl"><label class="text-xs font-black">Upload File — Cloudinary</label><input name="file" type="file" class="w-full text-xs"></div><textarea name="description" placeholder="Desc" class="border p-3 rounded-xl text-xs md:col-span-3 h-20"></textarea><button class="md:col-span-3 bg-[#1a2332] text-white py-3 rounded-xl font-black text-xs">+ ADD SERMON TO CLOUDINARY</button></form></div><div id="sermonsList" class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>
-
-    <div id="tab-sunday" class="tabContent hidden"><div class="grid md:grid-cols-2 gap-5"><div class="glass-panel p-5 rounded-2xl"><h3 class="font-black text-xs">SUNDAY NOTE - CLOUDINARY</h3><form id="noteForm" enctype="multipart/form-data" class="space-y-3 mt-4"><input name="title" placeholder="Title*" required class="w-full border p-3 rounded-xl text-xs"><textarea name="content" placeholder="Content" required class="w-full border p-3 rounded-xl text-xs h-24"></textarea><div class="upload-zone p-3 rounded-xl"><input name="file" type="file" class="w-full text-xs"></div><button class="w-full bg-blue-600 text-white py-3 rounded-xl font-black text-xs">+ ADD NOTE TO CLOUDINARY</button></form><div id="notesAdminList" class="mt-3 space-y-3"></div></div><div class="glass-panel p-5 rounded-2xl"><h3 class="font-black text-xs">SUNDAY VIDEO - CLOUDINARY</h3><form id="sundayVideoForm" enctype="multipart/form-data" class="space-y-3 mt-4"><input name="title" placeholder="Title*" required class="w-full border p-3 rounded-xl text-xs"><input name="yt" placeholder="YT ID" class="w-full border p-3 rounded-xl text-xs"><div class="upload-zone p-3 rounded-xl"><input name="file" type="file" accept="video/*" class="w-full text-xs"></div><button class="w-full bg-purple-600 text-white py-3 rounded-xl font-black text-xs">+ ADD VIDEO TO CLOUDINARY</button></form><div id="sundayVideosAdminList" class="mt-3 space-y-3"></div></div></div></div>
-
-    <div id="tab-quiz" class="tabContent hidden"><div class="glass-panel p-6 rounded-2xl"><a href="/admin/quiz" class="bg-[#facc15] text-black px-6 py-2 rounded-full font-black text-xs">OPEN QUIZ ADMIN</a></div></div>
-    <div id="tab-prayer" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl border-2 border-purple-300"><h2 class="font-black text-sm">PRAYER WALL</h2><div class="mt-4 flex gap-2 flex-wrap"><button onclick="loadPrayerTab('public')" class="bg-[#facc15] text-black px-5 py-2 rounded-full font-black">PUBLIC WALL</button><button onclick="openPastorAuth()" class="bg-[#1a2332] text-white px-5 py-2 rounded-full font-black">PASTOR PRIVATE</button><span id="prayerCount" class="bg-white border px-4 py-2 rounded-full">0 prayers</span></div></div><div id="publicPrayersAdmin" class="mt-5 space-y-3"></div><div id="privatePrayersAdmin" class="mt-5 hidden"><div id="privateList" class="space-y-3"></div></div></div>
-    <div id="tab-contact" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h2 class="font-black text-sm">CONTACTS</h2><span id="contactCount" class="bg-white border px-4 py-2 rounded-full">0</span></div><div id="contactsList" class="mt-5 space-y-3"></div></div>
-    <div id="tab-counselling" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl border-2 border-green-300"><h2 class="font-black text-sm">COUNSELLING</h2><div class="mt-4 flex gap-2"><button onclick="openCounselAuth()" class="bg-green-700 text-white px-5 py-2 rounded-full font-black">UNLOCK</button><span id="counselCount" class="bg-white border px-4 py-2 rounded-full">0</span></div></div><div id="counsellingList" class="mt-5 hidden space-y-3"></div><p id="counselLockedMsg" class="mt-5 bg-white/90 p-5 rounded-2xl text-xs text-center border-2 border-dashed border-green-300">Locked</p></div>
-
-    <div id="tab-testimonies" class="tabContent hidden">
-      <div class="glass-panel p-5 rounded-2xl border-2 border-[#facc15] shadow-[0_0_20px_#facc15]">
-        <h2 class="font-black text-sm">TESTIMONIES + PRIVATE ENCOUNTERS</h2>
-        <div class="mt-4 flex gap-2 flex-wrap">
-          <button onclick="openTestimonyAuth()" class="bg-[#facc15] text-black px-5 py-2 rounded-full font-black">UNLOCK ALL PRIVATE</button>
-          <span id="testimonyCount" class="bg-white border-2 border-yellow-300 px-4 py-2 rounded-full font-black">0 voice</span>
-          <span id="encounterCount" class="bg-white border-2 border-green-300 px-4 py-2 rounded-full font-black">0 private map</span>
-          <span id="encounterSummary" class="bg-white border-2 border-blue-300 px-4 py-2 rounded-full font-black">Summary: 0 new | 0 prayed | 0 visited</span>
-          <button onclick="loadTestimoniesData()" class="bg-[#1a2332] text-white px-4 py-2 rounded-full font-black">Refresh</button>
-        </div>
-      </div>
-      <div class="grid md:grid-cols-2 gap-5 mt-5">
-        <div><h3 class="font-black text-xs bg-yellow-100 border-2 border-yellow-300 p-2 rounded-xl">VOICE TESTIMONIES + TRANSCRIPT</h3><div id="testimoniesList" class="mt-3 hidden space-y-3"></div><p id="testimonyLockedMsg" class="mt-3 bg-white/90 p-5 rounded-2xl text-xs text-center border-2 border-dashed border-yellow-400">Locked — Enter CounselorKey2025</p></div>
-        <div><h3 class="font-black text-xs bg-green-100 border-2 border-green-300 p-2 rounded-xl">PRIVATE ENCOUNTER MAP</h3><div id="adminEncounterMap" class="w-full h-80 rounded-xl border-2 border-green-200 mt-2 hidden"></div><div class="flex gap-2 mt-2"><button onclick="exportEncountersCSV()" class="bg-green-700 text-white px-3 py-1 rounded-full text-xs font-black">Export CSV</button><button onclick="loadTestimoniesData()" class="bg-[#1a2332] text-white px-3 py-1 rounded-full text-xs font-black">Refresh Map</button></div><div id="adminEncountersList" class="mt-3 hidden space-y-3"></div><p id="encounterLockedMsg" class="mt-3 bg-white/90 p-5 rounded-2xl text-xs text-center border-2 border-dashed border-green-300">Private map locked</p></div>
-      </div>
-    </div>
+    <div id="tab-overview" class="tabContent"><div class="glass-panel p-5 rounded-2xl"><h2 class="font-black text-sm">DASHBOARD — SIMPLIFIED MEMBERS (4 FIELDS)</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4"><div class="stat-card p-3 rounded-xl"><p class="text-[10px]">MEMBERS</p><h3 id="statMembers" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p class="text-[10px]">QR TODAY</p><h3 id="statCheckins" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p class="text-[10px]">VIDEOS</p><h3 id="statVideos" class="font-black text-xl">0</h3></div><div class="stat-card p-3 rounded-xl"><p class="text-[10px]">GALLERY</p><h3 id="statGallery" class="font-black text-xl">0</h3></div></div></div></div>
 
     <div id="tab-members" class="tabContent hidden">
-      <div class="glass-panel p-5 rounded-2xl border-2 border-yellow-300"><h2 class="font-black text-sm">MEMBERS — SEARCH</h2><div class="mt-3 flex flex-col md:flex-row gap-2"><div class="flex-1 relative"><input id="memberSearch" oninput="filterMembers()" placeholder="Name, Phone, Email, ID..." class="w-full border-2 border-yellow-300 p-3 pl-10 rounded-full bg-white"><span class="absolute left-3 top-3">🔍</span></div><div class="flex gap-2 flex-wrap"><span id="memberCount" class="bg-white border px-3 py-1 rounded-full">0 total</span><span id="memberPending" class="bg-orange-100 border px-3 py-1 rounded-full">0 pending</span><span id="memberApproved" class="bg-green-100 border px-3 py-1 rounded-full">0 approved</span><button onclick="loadTabData('members')" class="bg-[#1a2332] text-white px-4 py-2 rounded-full font-black">↻</button><button onclick="clearMemberSearch()" class="bg-gray-200 px-4 py-2 rounded-full font-black">✕</button></div></div></div>
+      <div class="glass-panel p-5 rounded-2xl border-2 border-yellow-300">
+        <h2 class="font-black text-sm">MEMBERS — SIMPLIFIED 4 FIELDS ONLY ✅</h2>
+        <p class="text-[11px] text-gray-500 mt-1">Full Name • Photo • Ministry • Emergency Contact — No more ID, DOB, etc. Fast approval!</p>
+        <div class="mt-4 flex flex-col md:flex-row gap-2">
+          <div class="flex-1 relative"><input id="memberSearch" oninput="filterMembers()" placeholder="Search by Full Name, Ministry, Emergency Contact, Phone..." class="w-full border-2 border-yellow-300 p-3 pl-10 rounded-full bg-white text-xs"><span class="absolute left-3 top-3 text-sm">🔍</span></div>
+          <div class="flex gap-2 flex-wrap items-center">
+            <span id="memberCount" class="bg-white border px-3 py-2 rounded-full text-xs font-bold">0 total</span>
+            <span id="memberPending" class="bg-orange-100 border border-orange-200 px-3 py-2 rounded-full text-xs font-bold">0 pending</span>
+            <span id="memberApproved" class="bg-green-100 border border-green-200 px-3 py-2 rounded-full text-xs font-bold">0 approved</span>
+            <button onclick="loadTabData('members')" class="bg-[#1a2332] text-white px-4 py-2 rounded-full font-black text-xs">↻ Refresh</button>
+            <button onclick="clearMemberSearch()" class="bg-gray-200 px-4 py-2 rounded-full font-black text-xs">✕ Clear</button>
+          </div>
+        </div>
+      </div>
       <div id="membersList" class="mt-5 space-y-3"></div>
     </div>
+
+    <div id="tab-checkin" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h2 class="font-black text-sm">QR CHECK-IN</h2><div id="reader" class="w-full h-60 bg-black rounded-xl mt-3"></div><input id="scanInput" placeholder="Token..." class="w-full border-2 border-blue-200 p-3 rounded-xl text-xs mt-2"><button onclick="doCheckin()" class="mt-2 bg-green-600 text-white px-5 py-2 rounded-full text-xs font-black">MARK PRESENT</button><div id="checkinList" class="mt-3"></div></div></div>
+    <div id="tab-videos" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h3 class="font-black text-sm">VIDEOS</h3><div id="videosList" class="mt-3"></div></div></div>
+    <div id="tab-gallery" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h3 class="font-black text-sm">GALLERY</h3><div id="galleryList" class="mt-3"></div></div></div>
+    <div id="tab-events" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h3 class="font-black text-sm">EVENTS</h3><div id="eventsList" class="mt-3"></div></div></div>
+    <div id="tab-sermons" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h3 class="font-black text-sm">SERMONS</h3><div id="sermonsList" class="mt-3"></div></div></div>
+    <div id="tab-sunday" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h3 class="font-black text-sm">SUNDAY SCHOOL</h3><div id="notesAdminList" class="mt-3"></div></div></div>
+    <div id="tab-quiz" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><a href="/admin/quiz" class="bg-[#facc15] text-black px-6 py-2 rounded-full font-black text-xs">OPEN QUIZ ADMIN</a></div></div>
+    <div id="tab-prayer" class="tabContent hidden"><div id="publicPrayersAdmin"></div></div>
+    <div id="tab-contact" class="tabContent hidden"><div id="contactsList"></div></div>
+    <div id="tab-counselling" class="tabContent hidden"><div id="counsellingList"></div></div>
+    <div id="tab-testimonies" class="tabContent hidden"><div id="testimoniesList"></div><div id="adminEncountersList"></div><div id="adminEncounterMap" class="w-full h-80 rounded-xl border-2 mt-3 hidden"></div></div>
   </div>
 </div>
 </div>
 
-<div id="editModal" class="fixed inset-0 bg-black/60 hidden z-[100] flex items-center justify-center p-4"><div class="modal-scroll bg-white rounded-2xl p-5 w-full max-w-lg border-4 border-[#facc15]"><div class="flex justify-between items-center mb-3"><h3 id="editModalTitle" class="font-black text-sm">EDIT</h3><button onclick="closeEdit()" class="w-8 h-8 bg-red-500 text-white rounded-full">✕</button></div><form id="editForm" enctype="multipart/form-data" class="space-y-3"><input type="hidden" id="editId"><input type="hidden" id="editType"><input id="editTitle" name="title" required class="w-full border-2 border-yellow-200 p-3 rounded-xl text-xs"><textarea id="editDesc" name="description" class="w-full border-2 border-yellow-200 p-3 rounded-xl text-xs h-20"></textarea><div id="editExtra"></div><div class="border-2 border-dashed border-[#facc15] bg-yellow-50 p-3 rounded-xl"><input name="file" type="file" class="w-full text-xs"></div><button class="w-full bg-[#facc15] text-black py-3 rounded-xl font-black text-xs">UPDATE</button></form></div></div>
-<div id="pastorModal" class="hidden fixed inset-0 bg-black/70 z-[101] flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-6 w-full max-w-sm border-4 border-[#facc15]"><h3 class="font-black text-sm">Pastor Password</h3><input id="pastorPwd" type="password" autocomplete="current-password" class="w-full border p-3 rounded-xl text-xs mt-4"><div class="flex gap-2 mt-4"><button onclick="authPastor()" class="flex-1 bg-purple-700 text-white py-2.5 rounded-full font-black text-xs">UNLOCK</button><button onclick="closePastorAuth()" class="flex-1 bg-gray-200 py-2.5 rounded-full font-black text-xs">CANCEL</button></div><p id="pastorError" class="text-red-500 mt-3 hidden">Wrong!</p></div></div>
-<div id="counselModal" class="hidden fixed inset-0 bg-black/70 z-[102] flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-6 w-full max-w-sm border-4 border-green-500"><h3 class="font-black text-sm">Counselling Password</h3><input id="counselPwd" type="password" autocomplete="current-password" class="w-full border p-3 rounded-xl text-xs mt-4"><div class="flex gap-2 mt-4"><button onclick="authCounselling()" class="flex-1 bg-green-700 text-white py-2.5 rounded-full font-black text-xs">UNLOCK</button><button onclick="closeCounselAuth()" class="flex-1 bg-gray-200 py-2.5 rounded-full font-black text-xs">CANCEL</button></div><p id="counselError" class="text-red-500 mt-3 hidden">Wrong!</p></div></div>
-<div id="testimonyModal" class="hidden fixed inset-0 bg-black/70 z-[103] flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-6 w-full max-w-sm border-4 border-[#facc15]"><h3 class="font-black text-sm">Testimonies + Private Map Password</h3><input id="testimonyPwd" type="password" autocomplete="current-password" class="w-full border p-3 rounded-xl text-xs mt-4"><div class="flex gap-2 mt-4"><button onclick="authTestimonies()" class="flex-1 bg-[#facc15] text-black py-2.5 rounded-full font-black text-xs">UNLOCK</button><button onclick="closeTestimonyAuth()" class="flex-1 bg-gray-200 py-2.5 rounded-full font-black text-xs">CANCEL</button></div><p id="testimonyError" class="text-red-500 mt-3 hidden">Wrong!</p></div></div>
 <div id="memberViewModal" class="member-modal hidden bg-black/80 backdrop-blur z-[200] flex items-center justify-center p-3"><div class="member-modal-inner bg-transparent flex flex-col relative"><button onclick="closeMemberView()" class="member-close bg-red-600 text-white w-10 h-10 rounded-full font-black border-2 border-white">✕</button><div id="memberViewContent" class="member-modal-content scrollable"></div></div></div>
 
 <script>
-// UNIVERSAL FIX FOR CLOUDINARY - PRESERVES ALL ACHIEVEMENTS
-function fixUrl(u){
-  if(!u) return '';
-  u=String(u).trim();
-  if(!u) return '';
-  if(u.startsWith('http://') || u.startsWith('https://')) return u; // CLOUDINARY PERMANENT
-  if(u.startsWith('/static/')) return u;
-  if(u.startsWith('uploads/')) return '/static/'+u;
-  if(u.startsWith('static/')) return '/'+u;
-  return '/static/'+u.replace(/^\/+/, '');
-}
-function fixCover(url){ if(!url) return '/static/uploads/god_key.jpg'; let f=fixUrl(url); return f||'/static/uploads/god_key.jpg'; }
+function fixUrl(u){ if(!u) return ''; u=String(u).trim(); if(u.startsWith('http')) return u; if(u.startsWith('/static/')) return u; if(u.startsWith('uploads/')) return '/static/'+u; return '/static/'+u.replace(/^\/+/,''); }
 function fixMemberPhoto(p){ if(!p) return 'https://via.placeholder.com/150x150.png?text=No+Photo'; return fixUrl(p)||'https://via.placeholder.com/150x150.png?text=No+Photo'; }
-function fixVideo(url){ let f=fixUrl(url); return f||''; }
-function fixAudio(url){ return fixUrl(url); }
-
-function getCsrf(){ return document.querySelector('meta[name="csrf-token"]')?.content || ''; }
-function esc(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-window._cache={}; window._memberCache={};
+function getCsrf(){ return document.querySelector('meta[name="csrf-token"]')?.content||''; }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+window._memberCache={};
 
 function showTab(name){
   document.querySelectorAll('.tabContent').forEach(t=>t.classList.add('hidden'));
@@ -154,269 +102,153 @@ function showTab(name){
   document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('tab-active'));
   let btn=document.getElementById('btn-'+name); if(btn) btn.classList.add('tab-active');
   loadTabData(name);
-  if(name==='testimonies' && window.adminMap){ setTimeout(()=>{ try{ window.adminMap.invalidateSize(); }catch{} }, 350); }
 }
-function filterMembers(){ const q=(document.getElementById('memberSearch').value||'').toLowerCase().trim(); if(!window._allMembers) return; if(!q){ renderMembersList(window._allMembers); return; } const filtered=window._allMembers.filter(x=>{ const hay=[x.personal?.fullName||'',x.username||'',x.email||'',x.contact?.phone||'',x.contact?.whatsapp||'',x.personal?.idNumber||''].join(' ').toLowerCase(); return hay.includes(q); }); renderMembersList(filtered); }
+async function secureFetch(url, opts={}){ opts.headers=opts.headers||{}; const csrf=getCsrf(); if(csrf) opts.headers['X-CSRF-Token']=csrf; opts.credentials='same-origin'; return fetch(url, opts); }
+
+// --- SIMPLIFIED MEMBERS LOGIC - ONLY 4 FIELDS ---
+function filterMembers(){
+  const q=(document.getElementById('memberSearch').value||'').toLowerCase().trim();
+  if(!window._allMembers) return;
+  if(!q){ renderMembersList(window._allMembers); return; }
+  const filtered=window._allMembers.filter(x=>{
+    const fullName = (x.personal?.fullName || x.fullName || '').toLowerCase();
+    const ministry = (x.ministry?.department || x.ministry?.preferredMinistry || x.personal?.ministry || '').toLowerCase();
+    const emergencyName = (x.emergency?.name || x.personal?.emergencyName || '').toLowerCase();
+    const emergencyPhone = (x.emergency?.phone || x.personal?.emergencyPhone || '').toLowerCase();
+    const username = (x.username||'').toLowerCase();
+    const hay = `${fullName} ${ministry} ${emergencyName} ${emergencyPhone} ${username}`.toLowerCase();
+    return hay.includes(q);
+  });
+  renderMembersList(filtered);
+}
 function clearMemberSearch(){ document.getElementById('memberSearch').value=''; renderMembersList(window._allMembers||[]); }
-function renderMembersList(list){ const el=document.getElementById('membersList'); if(!list.length){ el.innerHTML=`<div class="bg-white p-6 rounded-xl text-center font-black">No members found</div>`; return; } window._memberCache={}; list.forEach(m=>window._memberCache[m.id]=m); el.innerHTML=list.map(x=>`<div class="bg-white rounded-xl p-3 border-2 ${x.status==='pending'?'border-orange-300':'border-green-300'} flex gap-3 items-center"><img src="${fixMemberPhoto(x.photo)}" class="w-14 h-14 rounded-full object-cover border-2 border-[#facc15] bg-white shrink-0" onerror="this.src='https://via.placeholder.com/150x150.png?text=No+Photo'"><div class="flex-1 min-w-0"><h3 class="font-black truncate">${esc(x.personal?.fullName||'No Name')} — ${esc(x.username)}</h3><p class="text-gray-600 truncate fit">${esc(x.email)} • ${esc(x.contact?.phone||'')} • ID:${esc(x.personal?.idNumber||'')}</p></div><button onclick="openMemberView(${x.id})" class="bg-[#1a2332] text-white px-4 py-2 rounded-full font-black">VIEW FULL</button></div>`).join(''); }
-async function secureFetch(url, opts={}){ opts.headers = opts.headers||{}; const csrf=getCsrf(); if(csrf) opts.headers['X-CSRF-Token']=csrf; opts.credentials='same-origin'; return fetch(url, opts); }
+
+function renderMembersList(list){
+  const el=document.getElementById('membersList');
+  if(!list.length){ el.innerHTML=`<div class="bg-white p-6 rounded-xl text-center font-black text-sm">No members found - Simplified 4 fields search</div>`; return; }
+  window._memberCache={}; list.forEach(m=>window._memberCache[m.id]=m);
+  el.innerHTML=list.map(x=>{
+    const fullName = x.personal?.fullName || x.fullName || x.username || 'No Name';
+    const ministry = x.ministry?.department || x.ministry?.preferredMinistry || x.personal?.ministry || 'Not set';
+    const emergencyName = x.emergency?.name || x.personal?.emergencyName || 'N/A';
+    const emergencyPhone = x.emergency?.phone || x.personal?.emergencyPhone || '';
+    const statusColor = x.status==='pending'?'border-orange-300 bg-orange-50':'border-green-300 bg-green-50';
+    const statusBadge = x.status==='pending'?'<span class="bg-orange-200 text-orange-800 px-2 py-1 rounded-full text-[10px] font-black">PENDING</span>':'<span class="bg-green-200 text-green-800 px-2 py-1 rounded-full text-[10px] font-black">APPROVED</span>';
+    return `<div class="bg-white rounded-2xl p-4 border-2 ${statusColor} flex gap-4 items-center shadow-sm">
+      <img src="${fixMemberPhoto(x.photo)}" class="w-16 h-16 rounded-full object-cover border-3 border-[#facc15] bg-white shrink-0" onerror="this.src='https://via.placeholder.com/150x150.png?text=No+Photo'">
+      <div class="flex-1 min-w-0">
+        <div class="flex gap-2 items-center flex-wrap">
+          <h3 class="font-black text-sm truncate">${esc(fullName)}</h3>
+          ${statusBadge}
+          <span class="bg-yellow-50 border border-yellow-200 px-2 py-1 rounded-full text-[10px] font-bold">🎶 ${esc(ministry)}</span>
+        </div>
+        <div class="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="bg-blue-50 border border-blue-100 rounded-full px-3 py-1"><span class="font-black">Ministry:</span> ${esc(ministry)}</div>
+          <div class="bg-red-50 border border-red-100 rounded-full px-3 py-1"><span class="font-black">Emergency:</span> ${esc(emergencyName)} • ${esc(emergencyPhone)}</div>
+        </div>
+        <p class="text-[10px] text-gray-400 mt-2">ID:${x.id} • ${esc(x.username)} • ${esc(x.email)}</p>
+      </div>
+      <div class="flex flex-col gap-2">
+        <button onclick="openMemberView(${x.id})" class="bg-[#0a1931] text-white px-5 py-2.5 rounded-full font-black text-xs">VIEW 4 FIELDS</button>
+        ${x.status==='pending'?`<button onclick="approveMember(${x.id})" class="bg-green-600 text-white px-5 py-2 rounded-full font-black text-xs">APPROVE</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openMemberView(id){
+  const x=window._memberCache[id]|| (window._allMembers||[]).find(m=>m.id===id);
+  if(!x) return;
+  const fullName = x.personal?.fullName || x.fullName || x.username || 'No Name';
+  const ministry = x.ministry?.department || x.ministry?.preferredMinistry || x.personal?.ministry || 'Not set';
+  const emergencyName = x.emergency?.name || x.personal?.emergencyName || 'N/A';
+  const emergencyPhone = x.emergency?.phone || x.personal?.emergencyPhone || 'N/A';
+  const emergencyRel = x.emergency?.relationship || x.personal?.emergencyRelationship || x.emergency?.relation || '';
+  const photo = fixMemberPhoto(x.photo);
+  document.getElementById('memberViewModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  document.getElementById('memberViewContent').innerHTML=`
+  <div class="bg-white rounded-[1.5rem] p-6 border-4 border-[#facc15] shadow-[0_0_30px_#facc15] max-w-3xl mx-auto">
+    <div class="text-center">
+      <img src="${photo}" class="w-32 h-32 rounded-full mx-auto border-4 border-[#facc15] object-cover shadow-[0_0_20px_#facc15]" onerror="this.src='https://via.placeholder.com/150x150.png?text=No+Photo'">
+      <h2 class="font-black text-xl mt-4">${esc(fullName)}</h2>
+      <p class="text-xs font-bold ${x.status==='pending'?'text-orange-600 bg-orange-50':'text-green-600 bg-green-50'} border px-4 py-1.5 rounded-full w-fit mx-auto mt-2">${esc(x.status.toUpperCase())} • SIMPLIFIED 4 FIELDS</p>
+      <p class="text-[11px] text-gray-400 mt-2">ID:${x.id} • ${esc(x.username)} • ${esc(x.email)}</p>
+    </div>
+
+    <div class="mt-6 grid md:grid-cols-2 gap-4">
+      <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-5">
+        <div class="flex items-center gap-2 mb-2"><div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">👤</div><h3 class="font-black text-xs">1. FULL NAMES</h3></div>
+        <p class="font-black text-sm mt-3">${esc(fullName)}</p>
+        <p class="text-[11px] text-gray-500 mt-1">Member full official names</p>
+      </div>
+
+      <div class="bg-purple-50 border-2 border-purple-200 rounded-2xl p-5 text-center">
+        <div class="flex items-center gap-2 mb-2"><div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">📸</div><h3 class="font-black text-xs">2. PHOTO</h3></div>
+        <img src="${photo}" class="w-20 h-20 rounded-full mx-auto mt-3 border-2 border-[#facc15] object-cover">
+        <p class="text-[11px] text-gray-500 mt-2">Member ID photo — clear face</p>
+        <a href="${photo}" target="_blank" class="mt-2 inline-block text-[10px] bg-white border px-3 py-1 rounded-full font-bold">View Full Photo →</a>
+      </div>
+
+      <div class="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-5">
+        <div class="flex items-center gap-2 mb-2"><div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">🎶</div><h3 class="font-black text-xs">3. MINISTRY / DEPARTMENT</h3></div>
+        <p class="font-black text-lg mt-3">🎶 ${esc(ministry)}</p>
+        <p class="text-[11px] text-gray-500 mt-2">Preferred ministry to serve</p>
+        <div class="mt-3 bg-white border border-yellow-100 rounded-full px-3 py-1 text-[10px] font-bold w-fit">${esc(ministry)}</div>
+      </div>
+
+      <div class="bg-red-50 border-2 border-red-200 rounded-2xl p-5">
+        <div class="flex items-center gap-2 mb-2"><div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">🚨</div><h3 class="font-black text-xs">4. EMERGENCY CONTACT</h3></div>
+        <p class="font-black text-sm mt-3">${esc(emergencyName)}</p>
+        <p class="text-xs mt-1">📞 ${esc(emergencyPhone)} ${emergencyRel?'• '+esc(emergencyRel):''}</p>
+        <p class="text-[11px] text-gray-500 mt-2">Person to contact in emergency — confidential</p>
+        <div class="mt-3 flex gap-2">
+          <span class="bg-white border border-red-100 rounded-full px-3 py-1 text-[10px] font-bold">Name: ${esc(emergencyName)}</span>
+          <span class="bg-white border border-red-100 rounded-full px-3 py-1 text-[10px] font-bold">Phone: ${esc(emergencyPhone)}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 bg-gray-50 border-2 border-gray-100 rounded-2xl p-4">
+      <h4 class="font-black text-[11px]">ACCOUNT INFO (for reference)</h4>
+      <div class="mt-2 grid grid-cols-2 gap-2 text-xs">
+        <div class="bg-white p-2 rounded-xl border"><span class="font-black">Username:</span> ${esc(x.username)}</div>
+        <div class="bg-white p-2 rounded-xl border"><span class="font-black">Email:</span> ${esc(x.email)}</div>
+        <div class="bg-white p-2 rounded-xl border col-span-2"><span class="font-black">Status:</span> ${esc(x.status)} • ID:${x.id} • Simplified 4-field registration</div>
+      </div>
+    </div>
+
+    <div class="mt-6 flex gap-2 flex-wrap justify-center">
+      ${x.status==='pending'?`<button onclick="approveMember(${x.id})" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full font-black text-xs shadow-lg">✅ APPROVE MEMBER</button><button onclick="rejectMember(${x.id})" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-black text-xs">REJECT</button>`:`<span class="bg-green-100 border-2 border-green-300 text-green-800 px-6 py-3 rounded-full font-black text-xs">✅ APPROVED • 4 FIELDS</span>`}
+      <button onclick="deleteMember(${x.id})" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-black text-xs">DELETE</button>
+      <button onclick="closeMemberView()" class="bg-gray-200 hover:bg-gray-300 px-6 py-3 rounded-full font-black text-xs">CLOSE</button>
+    </div>
+    <p class="text-center text-[10px] text-gray-400 mt-4">🔒 Simplified: Only 4 fields • Full Name, Photo, Ministry, Emergency • Built by Nelson .T. Tactics</p>
+  </div>`;
+}
+function closeMemberView(){ document.getElementById('memberViewModal').classList.add('hidden'); document.body.style.overflow=''; }
+async function approveMember(id){ if(confirm('Approve this 4-field member?')){ await secureFetch('/api/admin/member/approve/'+id,{method:'POST'}); loadTabData('members'); closeMemberView(); } }
+async function deleteMember(id){ if(confirm('Delete member? This cannot be undone.')){ await secureFetch('/api/admin/member/delete/'+id,{method:'POST'}); loadTabData('members'); closeMemberView(); } }
+async function rejectMember(id){ let reason=prompt('Reason for rejection?'); if(reason===null) return; await secureFetch('/api/admin/member/reject/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reason})}); loadTabData('members'); closeMemberView(); }
 
 async function loadTabData(name){
   if(name==='overview'){
     try{
-      let v=await fetch('/api/videos').then(r=>r.json()); document.getElementById('statVideos').innerText=v.length;
-      let g=await fetch('/api/admin/gallery/all').then(r=>r.json()).catch(async()=>await fetch('/api/gallery').then(r=>r.json())); document.getElementById('statGallery').innerText=g.length;
-      let ev=await fetch('/api/events').then(r=>r.json()).catch(()=>[]); document.getElementById('statEvents').innerText=ev.length;
-      let n=await fetch('/api/sunday-notes').then(r=>r.json()); document.getElementById('statNotes').innerText=n.length;
-      let s=await fetch('/api/sermons').then(r=>r.json()).catch(()=>[]); document.getElementById('statSermons').innerText=s.length||0;
-      let pr=await fetch('/api/prayers').then(r=>r.json()).catch(()=>[]); document.getElementById('statPrayers').innerText=pr.length;
-      let co=await fetch('/api/contact/messages').then(r=>r.json()).catch(()=>[]); document.getElementById('statContacts').innerText=co.length;
-      let coun=await fetch('/api/counselling-requests/count').then(r=>r.json()).catch(()=>({count:0})); document.getElementById('statCounselling').innerText=coun.count||0;
-      let mem=await fetch('/api/admin/members/count').then(r=>r.json()).catch(()=>({approved:0})); document.getElementById('statMembers').innerText=mem.approved||0;
-      let testi=await fetch('/api/admin/testimonies/count').then(r=>r.json()).catch(()=>({count:0})); document.getElementById('statTestimonies').innerText=testi.count||0;
-      let enc=await fetch('/api/admin/encounters/count').then(r=>r.json()).catch(()=>({count:0})); document.getElementById('statEncounters').innerText=enc.count||0;
-      let chk=await fetch('/api/admin/checkins/count').then(r=>r.json()).catch(()=>({count:0})); document.getElementById('statCheckins').innerText=chk.count||0;
+      let m=await fetch('/api/admin/members/count').then(r=>r.json()).catch(()=>({approved:0})); document.getElementById('statMembers').innerText=m.approved||0;
+      let v=await fetch('/api/videos').then(r=>r.json()).catch(()=>[]); document.getElementById('statVideos').innerText=v.length;
+      let g=await fetch('/api/gallery').then(r=>r.json()).catch(()=>[]); document.getElementById('statGallery').innerText=g.length;
     }catch(e){}
   }
-  if(name==='videos'){
-    let v=await fetch('/api/videos').then(r=>r.json());
-    window._cache={}; v.forEach(i=>window._cache['video_'+i.id]=i);
-    document.getElementById('videosList').innerHTML=v.map(x=>{
-      let src = fixVideo(x.local_file);
-      let isCloud = String(x.local_file||'').startsWith('http');
-      let player = '';
-      if(x.yt){
-        player = `<img src="https://img.youtube.com/vi/${esc(x.yt)}/hqdefault.jpg" class="w-full h-full object-cover"><div class="absolute bottom-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded">YT</div>`;
-      } else if(src){
-        player = `<video src="${esc(src)}" class="w-full h-full object-cover" controls muted preload="metadata"></video>`;
-      } else {
-        player = `<div class="p-4 text-xs">No file</div>`;
-      }
-      return `<div class="bg-white p-3 rounded-xl border"><div class="h-40 bg-black rounded-xl overflow-hidden flex items-center justify-center relative">${player}</div><p class="font-black mt-2 text-xs truncate">${esc(x.title)}</p><p class="text-xs text-gray-500 truncate">${isCloud?'☁ Cloudinary Permanent':''} ${esc(x.category||'')}</p><div class="flex gap-1 mt-2"><button onclick="openEditById('video',${x.id})" class="flex-1 bg-blue-500 text-white py-1.5 rounded-full font-black text-xs">EDIT</button><button onclick="delVideo(${x.id})" class="flex-1 bg-red-500 text-white py-1.5 rounded-full font-black text-xs">DELETE</button></div><a href="${esc(src||'#')}" target="_blank" class="block mt-1 text-xs text-blue-600 underline truncate">${esc(src||'')}</a></div>`;
-    }).join('');
+  if(name==='members'){
+    let m=await fetch('/api/admin/members').then(r=>r.json()).catch(()=>[]);
+    let c=await fetch('/api/admin/members/count').then(r=>r.json()).catch(()=>({total:0,pending:0,approved:0}));
+    document.getElementById('memberCount').innerText=c.total+' total'; document.getElementById('memberPending').innerText=c.pending+' pending'; document.getElementById('memberApproved').innerText=c.approved+' approved';
+    window._allMembers=m; renderMembersList(m);
   }
-  if(name==='gallery'){
-    let g=await fetch('/api/admin/gallery/all').then(r=>r.json()).catch(async()=>await fetch('/api/gallery').then(r=>r.json()));
-    window._cache={}; g.forEach(i=>window._cache['gallery_'+i.id]=i);
-    document.getElementById('galleryList').innerHTML=g.map(x=>{
-      let cover=fixCover(x.cover);
-      let imgs=(x.images||[]).map(i=>fixCover(i));
-      let isCloud=String(x.cover||'').startsWith('http') || (imgs[0] && String(imgs[0]).startsWith('http'));
-      return `<div class="bg-white p-2.5 rounded-xl border-2 flex flex-col"><div class="w-full bg-white rounded-xl overflow-hidden border relative" style="min-height:160px;display:flex;align-items:center;justify-content:center"><img src="${esc(cover)}" loading="lazy" style="width:100%;height:auto;object-fit:contain" class="p-1" onerror="this.src='/static/uploads/god_key.jpg'"><div class="absolute top-1.5 left-1.5 ${x.visibility==='members'?'bg-green-600':'bg-black/70'} text-white text-xs px-2 py-1 rounded-full">${imgs.length} • ${esc(x.visibility)} ${isCloud?'• ☁ Cloudinary':''}</div></div><p class="font-black mt-1.5 truncate fit">${esc(x.title)}</p><p class="text-xs text-gray-500">${esc(x.category||'')}</p><div class="mt-1.5 flex gap-1"><select onchange="changeVisibility(${x.id}, this.value)" class="flex-1 border p-1.5 rounded-full font-black bg-white text-xs"><option value="public" ${x.visibility!=='members'?'selected':''}>PUBLIC</option><option value="members" ${x.visibility==='members'?'selected':''}>MEMBERS</option></select></div><div class="flex gap-1 mt-1.5"><button onclick="openEditById('gallery',${x.id})" class="flex-1 bg-blue-600 text-white py-1.5 rounded-full font-black text-xs">UPDATE</button><button onclick="delGallery(${x.id})" class="flex-1 bg-red-500 text-white py-1.5 rounded-full font-black text-xs">DELETE</button></div></div>`;
-    }).join('');
-  }
-  if(name==='events'){
-    let e=await fetch('/api/events').then(r=>r.json()).catch(()=>[]);
-    window._cache={}; e.forEach(i=>window._cache['event_'+i.id]=i);
-    document.getElementById('eventsList').innerHTML=e.map(x=>{
-      let img=fixCover(x.image);
-      let isCloud=String(x.image||'').startsWith('http');
-      return `<div class="bg-white p-2.5 rounded-xl border flex flex-col"><div class="w-full bg-white rounded-xl overflow-hidden border" style="min-height:150px;display:flex;align-items:center;justify-content:center"><img src="${esc(img)}" loading="lazy" style="width:100%;height:auto;object-fit:contain" class="p-1" onerror="this.src='/static/uploads/god_key.jpg'"></div><p class="font-black mt-1.5 text-xs">${esc(x.title)} ${isCloud?'<span class="text-blue-600">☁ Cloudinary</span>':''}</p><div class="flex gap-1 mt-1.5"><button onclick="openEditById('event',${x.id})" class="flex-1 bg-blue-500 text-white py-1 rounded-full font-black text-xs">EDIT</button><button onclick="delEvent(${x.id})" class="flex-1 bg-red-500 text-white py-1 rounded-full font-black text-xs">DELETE</button></div></div>`;
-    }).join('');
-    let regs=await fetch('/api/events/registrations').then(r=>r.json()).catch(()=>[]); document.getElementById('regsList').innerHTML=regs.length?regs.map(r=>`<div class="bg-white border p-2 rounded-xl flex justify-between"><div><p class="font-black text-xs">${esc(r.name)} - ${esc(r.phone)}</p><p class="text-gray-500 text-xs">${esc(r.event_title)} • ${esc(r.date)}</p></div><button onclick="delReg(${r.id})" class="bg-red-500 text-white w-6 h-6 rounded-full text-xs">x</button></div>`).join(''):'No registrations';
-  }
-  if(name==='sermons'){
-    let s=await fetch('/api/sermons').then(r=>r.json()).catch(()=>[]);
-    window._cache={}; s.forEach(i=>window._cache['sermon_'+i.id]=i);
-    document.getElementById('sermonsList').innerHTML=s.map(x=>{
-      let file=fixUrl(x.file||x.local_file||x.audio_url||'');
-      let isCloud=String(file||'').startsWith('http');
-      let media=file? (file.match(/\.mp4|\.webm|\.mov/) ? `<video src="${esc(file)}" controls class="w-full h-24 rounded-lg bg-black mt-1"></video>` : file.match(/\.mp3|\.wav|\.m4a/) ? `<audio controls src="${esc(file)}" class="w-full mt-1"></audio>` : `<a href="${esc(file)}" target="_blank" class="text-xs text-blue-600 underline">Open File</a>`) : '';
-      return `<div class="bg-white p-2.5 rounded-xl border-2 border-blue-200 flex flex-col"><p class="font-black truncate text-xs">${esc(x.title)} - ${esc(x.speaker||'')}</p><p class="text-gray-500 truncate text-xs">${esc(x.series||'')} ${isCloud?'<span class="text-blue-600">☁ Cloudinary</span>':''}</p>${media}<div class="flex gap-1 mt-1.5"><button onclick="openEditById('sermon',${x.id})" class="flex-1 bg-blue-600 text-white py-1.5 rounded-full font-black text-xs">UPDATE</button><button onclick="delSermon(${x.id})" class="flex-1 bg-red-500 text-white py-1.5 rounded-full font-black text-xs">DELETE</button></div><a href="${esc(file)}" target="_blank" class="text-[10px] text-blue-600 underline truncate">${esc(file)}</a></div>`;
-    }).join('');
-  }
-  if(name==='sunday'){
-    let n=await fetch('/api/sunday-notes').then(r=>r.json());
-    window._cache={}; n.forEach(i=>window._cache['note_'+i.id]=i);
-    document.getElementById('notesAdminList').innerHTML=n.map(x=>{
-      let img=fixCover(x.image||x.file||'');
-      return `<div class="bg-white p-2.5 rounded-xl border"><p class="font-black truncate text-xs">${esc(x.title)}</p>${img && img!=='/static/uploads/god_key.jpg'?`<img src="${esc(img)}" class="w-full h-20 object-contain mt-1 rounded">`:''}<div class="flex gap-1 mt-1.5"><button onclick="openEditById('note',${x.id})" class="flex-1 bg-blue-500 text-white py-1 rounded-full text-xs">EDIT</button><button onclick="delNote(${x.id})" class="flex-1 bg-red-500 text-white py-1 rounded-full text-xs">DELETE</button></div></div>`;
-    }).join('');
-    let sv=await fetch('/api/sunday-videos').then(r=>r.json()).catch(()=>[]);
-    sv.forEach(i=>window._cache['sunday_video_'+i.id]=i);
-    document.getElementById('sundayVideosAdminList').innerHTML=sv.map(x=>{
-      let src=fixVideo(x.local_file||x.file||'');
-      let player=x.yt?`<img src="https://img.youtube.com/vi/${esc(x.yt)}/hqdefault.jpg" class="w-full h-full object-cover">`: src? `<video src="${esc(src)}" class="w-full h-full object-cover" muted></video>` : `Video`;
-      return `<div class="bg-white p-2.5 rounded-xl border"><div class="h-24 bg-black rounded-xl overflow-hidden flex items-center justify-center">${player}</div><p class="font-black mt-1 truncate text-xs">${esc(x.title)} ${String(src).startsWith('http')?'☁':''}</p><div class="flex gap-1 mt-1.5"><button onclick="openEditById('sunday_video',${x.id})" class="flex-1 bg-blue-500 text-white py-1 rounded-full text-xs">EDIT</button><button onclick="delSundayVideo(${x.id})" class="flex-1 bg-red-500 text-white py-1 rounded-full text-xs">DELETE</button></div></div>`;
-    }).join('');
-  }
-  if(name==='prayer'){ loadPrayerTab('public'); }
-  if(name==='contact'){ let c=await fetch('/api/contact/messages').then(r=>r.json()).catch(()=>[]); document.getElementById('contactCount').innerText=c.length+' messages'; document.getElementById('contactsList').innerHTML=c.length?c.map(m=>`<div class="bg-white p-3 rounded-xl border"><p class="font-black text-xs">${esc(m.name)} • ${esc(m.email)}</p><p class="mt-1 italic text-xs fit">"${esc(m.message)}"</p><button onclick="delContact(${m.id})" class="mt-2 bg-red-500 text-white px-3 py-1 rounded-full text-xs">DELETE</button></div>`).join(''):'No messages'; }
-  if(name==='counselling'){ if(!counselAuthed){ openCounselAuth(); return; } loadCounsellingData(); }
-  if(name==='testimonies'){ if(!testimonyAuthed){ openTestimonyAuth(); return; } loadTestimoniesData(); }
-  if(name==='checkin'){ loadCheckins(); document.getElementById('todayDate').innerText=new Date().toISOString().slice(0,10); }
-  if(name==='members'){ let m=await fetch('/api/admin/members').then(r=>r.json()).catch(()=>[]); let c=await fetch('/api/admin/members/count').then(r=>r.json()).catch(()=>({total:0,pending:0,approved:0})); document.getElementById('memberCount').innerText=c.total+' total'; document.getElementById('memberPending').innerText=c.pending+' pending'; document.getElementById('memberApproved').innerText=c.approved+' approved'; document.getElementById('statMembers').innerText=c.approved; window._allMembers=m; renderMembersList(m); }
+  if(name==='checkin'){ /* keep simple */ }
 }
 
-function openEditById(type,id){ let key=type+'_'+id; let item=window._cache[key]; if(!item){ alert('Item not cached'); return; } openEdit(type,item); }
-function openEdit(type,item){
-  document.getElementById('editModal').classList.remove('hidden');
-  document.getElementById('editId').value=item.id; document.getElementById('editType').value=type;
-  document.getElementById('editTitle').value=item.title||item.name||'';
-  document.getElementById('editDesc').value=item.description||item.content||'';
-  document.getElementById('editModalTitle').innerText='EDIT '+esc(type.toUpperCase())+' - ID:'+item.id;
-  let extra=document.getElementById('editExtra');
-  if(type==='gallery'){ extra.innerHTML=`<select name="category" class="w-full border-2 border-yellow-200 p-2 rounded-xl text-xs"><option ${item.category==='Events'?'selected':''}>Events</option><option ${item.category==='Worship'?'selected':''}>Worship</option><option ${item.category==='Sunday School'?'selected':''}>Sunday School</option></select><select name="visibility" class="w-full border-2 border-yellow-200 p-2 rounded-xl text-xs font-black"><option value="public" ${item.visibility!=='members'?'selected':''}>PUBLIC</option><option value="members" ${item.visibility==='members'?'selected':''}>MEMBERS ONLY</option></select><input name="cover" value="${esc(item.cover||'')}" placeholder="Cover URL" class="w-full border-2 border-yellow-200 p-2 rounded-xl text-xs">`; }
-  else if(type==='event'){ extra.innerHTML=`<input name="date" type="date" value="${esc(item.date||'')}" class="w-full border p-2 rounded-xl text-xs"><input name="location" value="${esc(item.location||'')}" placeholder="Location" class="w-full border p-2 rounded-xl text-xs"><input name="time" value="${esc(item.time||'')}" class="w-full border p-2 rounded-xl text-xs">`; }
-  else if(type==='sermon'){ extra.innerHTML=`<input name="speaker" value="${esc(item.speaker||'')}" placeholder="Speaker" class="w-full border p-2 rounded-xl text-xs"><select name="type" class="w-full border p-2 rounded-xl text-xs"><option value="video" ${item.type==='video'?'selected':''}>video</option><option value="audio" ${item.type==='audio'?'selected':''}>audio</option></select><input name="series" value="${esc(item.series||'')}" placeholder="Series" class="w-full border p-2 rounded-xl text-xs"><input name="yt" value="${esc(item.yt_raw||item.yt||'')}" placeholder="YouTube ID" class="w-full border p-2 rounded-xl text-xs">`; }
-  else if(type==='prayer'){ extra.innerHTML=`<select name="category" class="w-full border-2 border-purple-200 p-2 rounded-xl text-xs"><option ${item.category==='General'?'selected':''}>General</option><option ${item.category==='Healing'?'selected':''}>Healing</option><option ${item.category==='Thanksgiving'?'selected':''}>Thanksgiving</option><option ${item.category==='Family'?'selected':''}>Family</option></select><input name="name" value="${esc(item.name||'')}" placeholder="Name" class="w-full border p-2 rounded-xl text-xs"><select name="visibility" class="w-full border p-2 rounded-xl text-xs font-black"><option value="public" ${item.visibility==='public'?'selected':''}>PUBLIC</option><option value="private" ${item.visibility==='private'?'selected':''}>PRIVATE</option></select><textarea name="content" class="w-full border p-2 rounded-xl text-xs h-20">${esc(item.content||'')}</textarea>`; }
-  else if(type==='note'){ extra.innerHTML=`<textarea name="content" class="w-full border p-2 rounded-xl text-xs h-20">${esc(item.content||'')}</textarea>`; }
-  else { extra.innerHTML=`<input name="yt" value="${esc(item.yt_raw||item.yt||'')}" placeholder="YouTube ID" class="w-full border p-2 rounded-xl text-xs">`; }
-}
-function closeEdit(){ document.getElementById('editModal').classList.add('hidden'); }
-document.getElementById('editForm').addEventListener('submit', async(e)=>{ e.preventDefault(); const id=document.getElementById('editId').value; const type=document.getElementById('editType').value; const fd=new FormData(e.target); let url=type==='gallery'?'/api/admin/update-gallery/'+id:type==='video'?'/api/admin/update-video/'+id:type==='event'?'/api/admin/update-event/'+id:type==='sermon'?'/api/admin/update-sermon/'+id:type==='note'?'/api/admin/update-note/'+id:type==='prayer'?'/api/admin/update-prayer/'+id:'/api/admin/update-sunday-video/'+id; let r=await secureFetch(url,{method:'POST',body:fd}); if(r.ok){ alert('UPDATED'); closeEdit(); loadTabData(type==='gallery'?'gallery':type==='video'?'videos':type==='event'?'events':type==='sermon'?'sermons':type==='prayer'?'prayer':'sunday'); } else{ alert('Update failed'); } });
-async function changeVisibility(id,val){ await secureFetch('/api/admin/update-gallery-visibility/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visibility:val})}); alert('Visibility '+val.toUpperCase()); loadTabData('gallery'); }
-async function delVideo(id){ if(confirm('Delete Video?')){ await secureFetch('/api/admin/delete-video/'+id,{method:'POST'}); loadTabData('videos'); }}
-async function delGallery(id){ if(confirm('Delete album?')){ await secureFetch('/api/admin/delete-gallery/'+id,{method:'POST'}); loadTabData('gallery'); }}
-async function delEvent(id){ if(confirm('Delete Event?')){ await secureFetch('/api/admin/delete-event/'+id,{method:'POST'}); loadTabData('events'); }}
-async function delReg(id){ if(confirm('Delete Registration?')){ await secureFetch('/api/admin/delete-registration/'+id,{method:'POST'}); loadTabData('events'); }}
-async function delNote(id){ if(confirm('Delete Note?')){ await secureFetch('/api/admin/delete-note/'+id,{method:'POST'}); loadTabData('sunday'); }}
-async function delSermon(id){ if(confirm('Delete Sermon?')){ await secureFetch('/api/admin/delete-sermon/'+id,{method:'POST'}); loadTabData('sermons'); }}
-async function delSundayVideo(id){ if(confirm('Delete Sunday Video?')){ await secureFetch('/api/admin/delete-sunday-video/'+id,{method:'POST'}); loadTabData('sunday'); }}
-async function delContact(id){ if(confirm('Delete Contact?')){ await secureFetch('/api/admin/delete-contact/'+id,{method:'POST'}); loadTabData('contact'); }}
-async function delPrayer(id){ if(confirm('Delete Prayer?')){ await secureFetch('/api/admin/delete-prayer/'+id,{method:'POST'}); loadPrayerTab(pastorAuthed?'private':'public'); }}
-async function delCounsel(id){ if(confirm('Delete Counselling?')){ await secureFetch('/api/admin/delete-counselling/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd:counselPwdCache})}); loadCounsellingData(); }}
-async function delTestimony(id){ if(confirm('Delete Voice Testimony?')){ await secureFetch('/api/admin/delete-testimony/'+id,{method:'POST'}); loadTestimoniesData(); }}
-async function delEncounter(id){ if(confirm('Delete PRIVATE Encounter?')){ await secureFetch('/api/admin/delete-encounter/'+id,{method:'POST'}); loadTestimoniesData(); }}
-async function markEncounter(id,status){ await secureFetch('/api/admin/update-encounter-status/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:status})}); loadTestimoniesData(); }
-
-let pastorAuthed=false; let pastorPwdCache=""; function openPastorAuth(){ document.getElementById('pastorModal').classList.remove('hidden'); } function closePastorAuth(){ document.getElementById('pastorModal').classList.add('hidden'); }
-async function authPastor(){ const pwd=document.getElementById('pastorPwd').value; const r=await secureFetch('/api/admin/prayers/private',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd})}); if(r.ok){ pastorAuthed=true; pastorPwdCache=pwd; closePastorAuth(); loadPrayerTab('private'); } else{ document.getElementById('pastorError').classList.remove('hidden'); } }
-async function loadPrayerTab(type){
-  let all=await fetch('/api/prayers').then(r=>r.json()).catch(()=>[]); document.getElementById('prayerCount').innerText=all.length+' prayers';
-  if(type==='public'){
-    document.getElementById('publicPrayersAdmin').classList.remove('hidden'); document.getElementById('privatePrayersAdmin').classList.add('hidden');
-    let pub=all.filter(p=>p.visibility==='public');
-    window._cache={}; pub.forEach(i=>window._cache['prayer_'+i.id]=i);
-    document.getElementById('publicPrayersAdmin').innerHTML=pub.length?pub.map(p=>`<div class="bg-white p-3 rounded-xl border flex flex-col gap-2"><div><p class="font-black text-xs">${esc(p.name||'Anonymous')} • ${esc(p.category||'')} • ${esc(p.date)}</p><p class="mt-1 italic text-xs fit">"${esc(p.content)}"</p></div><div class="flex gap-1"><button onclick="openEditById('prayer',${p.id})" class="flex-1 bg-blue-500 text-white py-1.5 rounded-full font-black text-xs">EDIT</button><button onclick="delPrayer(${p.id})" class="flex-1 bg-red-500 text-white py-1.5 rounded-full font-black text-xs">DELETE</button></div></div>`).join(''):'No public prayers';
-  } else {
-    if(!pastorAuthed){ openPastorAuth(); return; }
-    document.getElementById('publicPrayersAdmin').classList.add('hidden'); document.getElementById('privatePrayersAdmin').classList.remove('hidden');
-    try{
-      let priv=await secureFetch('/api/admin/prayers/private',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd:pastorPwdCache})}).then(r=>r.json());
-      window._cache={}; priv.forEach(i=>window._cache['prayer_'+i.id]=i);
-      document.getElementById('privateList').innerHTML=priv.length?priv.map(p=>`<div class="bg-white p-3 rounded-xl border-2 border-purple-300 flex flex-col gap-2"><div><p class="font-black text-xs">${esc(p.name||'Anonymous')} • ${esc(p.category||'')} • ${esc(p.date)}</p><p class="mt-1 italic text-xs fit">"${esc(p.content)}"</p></div><div class="flex gap-1"><button onclick="openEditById('prayer',${p.id})" class="flex-1 bg-blue-500 text-white py-1.5 rounded-full font-black text-xs">EDIT</button><button onclick="delPrayer(${p.id})" class="flex-1 bg-red-500 text-white py-1.5 rounded-full font-black text-xs">DELETE</button></div></div>`).join(''):'No private prayers';
-    }catch(e){}
-  }
-}
-
-let counselAuthed=false; let counselPwdCache=""; function openCounselAuth(){ document.getElementById('counselModal').classList.remove('hidden'); } function closeCounselAuth(){ document.getElementById('counselModal').classList.add('hidden'); }
-async function authCounselling(){
-  const pwd=document.getElementById('counselPwd').value;
-  const r=await secureFetch('/api/admin/counselling/private',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd})});
-  if(r.ok){ counselAuthed=true; counselPwdCache=pwd; closeCounselAuth(); loadCounsellingData(); } else{ document.getElementById('counselError').classList.remove('hidden'); }
-}
-async function loadCounsellingData(){
-  try{
-    let list=await secureFetch('/api/admin/counselling/private',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd:counselPwdCache})}).then(r=>r.json());
-    document.getElementById('counselCount').innerText=list.length+' confidential';
-    document.getElementById('statCounselling').innerText=list.length;
-    document.getElementById('counsellingList').classList.remove('hidden'); document.getElementById('counselLockedMsg').classList.add('hidden');
-    document.getElementById('counsellingList').innerHTML=list.length?list.map(m=>`<div class="bg-white p-3 rounded-xl border-2 border-green-200 fit"><div class="flex justify-between gap-2"><div class="flex-1"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full font-black text-xs">${esc(m.category)}</span><span class="text-gray-500 bg-white border px-2 py-1 rounded-full text-xs">${esc(m.date)}</span><p class="font-black mt-1 text-xs">${m.is_anonymous?'Anonymous':esc(m.name)} • ${esc(m.phone||'')}</p><p class="mt-1 bg-green-50 p-2 rounded-xl border italic text-xs fit">"${esc(m.description||'')}"</p></div><button onclick="delCounsel(${m.id})" class="bg-red-500 text-white px-3 py-1 rounded-full h-fit text-xs">DELETE</button></div></div>`).join(''):'No requests';
-  }catch(e){}
-}
-
-let testimonyAuthed=false; let testimonyPwdCache=""; function openTestimonyAuth(){ document.getElementById('testimonyModal').classList.remove('hidden'); } function closeTestimonyAuth(){ document.getElementById('testimonyModal').classList.add('hidden'); }
-async function authTestimonies(){
-  const pwd=document.getElementById('testimonyPwd').value;
-  const r=await secureFetch('/api/admin/counselling/private',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd})});
-  if(r.ok){ testimonyAuthed=true; testimonyPwdCache=pwd; closeTestimonyAuth(); loadTestimoniesData(); } else{ document.getElementById('testimonyError').classList.remove('hidden'); }
-}
-
-async function loadTestimoniesData(){
-  try{
-    startHolyGhostPolling();
-    let list=await secureFetch('/api/admin/testimonies',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd:testimonyPwdCache})}).then(r=>r.json()).catch(()=>[]);
-    let enc=await secureFetch('/api/admin/encounters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pwd:testimonyPwdCache})}).then(r=>r.json()).catch(()=>[]);
-    if(!Array.isArray(list)) list=[]; if(!Array.isArray(enc)) enc=[];
-    window._encountersCache=enc;
-    document.getElementById('testimonyCount').innerText=list.length+' voice';
-    document.getElementById('encounterCount').innerText=enc.length+' private map';
-    let newC=enc.filter(e=>!e.status).length; let prayedC=enc.filter(e=>e.status==='prayed').length; let visitedC=enc.filter(e=>e.status==='visited').length;
-    document.getElementById('encounterSummary').innerText=`Summary: ${newC} new | ${prayedC} prayed | ${visitedC} visited`;
-    document.getElementById('statTestimonies').innerText=list.length; document.getElementById('statEncounters').innerText=enc.length;
-    document.getElementById('testimoniesList').classList.remove('hidden'); document.getElementById('adminEncountersList').classList.remove('hidden'); document.getElementById('adminEncounterMap').classList.remove('hidden');
-    document.getElementById('testimonyLockedMsg').classList.add('hidden'); document.getElementById('encounterLockedMsg').classList.add('hidden');
-    document.getElementById('testimoniesList').innerHTML=list.length?list.map(m=>`<div class="bg-white p-3 rounded-xl border-2 border-yellow-300 fit"><div class="flex justify-between gap-3 items-start"><div class="flex-1"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-black text-xs">${esc(m.name||'Anonymous')}</span><span class="text-gray-500 bg-white border px-2 py-1 rounded-full text-xs">${esc(m.date)} ${esc(m.time||'')}</span><p class="font-black mt-1 text-xs">${m.phone?'Phone: '+esc(m.phone):''}</p><audio controls class="w-full mt-2 rounded-xl border-2 border-yellow-100" src="${fixVideo(m.cloud_url||'/static/'+(m.path||''))}"></audio><div class="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-xl text-xs text-gray-700">Transcript: <span id="trans-${m.id}" class="font-bold">Loading...</span></div></div><div class="flex flex-col gap-1"><a href="${fixVideo(m.cloud_url||'/static/'+(m.path||''))}" download target="_blank" class="bg-blue-600 text-white px-3 py-1 rounded-full font-black text-center text-xs">DOWNLOAD</a><button onclick="delTestimony(${m.id})" class="bg-red-500 text-white px-3 py-1 rounded-full font-black text-xs">DELETE</button></div></div></div>`).join(''):'<div class="bg-white p-4 rounded-xl text-center text-xs">No voice testimonies yet</div>';
-    document.getElementById('adminEncountersList').innerHTML=enc.length?enc.map(e=>`<div class="bg-[#f0fdf4] border-2 border-green-200 p-3 rounded-xl"><div class="flex justify-between gap-2"><div class="flex-1"><p class="font-black text-xs">${esc(e.name)} — ${esc(e.date)}</p><p class="text-xs italic mt-1">"${esc(e.text)}"</p><p class="text-xs mt-1">Lat:${Number(e.lat).toFixed(4)} Lng:${Number(e.lng).toFixed(4)} — <a href="https://www.google.com/maps?q=${e.lat},${e.lng}" target="_blank" class="text-blue-600 underline font-black">Google Maps</a></p><div class="flex gap-1 mt-2 flex-wrap"><span class="px-2 py-1 rounded-full font-black text-xs ${e.status==='visited'?'bg-blue-100 text-blue-700':e.status==='prayed'?'bg-green-100 text-green-700':'bg-gray-100 text-gray-600'}">${esc(e.status||'new')}</span><button onclick="markEncounter(${e.id}, 'prayed')" class="bg-green-600 text-white px-2 py-1 rounded-full font-black text-xs">Prayed</button><button onclick="markEncounter(${e.id}, 'visited')" class="bg-blue-600 text-white px-2 py-1 rounded-full font-black text-xs">Visited</button></div></div><button onclick="delEncounter(${e.id})" class="bg-red-500 text-white px-2 py-1 rounded-full text-xs h-fit">DELETE</button></div></div>`).join(''):'<div class="bg-white p-4 rounded-xl text-center text-xs">No private encounters yet</div>';
-    try{ let trans=await fetch('/api/admin/transcripts').then(r=>r.json()).catch(()=>[]); trans.forEach(t=>{ let el=document.getElementById('trans-'+t.testimony_id); if(el) el.innerText=t.text; }); }catch{}
-    setTimeout(()=>{ if(!window.adminMap){ window.adminMap=L.map('adminEncounterMap').setView([-1.305,36.85],13); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(window.adminMap); } else { window.adminMap.invalidateSize(); } window.adminMap.eachLayer(l=>{ if(l instanceof L.Marker) window.adminMap.removeLayer(l); }); enc.forEach(e=>{ L.marker([e.lat,e.lng]).addTo(window.adminMap).bindPopup(`<b>${esc(e.name)}</b><br>${esc(e.text)}<br>${esc(e.date)}`); }); if(enc.length) window.adminMap.fitBounds(enc.map(e=>[e.lat,e.lng]),{padding:[20,20]}); },400);
-  }catch(e){ document.getElementById('testimoniesList').innerHTML='<p class="bg-white p-4 rounded-xl text-xs">Failed — login expired?</p>'; }
-}
-
-let lastEncounterCount=0; let holyInterval=null;
-function playHolyDing(){ try{ const a=document.getElementById('holyDing'); if(a){ a.volume=0.9; a.currentTime=0; a.play().catch(()=>{}); } }catch{} }
-function checkHolyGhost(){ fetch('/api/admin/encounters/count').then(r=>r.json()).then(j=>{ if(lastEncounterCount!==0 && j.count>lastEncounterCount){ document.getElementById('holyGhostText').innerText=`${j.count-lastEncounterCount} NEW SOUL${j.count-lastEncounterCount>1?'S':''} ENCOUNTERED!`; document.getElementById('holyGhostBanner').classList.remove('hidden'); playHolyDing(); } lastEncounterCount=j.count; }).catch(()=>{}); }
-function startHolyGhostPolling(){ if(holyInterval) clearInterval(holyInterval); fetch('/api/admin/encounters/count').then(r=>r.json()).then(j=>{ lastEncounterCount=j.count; }).catch(()=>{}); holyInterval=setInterval(checkHolyGhost,30000); }
-function exportEncountersCSV(){ let enc=window._encountersCache||[]; if(!enc.length){ alert('No data'); return; } let csv="id,name,text,lat,lng,date,status\n"+enc.map(e=>`${e.id},"${(e.name||'').replace(/"/g,'""')}","${(e.text||'').replace(/"/g,'""')}",${e.lat},${e.lng},"${e.date}","${e.status||''}"`).join("\n"); let blob=new Blob([csv],{type:'text/csv'}); let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download='private_encounters_'+new Date().toISOString().slice(0,10)+'.csv'; a.click(); }
-
-function viewMemberPhoto(url){ window.open(url, '_blank'); }
-async function approveMember(id){ if(confirm('Approve member?')){ await secureFetch('/api/admin/member/approve/'+id,{method:'POST'}); loadTabData('members'); closeMemberView(); } }
-async function deleteMember(id){ if(confirm('Delete member?')){ await secureFetch('/api/admin/member/delete/'+id,{method:'POST'}); loadTabData('members'); closeMemberView(); } }
-async function rejectMember(id){ let reason=prompt('Reason?'); await secureFetch('/api/admin/member/reject/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reason})}); loadTabData('members'); closeMemberView(); }
-function openMemberView(id){ const x=window._memberCache[id]|| (window._allMembers||[]).find(m=>m.id===id); if(!x) return; document.getElementById('memberViewModal').classList.remove('hidden'); document.body.style.overflow='hidden'; document.getElementById('memberViewContent').innerHTML=`<div class="bg-white rounded-xl p-5 border-2 border-yellow-200"><div class="flex gap-4 items-center"><img src="${fixMemberPhoto(x.photo)}" class="w-20 h-20 rounded-full border-4 border-[#facc15]" onerror="this.src='https://via.placeholder.com/150x150.png?text=No+Photo'"><div><h2 class="font-black text-xs">${esc(x.personal?.fullName||x.username)}</h2><p class="font-bold text-green-700 text-xs">${esc(x.status.toUpperCase())}</p><p class="text-xs">${esc(x.email)} • ${esc(x.contact?.phone||'')}</p></div></div><div class="mt-4 grid md:grid-cols-3 gap-3 text-xs"><div class="bg-green-50 border p-2 rounded-xl"><b>Personal:</b><br>${esc(x.personal?.fullName||'')}<br>ID:${esc(x.personal?.idNumber||'')}<br>${esc(x.personal?.gender||'')} • ${esc(x.personal?.marital||'')}</div><div class="bg-yellow-50 border p-2 rounded-xl"><b>Church:</b><br>${esc(x.church?.howLong||'')}<br>${esc(x.church?.prevChurch||'')}<br>${esc(x.church?.reasonJoin||'')}</div><div class="bg-blue-50 border p-2 rounded-xl"><b>Contact:</b><br>${esc(x.contact?.phone||'')}<br>WA:${esc(x.contact?.whatsapp||'')}<br>${esc(x.contact?.estate||'')} • ${esc(x.contact?.city||'')}</div></div><div class="mt-3 flex gap-2"><button onclick="approveMember(${x.id})" class="bg-green-600 text-white px-4 py-2 rounded-full font-black text-xs">APPROVE</button><button onclick="rejectMember(${x.id})" class="bg-orange-500 text-white px-4 py-2 rounded-full font-black text-xs">REJECT</button><button onclick="deleteMember(${x.id})" class="bg-red-600 text-white px-4 py-2 rounded-full font-black text-xs">DELETE</button></div></div>`; }
-function closeMemberView(){ document.getElementById('memberViewModal').classList.add('hidden'); document.body.style.overflow=''; }
-
-let html5QrCode=null;
-function onScanSuccess(decodedText){ document.getElementById('scanInput').value=String(decodedText).trim(); doCheckin(); }
-function startScanner(){
-  if(!window.Html5Qrcode){ alert('Scanner lib not loaded'); return; }
-  html5QrCode=new Html5Qrcode("reader");
-  document.getElementById('startScanBtn').classList.add('hidden'); document.getElementById('stopScanBtn').classList.remove('hidden');
-  html5QrCode.start({facingMode:"environment"}, {fps:10, qrbox:{width:250,height:250}}, onScanSuccess, ()=>{}).catch(err=>{ document.getElementById('reader').innerHTML=`<p class="text-white text-xs p-4">Camera failed: ${esc(err)}</p>`; document.getElementById('startScanBtn').classList.remove('hidden'); document.getElementById('stopScanBtn').classList.add('hidden'); });
-}
-function stopScanner(){ if(html5QrCode){ html5QrCode.stop().then(()=>{ document.getElementById('startScanBtn').classList.remove('hidden'); document.getElementById('stopScanBtn').classList.add('hidden'); document.getElementById('reader').innerHTML='Click START to scan'; }).catch(()=>{}); } }
-async function doCheckin(){
-  let val=document.getElementById('scanInput').value.trim(); if(!val){ alert('Enter Member ID or Token'); return; }
-  let payload = {};
-  if(val.length > 20){ payload.token = val; payload.member_id = val; } else { payload.member_id = val; }
-  try{
-    let r=await secureFetch('/api/admin/checkin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    let j=await r.json();
-    if(j.ok){ document.getElementById('scanResult').innerHTML=`<div class="bg-green-100 border-2 border-green-300 p-3 rounded-xl"><p class="font-black text-xs">${esc(j.member.personal?.fullName||j.member.username)} PRESENT at ${esc(j.checkin.time)}!</p></div>`; document.getElementById('scanInput').value=''; loadCheckins(); playHolyDing(); }
-    else { document.getElementById('scanResult').innerHTML=`<div class="bg-red-100 border-2 border-red-300 p-3 rounded-xl"><p class="font-black text-xs">${esc(j.error)}</p></div>`; }
-  }catch(e){ alert('Checkin failed'); }
-}
-function clearScan(){ document.getElementById('scanInput').value=''; document.getElementById('scanResult').innerHTML=''; }
-async function loadCheckins(){
-  try{
-    let today=new Date().toISOString().slice(0,10); document.getElementById('todayDate').innerText=today;
-    let list=await fetch('/api/admin/checkins?date='+today).then(r=>r.json());
-    document.getElementById('checkinCount').innerText=list.length+' present';
-    document.getElementById('checkinList').innerHTML=list.length?list.map(c=>`<div class="bg-[#f0fdf4] border p-2 rounded-xl flex gap-2 items-center"><img src="${fixMemberPhoto(c.photo)}" class="w-10 h-10 rounded-full border"><div class="flex-1"><p class="font-black text-xs">${esc(c.name)} — ${esc(c.username)}</p><p class="text-xs text-gray-500">${esc(c.time)} • ID:${c.member_id}</p></div><span class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">PRESENT</span></div>`).join(''):'<p class="text-xs text-center p-4">No check-ins yet today</p>';
-  }catch(e){}
-}
-function exportCheckinsCSV(){ fetch('/api/admin/checkins').then(r=>r.json()).then(list=>{ if(!list.length){ alert('No data'); return; } let csv="id,member_id,name,username,date,time\n"+list.map(c=>`${c.id},${c.member_id},"${(c.name||'').replace(/"/g,'""')}","${(c.username||'').replace(/"/g,'""')}","${c.date}","${c.time}"`).join("\n"); let blob=new Blob([csv],{type:'text/csv'}); let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download='checkins_'+new Date().toISOString().slice(0,10)+'.csv'; a.click(); }); }
-
-async function handleUpload(e, tab){
-  e.preventDefault();
-  let btn=e.target.querySelector('button'); let old=btn.innerText; btn.innerText='UPLOADING TO CLOUDINARY... PLEASE WAIT'; btn.disabled=true;
-  let fd=new FormData(e.target);
-  let urlMap={
-    video:'/api/admin/upload-video',
-    gallery:'/api/admin/upload-gallery',
-    event:'/api/admin/upload-event',
-    sermon:'/api/admin/upload-sermon',
-    note:'/api/admin/sunday-upload-note',
-    sundayVideo:'/api/admin/sunday-upload-video'
-  };
-  try{
-    let r=await secureFetch(urlMap[tab],{method:'POST',body:fd});
-    let j=await r.json().catch(()=>({}));
-    if(r.ok && (j.ok || j.id || r.status===200)){ alert('✅ Uploaded to Cloudinary — Permanent!'); e.target.reset(); loadTabData(tab==='note'||tab==='sundayVideo'?'sunday':tab==='video'?'videos':tab==='gallery'?'gallery':tab==='event'?'events':'sermons'); }
-    else { alert('Upload failed: '+(j.error||'unknown')); }
-  }catch(err){ alert('Error: '+err); }
-  btn.innerText=old; btn.disabled=false;
-}
-
-document.getElementById('videoForm')?.addEventListener('submit', e=>handleUpload(e,'video'));
-document.getElementById('galleryForm')?.addEventListener('submit', e=>handleUpload(e,'gallery'));
-document.getElementById('eventForm')?.addEventListener('submit', e=>handleUpload(e,'event'));
-document.getElementById('sermonForm')?.addEventListener('submit', e=>handleUpload(e,'sermon'));
-document.getElementById('noteForm')?.addEventListener('submit', e=>handleUpload(e,'note'));
-document.getElementById('sundayVideoForm')?.addEventListener('submit', e=>handleUpload(e,'sundayVideo'));
-
-showTab('overview');
+showTab('members');
 </script>
 </body>
 </html>
