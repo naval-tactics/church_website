@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /api/
-
+Disallow: /api/admin/
+Disallow: /members/dashboard
 Sitemap: https://south-b-police-chapel.onrender.com/sitemap.xml
