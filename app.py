@@ -1850,6 +1850,248 @@ def admin_community_edit(ptype, pid):
     return jsonify({"ok":True})
 
 
+
+# ============== ONLINE PRESENCE + CHAT LIKE FACEBOOK/INSTAGRAM - REAL ONLY ==============
+ONLINE_FILE = os.path.join(DATA_DIR, 'online_members.json')
+CHATS_FILE = os.path.join(DATA_DIR, 'member_chats.json')
+
+for _f in [ONLINE_FILE, CHATS_FILE]:
+    if not os.path.exists(_f):
+        save_json(_f, [])
+
+@app.route('/api/community/online', methods=['POST'])
+@member_required
+def api_update_online():
+    mid = session.get('member_id')
+    online = load_json(ONLINE_FILE, [])
+    now = datetime.now(TZ).isoformat()
+    # update or add
+    found=False
+    for o in online:
+        if o['member_id']==mid:
+            o['last_seen']=now
+            o['is_online']=True
+            found=True
+            break
+    if not found:
+        online.append({"member_id":mid,"last_seen":now,"is_online":True})
+    # clean old offline (>10 min)
+    cutoff = datetime.now(TZ) - timedelta(minutes=10)
+    for o in online:
+        try:
+            last = datetime.fromisoformat(o['last_seen'])
+            if last.tzinfo is None:
+                last = last.replace(tzinfo=TZ)
+            o['is_online'] = last > cutoff
+        except:
+            o['is_online']=False
+    save_json(ONLINE_FILE, online)
+    return jsonify({"ok":True})
+
+@app.route('/api/community/online/list')
+@member_required
+def api_online_list():
+    online = load_json(ONLINE_FILE, [])
+    members = load_json(MEMBERS_FILE, [])
+    cutoff = datetime.now(TZ) - timedelta(minutes=5)
+    result=[]
+    for o in online:
+        if not o.get('is_online'): continue
+        try:
+            last = datetime.fromisoformat(o['last_seen'])
+            if last.tzinfo is None: last = last.replace(tzinfo=TZ)
+            if last < cutoff: continue
+        except: continue
+        m = next((x for x in members if x['id']==o['member_id'] and x['status']=='approved'), None)
+        if not m: continue
+        if m['id']==session.get('member_id'): continue
+        result.append({
+            "member_id": m['id'],
+            "fullName": m.get('fullName') or m.get('personal',{}).get('fullName') or m.get('username','Real Member'),
+            "photo": m.get('photo',''),
+            "ministry": m.get('ministry',{}).get('department','Member') or m.get('personal',{}).get('ministry','Member'),
+            "is_online": True,
+            "last_seen": o['last_seen']
+        })
+    return jsonify(result)
+
+@app.route('/api/community/chat/send', methods=['POST'])
+@member_required
+def api_chat_send():
+    data = request.get_json()
+    to_id = data.get('to_member_id')
+    content = sanitize_text(data.get('content',''),2000)
+    if not to_id or not content: return jsonify({"ok":False}),400
+    members = load_json(MEMBERS_FILE, [])
+    if not any(m['id']==to_id and m['status']=='approved' for m in members):
+        return jsonify({"ok":False,"error":"Member not found"}),404
+    chats = load_json(CHATS_FILE, [])
+    chats.append({
+        "id": int(time.time()*1000),
+        "from_id": session.get('member_id'),
+        "to_id": to_id,
+        "content": content,
+        "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M"),
+        "read": False
+    })
+    save_json(CHATS_FILE, chats)
+    return jsonify({"ok":True})
+
+@app.route('/api/community/chat/messages/<int:other_id>')
+@member_required
+def api_chat_messages(other_id):
+    mid = session.get('member_id')
+    chats = load_json(CHATS_FILE, [])
+    # messages between mid and other_id
+    filtered = [c for c in chats if (c['from_id']==mid and c['to_id']==other_id) or (c['from_id']==other_id and c['to_id']==mid)]
+    filtered.sort(key=lambda x: x['id'])
+    # mark as read
+    for c in chats:
+        if c['to_id']==mid and c['from_id']==other_id:
+            c['read']=True
+    save_json(CHATS_FILE, chats)
+    # enrich
+    members = load_json(MEMBERS_FILE, [])
+    for c in filtered:
+        m = next((x for x in members if x['id']==c['from_id']), None)
+        c['from_name'] = m.get('fullName','') if m else 'Real Member'
+        c['from_photo'] = m.get('photo','') if m else ''
+    return jsonify(filtered[-50:])  # last 50
+
+@app.route('/api/community/chat/conversations')
+@member_required
+def api_chat_conversations():
+    mid = session.get('member_id')
+    chats = load_json(CHATS_FILE, [])
+    members = load_json(MEMBERS_FILE, [])
+    convs={}
+    for c in chats:
+        if c['from_id']!=mid and c['to_id']!=mid: continue
+        other = c['to_id'] if c['from_id']==mid else c['from_id']
+        if other not in convs or c['id']>convs[other]['last_id']:
+            convs[other]={'last_id':c['id'],'last_msg':c['content'],'date':c['date'],'unread':0}
+    result=[]
+    for other_id, info in convs.items():
+        m = next((x for x in members if x['id']==other_id), None)
+        if not m: continue
+        unread = sum(1 for c in chats if c['from_id']==other_id and c['to_id']==mid and not c.get('read'))
+        result.append({
+            "member_id": other_id,
+            "fullName": m.get('fullName') or m.get('personal',{}).get('fullName') or m.get('username','Real Member'),
+            "photo": m.get('photo',''),
+            "last_msg": info['last_msg'][:40],
+            "date": info['date'],
+            "unread": unread
+        })
+    result.sort(key=lambda x: x['date'], reverse=True)
+    return jsonify(result)
+
+@app.route('/api/community/feed/organized')
+@member_required
+def api_feed_organized():
+    # Returns feed organized professionally by media type - posts, events (church+member), photos, videos
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    mem_events = load_json(MEMBER_EVENTS_FILE, [])
+    church_events = load_json(os.path.join(DATA_DIR, 'events.json'), [])
+    galleries = load_json(MEMBER_GALLERIES_FILE, [])
+    videos = load_json(MEMBER_VIDEOS_FILE, [])
+    members = load_json(MEMBERS_FILE, [])
+    
+    # Only approved + own pending already filtered for posts? For organized feed, only approved
+    organized=[]
+    for p in posts:
+        if p.get('status','approved')!='approved': continue
+        m = next((x for x in members if x['id']==p['member_id']), None)
+        organized.append({
+            "id": p['id'],
+            "type": "post",
+            "subtype": p.get('type','post'),
+            "title": "",
+            "content": p.get('content',''),
+            "member_id": p['member_id'],
+            "member_name": m.get('fullName','') if m else 'Real Member',
+            "member_photo": m.get('photo','') if m else '',
+            "ministry": m.get('ministry',{}).get('department','') if m else '',
+            "date": p.get('date',''),
+            "likes": sum(p.get('reactions',{}).values()) if p.get('reactions') else 0,
+            "comments": len(p.get('comments',[])),
+            "data": p,
+            "sort_date": p.get('id',0)
+        })
+    for e in mem_events:
+        if e.get('status')!='approved': continue
+        m = next((x for x in members if x['id']==e['member_id']), None)
+        organized.append({
+            "id": e['id'],
+            "type": "member_event",
+            "subtype": "event",
+            "title": e['title'],
+            "content": e.get('description',''),
+            "member_id": e['member_id'],
+            "member_name": m.get('fullName','') if m else 'Real Member',
+            "member_photo": m.get('photo','') if m else '',
+            "date": e.get('created',''),
+            "likes": e.get('likes',0),
+            "comments": len(e.get('comments',[])),
+            "data": e,
+            "sort_date": e.get('id',0)
+        })
+    for ev in church_events:
+        organized.append({
+            "id": ev['id'],
+            "type": "church_event",
+            "subtype": "church_event",
+            "title": ev['title'],
+            "content": ev.get('description',''),
+            "member_id": 0,
+            "member_name": "Church Admin",
+            "member_photo": "/static/uploads/god_key.jpg",
+            "date": ev.get('date',''),
+            "likes": ev.get('likes',0),
+            "comments": len(ev.get('comments',[])),
+            "data": ev,
+            "sort_date": ev.get('id',0)
+        })
+    for g in galleries:
+        if g.get('status')!='approved': continue
+        m = next((x for x in members if x['id']==g['member_id']), None)
+        organized.append({
+            "id": g['id'],
+            "type": "photo",
+            "subtype": "gallery",
+            "title": g['title'],
+            "content": g.get('description',''),
+            "member_id": g['member_id'],
+            "member_name": m.get('fullName','') if m else 'Real Member',
+            "member_photo": m.get('photo','') if m else '',
+            "date": g.get('created',''),
+            "likes": g.get('likes',0),
+            "comments": len(g.get('comments',[])),
+            "data": g,
+            "sort_date": g.get('id',0)
+        })
+    for v in videos:
+        if v.get('status')!='approved': continue
+        m = next((x for x in members if x['id']==v['member_id']), None)
+        organized.append({
+            "id": v['id'],
+            "type": "video",
+            "subtype": v.get('type','memory_verse'),
+            "title": v['title'],
+            "content": v.get('description',''),
+            "member_id": v['member_id'],
+            "member_name": m.get('fullName','') if m else 'Real Member',
+            "member_photo": m.get('photo','') if m else '',
+            "date": v.get('created',''),
+            "likes": v.get('likes',0),
+            "comments": len(v.get('comments',[])),
+            "data": v,
+            "sort_date": v.get('id',0)
+        })
+    organized.sort(key=lambda x: x['sort_date'], reverse=True)
+    return jsonify(organized)
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)

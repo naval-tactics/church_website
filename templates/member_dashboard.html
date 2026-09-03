@@ -2,101 +2,158 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Members Portal - South B Police Chapel - Real Members Only</title>
+<title>Community Portal - Professional Organized by Media Type - Real Members Only</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>body{font-family:Inter,sans-serif;background:#f3f4f6} .nav-active{background:#0f172a!important;color:white!important} .gallery-thumb{aspect-ratio:4/3;overflow:hidden;border-radius:12px;background:#f3f4f6} .gallery-thumb img{width:100%;height:100%;object-fit:cover} .video-thumb{aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#0f172a;position:relative} .video-thumb img{width:100%;height:100%;object-fit:cover}</style>
+<style>
+body{font-family:Inter,sans-serif;background:#f0f2f5}
+.nav-active{background:#0f172a!important;color:white!important}
+.gallery-thumb{aspect-ratio:4/3;overflow:hidden;border-radius:12px;background:#f3f4f6;position:relative}
+.gallery-thumb img{width:100%;height:100%;object-fit:cover;object-position:center}
+.video-thumb{aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#0f172a;position:relative}
+.video-thumb img{width:100%;height:100%;object-fit:cover}
+.type-badge-post{background:#f3f4f6;border:1px solid #e5e7eb}
+.type-badge-event{background:#dbeafe;border:1px solid #bfdbfe;color:#1e40af}
+.type-badge-church{background:#1e40af;color:white}
+.type-badge-photo{background:#fef3c7;border:1px solid #fde68a;color:#92400e}
+.type-badge-video{background:#ede9fe;border:1px solid #ddd6fe;color:#5b21b6}
+.type-badge-opinion{background:#fce7f3;border:1px solid #fbcfe8;color:#9d174d}
+.type-badge-prayer{background:#d1fae5;border:1px solid #a7f3d0;color:#065f46}
+.online-dot{width:10px;height:10px;background:#22c55e;border:2px solid white;border-radius:50%;position:absolute;bottom:0;right:0}
+.chat-bubble{max-width:70%;padding:8px 12px;border-radius:18px;font-size:12px}
+.chat-bubble.me{background:#0f172a;color:white;border-bottom-right-radius:4px}
+.chat-bubble.them{background:white;border:1px solid #e5e7eb;border-bottom-left-radius:4px}
+.filter-active{background:#0f172a!important;color:white!important;border-color:#0f172a!important}
+</style>
 </head>
 <body class="min-h-screen">
-<header class="sticky top-0 z-40 bg-[#0f172a] text-white">
-  <div class="max-w-[1400px] mx-auto px-4 h-[56px] flex items-center justify-between">
-    <div class="flex items-center gap-3"><img src="/static/uploads/god_key.jpg" class="w-8 h-8 rounded-full border border-yellow-400/30"><span class="font-bold text-[12px]">SOUTH B POLICE CHAPEL</span><span class="ml-2 bg-white/10 text-[10px] px-2 py-1 rounded-full">Members Only • Real Members Only</span></div>
-    <div class="flex items-center gap-2"><img id="hAvatar" src="" class="w-8 h-8 rounded-full object-cover border border-white/20"><span id="hName" class="text-xs"></span><button onclick="logout()" class="text-[10px] bg-white text-black px-3 py-1 rounded-full">Logout</button></div>
+<header class="sticky top-0 z-40 bg-[#0f172a] text-white border-b border-white/10">
+  <div class="max-w-[1600px] mx-auto px-4 h-[56px] flex items-center justify-between">
+    <div class="flex items-center gap-3"><img src="/static/uploads/god_key.jpg" class="w-8 h-8 rounded-full border border-yellow-400/30"><span class="font-bold text-[13px]">SOUTH B POLICE CHAPEL</span><span class="ml-2 bg-white/10 text-[10px] px-2.5 py-1 rounded-full">Members Only • Professional • Real Only</span></div>
+    <div class="flex items-center gap-3"><div class="relative"><img id="hAvatar" src="" class="w-8 h-8 rounded-full object-cover border border-white/20"><span class="online-dot"></span></div><span id="hName" class="text-xs"></span><span id="onlineCount" class="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded-full">0 online</span><button onclick="logout()" class="text-[10px] bg-white text-black px-3 py-1 rounded-full">Logout</button></div>
   </div>
 </header>
 
-<div class="max-w-[1400px] mx-auto flex gap-4 p-4">
-  <aside class="hidden lg:block w-[220px] shrink-0"><div class="bg-white rounded-2xl border p-2 sticky top-[72px]">
-    <button onclick="tab('feed')" id="nb-feed" class="nav-active w-full text-left px-3 py-2.5 rounded-xl text-xs"><i class="fas fa-home w-5"></i> Home Feed</button>
-    <button onclick="tab('profile')" id="nb-profile" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-user w-5"></i> My Profile</button>
-    <button onclick="tab('dir')" id="nb-dir" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-users w-5"></i> Directory <span id="dirCnt" class="ml-1 bg-gray-100 text-[10px] px-1.5 rounded-full"></span></button>
-    <button onclick="tab('prayer')" id="nb-prayer" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-pray w-5"></i> Prayer Wall</button>
-    <button onclick="tab('groups')" id="nb-groups" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-users-rectangle w-5"></i> Groups</button>
-    <button onclick="tab('events')" id="nb-events" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-calendar w-5"></i> Events</button>
-    <button onclick="tab('photos')" id="nb-photos" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-images w-5"></i> Photos</button>
-    <button onclick="tab('videos')" id="nb-videos" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-video w-5"></i> Videos</button>
-    <button onclick="tab('my')" id="nb-my" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-folder w-5"></i> My Uploads</button>
-  </div></aside>
-
-  <main class="flex-1 min-w-0 max-w-[700px] mx-auto">
-    <div class="bg-white rounded-2xl border p-3 flex gap-2 flex-wrap">
-      <button onclick="openModal('postModal')" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs"><i class="fas fa-pen"></i> New Post / Opinion</button>
-      <button onclick="openModal('eventModal')" class="bg-white border px-4 py-2 rounded-full text-xs"><i class="fas fa-calendar-plus"></i> New Event</button>
-      <button onclick="openModal('photoModal')" class="bg-white border px-4 py-2 rounded-full text-xs"><i class="fas fa-image"></i> New Photos</button>
-      <button onclick="openModal('videoModal')" class="bg-white border px-4 py-2 rounded-full text-xs"><i class="fas fa-video"></i> Memory Verse Video</button>
+<div class="max-w-[1600px] mx-auto flex gap-4 p-4">
+  <!-- Left Sidebar -->
+  <aside class="hidden lg:block w-[240px] shrink-0">
+    <div class="bg-white rounded-2xl border p-2 sticky top-[72px]">
+      <p class="text-[10px] font-semibold text-gray-500 px-3 py-2">FEED - ORGANIZED BY MEDIA TYPE</p>
+      <button onclick="setFilter('all')" id="f-all" class="filter-active w-full text-left px-3 py-2.5 rounded-xl text-xs border"><i class="fas fa-th-large w-5"></i> All Feed <span id="cnt-all" class="float-right text-[10px] bg-gray-100 px-1.5 rounded-full"></span></button>
+      <button onclick="setFilter('post')" id="f-post" class="w-full text-left px-3 py-2.5 rounded-xl text-xs border border-transparent hover:bg-gray-50"><i class="fas fa-pen w-5"></i> Posts & Opinions <span id="cnt-post" class="float-right text-[10px] bg-gray-100 px-1.5 rounded-full"></span></button>
+      <button onclick="setFilter('church_event')" id="f-church_event" class="w-full text-left px-3 py-2.5 rounded-xl text-xs border border-transparent hover:bg-gray-50"><i class="fas fa-church w-5"></i> Church Events <span id="cnt-church_event" class="float-right text-[10px] bg-blue-100 text-blue-700 px-1.5 rounded-full"></span></button>
+      <button onclick="setFilter('member_event')" id="f-member_event" class="w-full text-left px-3 py-2.5 rounded-xl text-xs border border-transparent hover:bg-gray-50"><i class="fas fa-calendar w-5"></i> Member Events <span id="cnt-member_event" class="float-right text-[10px] bg-gray-100 px-1.5 rounded-full"></span></button>
+      <button onclick="setFilter('photo')" id="f-photo" class="w-full text-left px-3 py-2.5 rounded-xl text-xs border border-transparent hover:bg-gray-50"><i class="fas fa-images w-5"></i> Photos <span id="cnt-photo" class="float-right text-[10px] bg-yellow-100 px-1.5 rounded-full"></span></button>
+      <button onclick="setFilter('video')" id="f-video" class="w-full text-left px-3 py-2.5 rounded-xl text-xs border border-transparent hover:bg-gray-50"><i class="fas fa-video w-5"></i> Memory Verse Videos <span id="cnt-video" class="float-right text-[10px] bg-purple-100 px-1.5 rounded-full"></span></button>
+      <div class="border-t my-2"></div>
+      <button onclick="tab('dir')" id="nb-dir" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-users w-5"></i> Directory <span id="dirCnt" class="ml-1 bg-gray-100 text-[10px] px-1.5 rounded-full"></span></button>
+      <button onclick="tab('my')" id="nb-my" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-folder w-5"></i> My Uploads - CRUD</button>
+      <button onclick="tab('prayer')" id="nb-prayer" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-pray w-5"></i> Prayer Wall</button>
+      <button onclick="tab('groups')" id="nb-groups" class="w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-gray-50"><i class="fas fa-users-rectangle w-5"></i> Groups</button>
     </div>
 
-    <div id="composer" class="mt-4 bg-white rounded-2xl border p-4">
-      <div class="flex gap-3"><img id="cAvatar" src="" class="w-10 h-10 rounded-full object-cover"><div class="flex-1"><p id="cGreet" class="text-xs font-semibold"></p><textarea id="postContent" placeholder="Share opinion, testimony, prayer with real church family..." class="w-full mt-2 border rounded-xl p-3 text-xs h-[70px] outline-none"></textarea><div class="mt-2 flex justify-between"><select id="postType" class="border rounded-full px-3 py-1.5 text-[11px]"><option value="post">Post</option><option value="opinion">Opinion</option><option value="prayer">Prayer Request</option><option value="testimony">Testimony</option></select><button onclick="createPost()" class="bg-[#0f172a] text-white px-5 py-2 rounded-full text-xs">Share for Approval</button></div></div></div>
+    <div class="bg-white rounded-2xl border p-3 mt-3 sticky top-[420px]">
+      <h3 class="font-semibold text-xs flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Online Now - Real Members</h3>
+      <p class="text-[10px] text-gray-500 mt-1">Like Facebook/Instagram - see who is online</p>
+      <div id="onlineListLeft" class="mt-3 space-y-2 max-h-[200px] overflow-y-auto"></div>
+    </div>
+  </aside>
+
+  <!-- Main Feed - Professional Organized -->
+  <main class="flex-1 min-w-0 max-w-[720px] mx-auto">
+    <!-- Composer + Upload Buttons -->
+    <div class="bg-white rounded-2xl border p-4">
+      <div class="flex gap-2 flex-wrap mb-3">
+        <button onclick="openModal('postModal')" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs"><i class="fas fa-pen"></i> Post / Opinion</button>
+        <button onclick="openModal('eventModal')" class="bg-blue-600 text-white px-4 py-2 rounded-full text-xs"><i class="fas fa-calendar-plus"></i> Event</button>
+        <button onclick="openModal('photoModal')" class="bg-yellow-500 text-white px-4 py-2 rounded-full text-xs"><i class="fas fa-image"></i> Photos</button>
+        <button onclick="openModal('videoModal')" class="bg-purple-600 text-white px-4 py-2 rounded-full text-xs"><i class="fas fa-video"></i> Memory Verse</button>
+      </div>
+      <div class="flex gap-3"><img id="cAvatar" src="" class="w-10 h-10 rounded-full object-cover"><div class="flex-1"><p id="cGreet" class="text-xs font-semibold"></p><textarea id="postContent" placeholder="Share with real church family - opinion, testimony, prayer..." class="w-full mt-2 border rounded-xl p-3 text-xs h-[70px] outline-none"></textarea><div class="mt-2 flex justify-between"><select id="postType" class="border rounded-full px-3 py-1.5 text-[11px]"><option value="post">Post</option><option value="opinion">Opinion</option><option value="prayer">Prayer</option><option value="testimony">Testimony</option></select><button onclick="createPost()" class="bg-[#0f172a] text-white px-5 py-2 rounded-full text-xs">Share for Approval</button></div></div></div>
     </div>
 
-    <div id="feed" class="mt-4 space-y-3"></div>
-    <div id="dirView" class="hidden mt-4 bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Directory - Only Real Registered Approved Members</h2><p class="text-[11px] text-gray-500 mt-1">No fake names. Only people who actually registered and were approved.</p><input id="dirSearch" oninput="loadDir()" placeholder="Search real members by name, phone, ministry..." class="w-full mt-3 border rounded-full px-4 py-2.5 text-xs"><div id="dirGrid" class="mt-4 grid md:grid-cols-2 gap-3"></div></div>
-    <div id="eventsView" class="hidden mt-4 space-y-3"></div>
-    <div id="photosView" class="hidden mt-4 space-y-3"></div>
-    <div id="videosView" class="hidden mt-4 space-y-3"></div>
+    <!-- Professional Organized Feed Info -->
+    <div class="mt-3 bg-gradient-to-r from-[#0f172a] to-[#1e293b] text-white rounded-2xl p-4">
+      <h3 class="font-semibold text-xs">📂 Professional Organized Feed - By Media Type</h3>
+      <p class="text-[11px] text-white/70 mt-1">Posts are organized neatly based on type: Posts, Church Events (blue), Member Events (green), Photos (yellow 4:3), Videos (purple 16:9). Auto-appears without clicking when admin approves. Like, Comment on everything. Real members only.</p>
+      <div class="mt-3 flex gap-2 flex-wrap text-[10px]"><span class="bg-white/10 px-2 py-1 rounded-full">🔵 Church Events</span><span class="bg-white/10 px-2 py-1 rounded-full">🟢 Member Events</span><span class="bg-white/10 px-2 py-1 rounded-full">🟡 Photos 4:3</span><span class="bg-white/10 px-2 py-1 rounded-full">🟣 Videos 16:9</span><span class="bg-white/10 px-2 py-1 rounded-full">⚪ Posts/Opinions</span><span class="bg-green-500/20 border border-green-500/30 px-2 py-1 rounded-full">● Online + Chat like FB/IG</span></div>
+    </div>
+
+    <!-- Organized Feed Container -->
+    <div id="organizedFeed" class="mt-4 space-y-4"></div>
+
+    <!-- Other Views -->
+    <div id="dirView" class="hidden mt-4 bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Directory - Real Members Only</h2><input id="dirSearch" oninput="loadDir()" placeholder="Search real members..." class="w-full mt-3 border rounded-full px-4 py-2.5 text-xs"><div id="dirGrid" class="mt-4 grid md:grid-cols-2 gap-3"></div></div>
     <div id="myView" class="hidden mt-4 space-y-3"></div>
-    <div id="prayerView" class="hidden mt-4 bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Prayer Wall - Real Prayers Only</h2><div id="prayerList" class="mt-4 space-y-3"></div></div>
+    <div id="prayerView" class="hidden mt-4 bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Prayer Wall - Real Only</h2><div id="prayerList" class="mt-4 space-y-3"></div></div>
     <div id="groupsView" class="hidden mt-4 bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Groups - Real Groups</h2><div id="groupsGrid" class="mt-4 grid md:grid-cols-2 gap-3"></div></div>
-    <div id="profileView" class="hidden mt-4 bg-white rounded-2xl border p-6 text-center"><img id="pAvatar" src="" class="w-24 h-24 rounded-full mx-auto object-cover border"><h2 id="pName" class="font-semibold text-lg mt-3"></h2><p id="pMinistry" class="text-xs text-gray-500"></p><p id="pPhone" class="text-xs mt-1"></p><p id="pEmergency" class="text-[11px] text-gray-500 mt-1"></p><div class="mt-6 text-left"><label class="text-[10px]">Bio</label><input id="editBio" class="w-full mt-1 border rounded-xl px-3 py-2 text-xs"><button onclick="saveBio()" class="mt-2 bg-[#0f172a] text-white px-4 py-1.5 rounded-full text-xs">Save</button></div></div>
+    <div id="profileView" class="hidden mt-4 bg-white rounded-2xl border p-6 text-center"><img id="pAvatar" src="" class="w-24 h-24 rounded-full mx-auto object-cover border"><h2 id="pName" class="font-semibold text-lg mt-3"></h2><p id="pMinistry" class="text-xs text-gray-500"></p><p id="pPhone" class="text-xs mt-1"></p></div>
   </main>
 
-  <aside class="hidden xl:block w-[300px] shrink-0"><div class="space-y-3 sticky top-[72px]">
-    <div class="bg-white rounded-2xl border p-4 text-center"><img id="rAvatar" src="" class="w-16 h-16 rounded-full mx-auto object-cover"><h3 id="rName" class="font-semibold text-sm mt-2"></h3><p id="rMinistry" class="text-[11px] text-gray-500"></p><p id="rPhone" class="text-[11px] mt-1"></p><p class="text-[10px] text-gray-400 mt-3">Only real members see this. No fake data.</p></div>
-    <div class="bg-white rounded-2xl border p-4"><h3 class="font-semibold text-xs">Real Members</h3><div id="onlineList" class="mt-3 space-y-2"></div></div>
-  </div></aside>
+  <!-- Right Sidebar - Online + Chat like FB/IG -->
+  <aside class="hidden xl:block w-[320px] shrink-0">
+    <div class="space-y-3 sticky top-[72px]">
+      <div class="bg-white rounded-2xl border p-4 text-center"><div class="relative inline-block"><img id="rAvatar" src="" class="w-16 h-16 rounded-full mx-auto object-cover"><span class="online-dot"></span></div><h3 id="rName" class="font-semibold text-sm mt-2"></h3><p id="rMinistry" class="text-[11px] text-gray-500"></p><p id="rPhone" class="text-[11px] mt-1"></p></div>
+      
+      <div class="bg-white rounded-2xl border p-4">
+        <div class="flex justify-between items-center"><h3 class="font-semibold text-xs">💬 Chats - Like Facebook/Instagram</h3><span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Real Members Only</span></div>
+        <p class="text-[10px] text-gray-500 mt-1">When a member is online and another is online they can see who is online and chat like FB/IG</p>
+        <div class="mt-3">
+          <div class="flex gap-2 mb-2"><span class="text-[10px] font-semibold">Online Now</span><span id="onlineNowCount" class="text-[10px] bg-green-500 text-white px-1.5 rounded-full">0</span></div>
+          <div id="onlineNowList" class="space-y-1 max-h-[180px] overflow-y-auto"></div>
+        </div>
+        <div class="mt-4 border-t pt-3">
+          <div class="flex justify-between items-center"><span class="text-[10px] font-semibold">Recent Chats</span><button onclick="loadConversations()" class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">Refresh</button></div>
+          <div id="chatConversations" class="mt-2 space-y-1 max-h-[200px] overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border p-4"><h3 class="font-semibold text-xs">My Uploads - Your CRUD</h3><div id="myUploadsMini" class="mt-3 space-y-2"></div></div>
+    </div>
+  </aside>
 </div>
 
+<!-- Chat Windows Container - Like FB Messenger -->
+<div id="chatWindows" class="fixed bottom-0 right-4 flex gap-2 z-50"></div>
+
 <!-- Modals -->
-<div id="postModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-5 max-w-lg w-full"><h3 class="font-semibold text-sm">New Post / Opinion - Real Members Only</h3><textarea id="modalPostContent" placeholder="Your opinion, testimony..." class="w-full mt-3 border rounded-xl p-3 text-xs h-24"></textarea><select id="modalPostType" class="w-full mt-2 border rounded-xl p-2 text-xs"><option value="post">Post</option><option value="opinion">Opinion</option><option value="prayer">Prayer</option><option value="testimony">Testimony</option></select><div class="mt-4 flex gap-2 justify-end"><button onclick="closeModal('postModal')" class="bg-gray-100 px-4 py-2 rounded-full text-xs">Cancel</button><button onclick="createPostModal()" class="bg-[#0f172a] text-white px-5 py-2 rounded-full text-xs">Submit for Approval</button></div></div></div>
+<div id="postModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-5 max-w-lg w-full"><h3 class="font-semibold text-sm">New Post / Opinion - Professional Organized</h3><textarea id="modalPostContent" placeholder="Your opinion, testimony..." class="w-full mt-3 border rounded-xl p-3 text-xs h-24"></textarea><select id="modalPostType" class="w-full mt-2 border rounded-xl p-2 text-xs"><option value="post">Post</option><option value="opinion">Opinion</option><option value="prayer">Prayer</option><option value="testimony">Testimony</option></select><div class="mt-4 flex gap-2 justify-end"><button onclick="closeModal('postModal')" class="bg-gray-100 px-4 py-2 rounded-full text-xs">Cancel</button><button onclick="createPostModal()" class="bg-[#0f172a] text-white px-5 py-2 rounded-full text-xs">Submit for Approval</button></div></div></div>
 
-<div id="eventModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-5 max-w-lg w-full max-h-[90vh] overflow-y-auto"><h3 class="font-semibold text-sm">New Member Event - Will be approved by admin</h3><form id="eventForm" class="mt-4 space-y-3"><input name="title" placeholder="Event Title *" required class="w-full border rounded-xl p-2.5 text-xs"><div class="grid grid-cols-3 gap-2"><input name="date" type="date" class="border rounded-xl p-2.5 text-xs"><input name="time" placeholder="Time" class="border rounded-xl p-2.5 text-xs"><input name="location" placeholder="Location" class="border rounded-xl p-2.5 text-xs"></div><textarea name="description" placeholder="Description" class="w-full border rounded-xl p-2.5 text-xs h-20"></textarea><input type="file" name="file" accept="image/*" class="w-full text-xs"><div class="flex gap-2 justify-end mt-4"><button type="button" onclick="closeModal('eventModal')" class="bg-gray-100 px-4 py-2 rounded-full text-xs">Cancel</button><button type="submit" class="bg-[#0f172a] text-white px-5 py-2 rounded-full text-xs">Submit Event for Approval</button></div></form></div></div>
+<div id="eventModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-5 max-w-lg w-full max-h-[90vh] overflow-y-auto"><h3 class="font-semibold text-sm">New Member Event - Professional</h3><form id="eventForm" class="mt-4 space-y-3"><input name="title" placeholder="Event Title *" required class="w-full border rounded-xl p-2.5 text-xs"><div class="grid grid-cols-3 gap-2"><input name="date" type="date" class="border rounded-xl p-2.5 text-xs"><input name="time" placeholder="Time" class="border rounded-xl p-2.5 text-xs"><input name="location" placeholder="Location" class="border rounded-xl p-2.5 text-xs"></div><textarea name="description" placeholder="Description" class="w-full border rounded-xl p-2.5 text-xs h-20"></textarea><input type="file" name="file" accept="image/*" class="w-full text-xs"><div class="flex gap-2 justify-end mt-4"><button type="button" onclick="closeModal('eventModal')" class="bg-gray-100 px-4 py-2 rounded-full text-xs">Cancel</button><button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-full text-xs">Submit for Approval</button></div></form></div></div>
 
-<div id="photoModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-5 max-w-lg w-full"><h3 class="font-semibold text-sm">Upload Photos - Members Only, Admin Approves</h3><form id="photoForm" class="mt-4 space-y-3"><input name="title" placeholder="Album Title *" required class="w-full border rounded-xl p-2.5 text-xs"><textarea name="description" placeholder="Description" class="w-full border rounded-xl p-2.5 text-xs h-16"></textarea><input type="file" name="files" multiple accept="image/*" class="w-full text-xs"><div class="flex gap-2 justify-end mt-4"><button type="button" onclick="closeModal('photoModal')" class="bg-gray-100 px-4 py-2 rounded-full text-xs">Cancel</button><button type="submit" class="bg-[#0f172a] text-white px-5 py-2 rounded-full text-xs">Submit Photos for Approval</button></div></form></div></div>
+<div id="photoModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-5 max-w-lg w-full"><h3 class="font-semibold text-sm">Upload Photos - Professional 4:3 Gallery</h3><form id="photoForm" class="mt-4 space-y-3"><input name="title" placeholder="Album Title *" required class="w-full border rounded-xl p-2.5 text-xs"><textarea name="description" placeholder="Description" class="w-full border rounded-xl p-2.5 text-xs h-16"></textarea><input type="file" name="files" multiple accept="image/*" class="w-full text-xs"><div class="flex gap-2 justify-end mt-4"><button type="button" onclick="closeModal('photoModal')" class="bg-gray-100 px-4 py-2 rounded-full text-xs">Cancel</button><button type="submit" class="bg-yellow-500 text-white px-5 py-2 rounded-full text-xs">Submit Photos</button></div></form></div></div>
 
-<div id="videoModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-5 max-w-lg w-full"><h3 class="font-semibold text-sm">Upload Memory Verse Video - Members Only</h3><form id="videoForm" class="mt-4 space-y-3"><input name="title" placeholder="Video Title * (e.g., John 3:16)" required class="w-full border rounded-xl p-2.5 text-xs"><select name="type" class="w-full border rounded-xl p-2.5 text-xs"><option value="memory_verse">Memory Verse</option><option value="testimony">Testimony</option><option value="opinion">Opinion</option><option value="worship">Worship</option></select><input name="yt" placeholder="YouTube URL or ID (optional)" class="w-full border rounded-xl p-2.5 text-xs"><textarea name="description" placeholder="Description" class="w-full border rounded-xl p-2.5 text-xs h-16"></textarea><input type="file" name="file" accept="video/*" class="w-full text-xs"><div class="flex gap-2 justify-end mt-4"><button type="button" onclick="closeModal('videoModal')" class="bg-gray-100 px-4 py-2 rounded-full text-xs">Cancel</button><button type="submit" class="bg-[#0f172a] text-white px-5 py-2 rounded-full text-xs">Submit Video for Approval</button></div></form></div></div>
+<div id="videoModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl p-5 max-w-lg w-full"><h3 class="font-semibold text-sm">Upload Memory Verse Video - Professional 16:9</h3><form id="videoForm" class="mt-4 space-y-3"><input name="title" placeholder="Video Title * (e.g., John 3:16)" required class="w-full border rounded-xl p-2.5 text-xs"><select name="type" class="w-full border rounded-xl p-2.5 text-xs"><option value="memory_verse">Memory Verse</option><option value="testimony">Testimony</option><option value="opinion">Opinion</option><option value="worship">Worship</option></select><input name="yt" placeholder="YouTube URL or ID" class="w-full border rounded-xl p-2.5 text-xs"><textarea name="description" placeholder="Description" class="w-full border rounded-xl p-2.5 text-xs h-16"></textarea><input type="file" name="file" accept="video/*" class="w-full text-xs"><div class="flex gap-2 justify-end mt-4"><button type="button" onclick="closeModal('videoModal')" class="bg-gray-100 px-4 py-2 rounded-full text-xs">Cancel</button><button type="submit" class="bg-purple-600 text-white px-5 py-2 rounded-full text-xs">Submit Video</button></div></form></div></div>
 
 <div id="viewModal" class="hidden fixed inset-0 bg-black/70 z-[60] flex items-center justify-center p-4"><div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"><div class="p-5"><div class="flex justify-between items-center"><h3 id="viewTitle" class="font-semibold text-sm"></h3><button onclick="closeModal('viewModal')" class="bg-gray-100 w-8 h-8 rounded-full text-sm">✕</button></div><div id="viewContent" class="mt-4"></div></div></div></div>
 
 <script>
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function fixUrl(u){if(!u) return 'https://via.placeholder.com/200x200.png?text=No+Photo'; u=String(u).trim(); if(u.startsWith('http')) return u; if(u.startsWith('/static/')) return u; if(u.startsWith('uploads/')) return '/static/'+u; return '/static/'+u.replace(/^\/+/,'');}
-let curMember=null;
+let curMember=null, currentFilter='all', organizedData=[], lastCount=0;
+
 function openModal(id){document.getElementById(id).classList.remove('hidden')}
 function closeModal(id){document.getElementById(id).classList.add('hidden')}
 function logout(){fetch('/api/member/logout',{method:'POST'}).then(()=>location.href='/')}
 function tab(name){
-  document.querySelectorAll('[id^=nb-]').forEach(b=>b.classList.remove('nav-active'));
-  let btn=document.getElementById('nb-'+name); if(btn) btn.classList.add('nav-active');
-  document.getElementById('composer').classList.toggle('hidden', name!=='feed');
-  document.getElementById('feed').classList.toggle('hidden', name!=='feed');
+  document.getElementById('organizedFeed').classList.add('hidden');
   document.getElementById('dirView').classList.toggle('hidden', name!=='dir');
-  document.getElementById('eventsView').classList.toggle('hidden', name!=='events');
-  document.getElementById('photosView').classList.toggle('hidden', name!=='photos');
-  document.getElementById('videosView').classList.toggle('hidden', name!=='videos');
   document.getElementById('myView').classList.toggle('hidden', name!=='my');
   document.getElementById('prayerView').classList.toggle('hidden', name!=='prayer');
   document.getElementById('groupsView').classList.toggle('hidden', name!=='groups');
   document.getElementById('profileView').classList.toggle('hidden', name!=='profile');
-  if(name==='events') loadMemberEvents();
-  if(name==='photos') loadMemberGalleries();
-  if(name==='videos') loadMemberVideos();
-  if(name==='my') loadMyUploads();
   if(name==='dir') loadDir();
+  if(name==='my') loadMyUploads();
   if(name==='prayer') loadPrayer();
   if(name==='groups') loadGroups();
-  if(name==='feed') loadFeed();
+  if(name==='feed' || name==='all'){ document.getElementById('organizedFeed').classList.remove('hidden'); document.getElementById('dirView').classList.add('hidden'); document.getElementById('myView').classList.add('hidden'); document.getElementById('prayerView').classList.add('hidden'); document.getElementById('groupsView').classList.add('hidden'); document.getElementById('profileView').classList.add('hidden'); }
+}
+function setFilter(type){
+  currentFilter=type;
+  document.querySelectorAll('[id^=f-]').forEach(b=>b.classList.remove('filter-active'));
+  let btn=document.getElementById('f-'+type); if(btn) btn.classList.add('filter-active');
+  renderOrganizedFeed();
 }
 
 async function init(){
@@ -106,9 +163,7 @@ async function init(){
   let fullName = curMember.personal?.fullName || curMember.fullName || curMember.username || 'Member';
   let photo = fixUrl(curMember.photo||'');
   let ministry = curMember.ministry?.department || curMember.personal?.ministry || 'Member';
-  let phone = curMember.personal?.phone || curMember.phone || curMember.contact?.phone || '';
-  let eName = curMember.emergency?.name || curMember.personal?.emergencyName || '';
-  let ePhone = curMember.emergency?.phone || curMember.personal?.emergencyPhone || '';
+  let phone = curMember.personal?.phone || curMember.phone || '';
   document.getElementById('hName').innerText = fullName;
   document.getElementById('hAvatar').src = photo;
   document.getElementById('cAvatar').src = photo;
@@ -118,332 +173,170 @@ async function init(){
   document.getElementById('rName').innerText = fullName;
   document.getElementById('pMinistry').innerText = ministry;
   document.getElementById('rMinistry').innerText = ministry;
-  document.getElementById('pPhone').innerText = phone ? 'Phone: '+phone : 'Phone: Not provided (real only)';
-  document.getElementById('rPhone').innerText = phone ? phone : '';
-  document.getElementById('pEmergency').innerText = eName ? 'Emergency: '+eName+' '+ePhone : 'Emergency: Not set';
-  document.getElementById('cGreet').innerText = 'What is on your heart today, '+(fullName.split(' ')[0]||'Member')+'? (Real members only)';
-  loadFeed(); loadDir(); loadGroups(); loadPrayer(); loadMemberEvents(); loadMemberGalleries(); loadMemberVideos();
-}
-async function createPost(){
-  const content=document.getElementById('postContent').value.trim();
-  const type=document.getElementById('postType').value;
-  if(!content) return alert('Write something - real opinion from real member');
-  let res=await fetch('/api/community/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content, type, visibility:'church'})});
-  let data=await res.json();
-  if(data.ok){ document.getElementById('postContent').value=''; alert('Submitted for admin approval - only real members will see after approval'); loadFeed(); } else alert(data.error||'Failed');
-}
-async function createPostModal(){
-  const content=document.getElementById('modalPostContent').value.trim();
-  const type=document.getElementById('modalPostType').value;
-  if(!content) return alert('Write something');
-  let res=await fetch('/api/community/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content, type, visibility:'church'})});
-  let data=await res.json();
-  if(data.ok){ closeModal('postModal'); document.getElementById('modalPostContent').value=''; alert('Submitted for admin approval'); loadFeed(); } else alert(data.error);
-}
-async function loadFeed(){
-  let posts=await fetch('/api/community/posts').then(r=>r.json()).catch(()=>[]);
-  let el=document.getElementById('feed');
-  if(!posts.length){ el.innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No posts yet - Real members only</p><p class="text-[11px] text-gray-500 mt-2">Only real posts from real approved members who were approved by admin will appear here. No fake names.</p></div>'; return; }
-  el.innerHTML=posts.map(p=>`<div class="bg-white rounded-2xl border p-4"><div class="flex gap-3"><img src="${fixUrl(p.photo)}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1 min-w-0"><div class="flex gap-2 items-center flex-wrap"><span class="font-semibold text-xs">${esc(p.fullName||p.username||'Real Member')}</span><span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">${esc(p.ministry||'Member')}</span><span class="text-[10px] text-gray-400">${esc(p.date||'')}</span>${p.status==='pending'?'<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Pending Approval</span>':''}</div><p class="text-[13px] mt-2 whitespace-pre-wrap">${esc(p.content||'')}</p><div class="mt-3 flex gap-3 text-[11px] text-gray-500"><button onclick="reactPost(${p.id},'amen')"><i class="fas fa-heart"></i> Amen ${p.reactions?.amen||0}</button><button onclick="reactPost(${p.id},'praying')"><i class="fas fa-pray"></i> ${p.reactions?.praying||0}</button>${p.member_id===curMember?.id?`<button onclick="editPost(${p.id})" class="text-blue-600">Edit</button><button onclick="deletePost(${p.id})" class="text-red-600">Delete</button>`:''}</div></div></div></div>`).join('');
-}
-async function reactPost(id,type){ await fetch('/api/community/react/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type})}); loadFeed(); }
-async function deletePost(id){ if(!confirm('Delete your post?')) return; await fetch('/api/community/post/'+id,{method:'DELETE'}); loadFeed(); loadMyUploads(); }
-function editPost(id){ let c=prompt('Edit your post:'); if(!c) return; fetch('/api/community/post/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:c})}).then(()=>loadFeed()); }
-
-async function loadMemberEvents(){
-  let events=await fetch('/api/community/member-events').then(r=>r.json()).catch(()=>[]);
-  let el=document.getElementById('eventsView');
-  if(!events.length){ el.innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No member events yet - Real only</p><p class="text-[11px] text-gray-500 mt-2">Be first real member to post an event. Admin will approve before all members see.</p></div>'; return; }
-  el.innerHTML='<div class="bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Member Events - Real Events Only, Click to View</h2><div class="mt-4 grid md:grid-cols-2 gap-3">'+events.map(ev=>`<div onclick="viewEvent(${ev.id})" class="cursor-pointer bg-gray-50 border rounded-xl p-3 flex gap-3 hover:bg-white"><img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/80x80.png?text=Event'}" class="w-20 h-20 rounded-xl object-cover"><div class="flex-1 min-w-0"><p class="font-semibold text-xs truncate">${esc(ev.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[11px] mt-1 truncate">${esc((ev.description||'').substring(0,80))}</p><div class="mt-2 flex gap-2 items-center"><span class="text-[10px] px-2 py-0.5 rounded-full ${ev.status==='approved'?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}">${esc(ev.status)}</span><span class="text-[10px] text-gray-400">${esc(ev.member_name||'Real Member')}</span></div></div></div>`).join('')+'</div></div>';
-}
-function viewEvent(id){
-  fetch('/api/community/member-events').then(r=>r.json()).then(events=>{
-    let ev=events.find(x=>x.id===id); if(!ev) return;
-    document.getElementById('viewTitle').innerText = ev.title;
-    document.getElementById('viewContent').innerHTML = `<img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/400x200.png?text=Event'}" class="w-full h-48 object-cover rounded-xl"><p class="text-xs font-semibold mt-4">${esc(ev.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[12px] mt-3 whitespace-pre-wrap">${esc(ev.description||'No description')}</p><p class="text-[11px] text-gray-500 mt-4">Posted by: ${esc(ev.member_name||'Real Member')} • Status: <span class="px-2 py-0.5 rounded-full ${ev.status==='approved'?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}">${esc(ev.status)}</span></p><div class="mt-4 flex gap-2">${ev.member_id===curMember?.id?`<button onclick="deleteEvent(${ev.id})" class="bg-red-600 text-white px-4 py-1.5 rounded-full text-xs">Delete My Event</button>`:''}<button onclick="closeModal('viewModal')" class="bg-gray-100 px-4 py-1.5 rounded-full text-xs">Close</button></div>`;
-    openModal('viewModal');
-  });
-}
-async function deleteEvent(id){ if(!confirm('Delete your event?')) return; await fetch('/api/community/event/'+id,{method:'DELETE'}); closeModal('viewModal'); loadMemberEvents(); loadMyUploads(); }
-
-async function loadMemberGalleries(){
-  let gals=await fetch('/api/community/member-galleries').then(r=>r.json()).catch(()=>[]);
-  let el=document.getElementById('photosView');
-  if(!gals.length){ el.innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No member photos yet - Real only</p><p class="text-[11px] text-gray-500 mt-2">Upload photos - admin will approve, then all real members see.</p></div>'; return; }
-  el.innerHTML='<div class="bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Member Photos - Click to View Full</h2><div class="mt-4 grid md:grid-cols-3 gap-3">'+gals.map(g=>`<div onclick="viewGallery(${g.id})" class="cursor-pointer bg-white border rounded-xl overflow-hidden hover:shadow"><div class="gallery-thumb"><img src="${g.cover?fixUrl(g.cover):(g.images&&g.images[0]?fixUrl(g.images[0]):'https://via.placeholder.com/300x200.png?text=Photo')}" loading="lazy"><div class="absolute bottom-2 right-2 bg-black/70 text-white text-[9px] px-2 py-1 rounded-full">${g.images?.length||0} photos</div><div class="absolute top-2 left-2 bg-white/90 text-[9px] px-2 py-1 rounded-full ${g.status==='approved'?'bg-green-100':'bg-yellow-100'}">${esc(g.status)}</div></div><div class="p-3"><p class="font-semibold text-xs truncate">${esc(g.title)}</p><p class="text-[10px] text-gray-500">${esc(g.member_name||'Real Member')}</p></div></div>`).join('')+'</div></div>';
-}
-function viewGallery(id){
-  fetch('/api/community/member-galleries').then(r=>r.json()).then(gals=>{
-    let g=gals.find(x=>x.id===id); if(!g) return;
-    document.getElementById('viewTitle').innerText = g.title;
-    document.getElementById('viewContent').innerHTML = `<p class="text-[11px] text-gray-500">By ${esc(g.member_name||'Real Member')} • ${esc(g.status)} • ${g.images?.length||0} photos</p><p class="text-[12px] mt-2">${esc(g.description||'')}</p><div class="mt-4 grid grid-cols-2 gap-2">${(g.images||[]).map(img=>`<img src="${fixUrl(img)}" class="w-full rounded-xl object-cover">`).join('')}</div><div class="mt-4 flex gap-2">${g.member_id===curMember?.id?`<button onclick="deleteGallery(${g.id})" class="bg-red-600 text-white px-4 py-1.5 rounded-full text-xs">Delete My Photos</button>`:''}<button onclick="closeModal('viewModal')" class="bg-gray-100 px-4 py-1.5 rounded-full text-xs">Close</button></div>`;
-    openModal('viewModal');
-  });
-}
-async function deleteGallery(id){ if(!confirm('Delete your photos?')) return; await fetch('/api/community/gallery/'+id,{method:'DELETE'}); closeModal('viewModal'); loadMemberGalleries(); loadMyUploads(); }
-
-async function loadMemberVideos(){
-  let vids=await fetch('/api/community/member-videos').then(r=>r.json()).catch(()=>[]);
-  let el=document.getElementById('videosView');
-  if(!vids.length){ el.innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No member videos yet - Real only</p><p class="text-[11px] text-gray-500 mt-2">Upload memory verse videos - admin approves, then all real members see.</p></div>'; return; }
-  el.innerHTML='<div class="bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Member Videos - Memory Verse, Click to Play</h2><div class="mt-4 grid md:grid-cols-2 gap-3">'+vids.map(v=>`<div onclick="viewVideo(${v.id})" class="cursor-pointer bg-white border rounded-xl overflow-hidden hover:shadow"><div class="video-thumb">${v.yt?`<img src="https://img.youtube.com/vi/${esc(v.yt)}/hqdefault.jpg"><div class="absolute inset-0 flex items-center justify-center"><div class="bg-black/60 w-12 h-12 rounded-full flex items-center justify-center text-white">▶</div></div>`:v.local_file?`<img src="https://via.placeholder.com/320x180.png?text=Video"><div class="absolute inset-0 flex items-center justify-center"><div class="bg-black/60 w-12 h-12 rounded-full flex items-center justify-center text-white">▶</div></div>`:`<div class="w-full h-full flex items-center justify-center text-white text-xs">No Preview</div>`}<div class="absolute top-2 left-2 bg-white/90 text-[9px] px-2 py-1 rounded-full ${v.status==='approved'?'bg-green-100':'bg-yellow-100'}">${esc(v.status)}</div></div><div class="p-3"><p class="font-semibold text-xs truncate">${esc(v.title)}</p><p class="text-[10px] text-gray-500">${esc(v.type||'memory_verse')} • ${esc(v.member_name||'Real Member')}</p></div></div>`).join('')+'</div></div>';
-}
-function viewVideo(id){
-  fetch('/api/community/member-videos').then(r=>r.json()).then(vids=>{
-    let v=vids.find(x=>x.id===id); if(!v) return;
-    document.getElementById('viewTitle').innerText = v.title;
-    let player = v.yt ? `<iframe width="100%" height="250" src="https://www.youtube.com/embed/${esc(v.yt)}" frameborder="0" allowfullscreen class="rounded-xl"></iframe>` : v.local_file ? `<video controls src="${fixUrl(v.local_file)}" class="w-full rounded-xl h-[250px]"></video>` : '<p class="text-xs">No video</p>';
-    document.getElementById('viewContent').innerHTML = `${player}<p class="text-[11px] text-gray-500 mt-3">${esc(v.type||'memory_verse')} • By ${esc(v.member_name||'Real Member')} • Status: ${esc(v.status)}</p><p class="text-[12px] mt-2 whitespace-pre-wrap">${esc(v.description||'')}</p><div class="mt-4 flex gap-2">${v.member_id===curMember?.id?`<button onclick="deleteVideo(${v.id})" class="bg-red-600 text-white px-4 py-1.5 rounded-full text-xs">Delete My Video</button>`:''}<button onclick="closeModal('viewModal')" class="bg-gray-100 px-4 py-1.5 rounded-full text-xs">Close</button></div>`;
-    openModal('viewModal');
-  });
-}
-async function deleteVideo(id){ if(!confirm('Delete your video?')) return; await fetch('/api/community/video/'+id,{method:'DELETE'}); closeModal('viewModal'); loadMemberVideos(); loadMyUploads(); }
-
-async function loadMyUploads(){
-  let [events, gals, vids, posts] = await Promise.all([
-    fetch('/api/community/member-events').then(r=>r.json()).catch(()=>[]),
-    fetch('/api/community/member-galleries').then(r=>r.json()).catch(()=>[]),
-    fetch('/api/community/member-videos').then(r=>r.json()).catch(()=>[]),
-    fetch('/api/community/posts?mine=1').then(r=>r.json()).catch(()=>[])
-  ]);
-  let myEvents = events.filter(e=>e.member_id===curMember?.id);
-  let myGals = gals.filter(g=>g.member_id===curMember?.id);
-  let myVids = vids.filter(v=>v.member_id===curMember?.id);
-  let myPosts = posts.filter(p=>p.member_id===curMember?.id);
-  let total = myEvents.length+myGals.length+myVids.length+myPosts.length;
-  let el=document.getElementById('myView');
-  if(!total){ el.innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">You have not uploaded anything yet - Real only</p><p class="text-[11px] text-gray-500 mt-1">Your real uploads will appear here with Pending/Approved status. Only you can edit/delete your own.</p></div>'; return; }
-  el.innerHTML='<div class="bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">My Uploads - CRUD Authority on Your Own Posts</h2><p class="text-[11px] text-gray-500 mt-1">You can edit/delete what you uploaded. Admin must approve before other real members see.</p><div class="mt-4 space-y-2">'+
-    myPosts.map(p=>`<div class="bg-gray-50 border rounded-xl p-3 flex justify-between items-center"><div><p class="text-xs font-semibold">📝 Post: ${esc((p.content||'').substring(0,60))}</p><p class="text-[10px] text-gray-500">${esc(p.status||'pending')} • ${esc(p.date||'')}</p></div><div class="flex gap-1"><button onclick="deletePost(${p.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div></div>`).join('')+
-    myEvents.map(e=>`<div class="bg-gray-50 border rounded-xl p-3 flex justify-between items-center"><div><p class="text-xs font-semibold">📅 Event: ${esc(e.title)}</p><p class="text-[10px] text-gray-500">${esc(e.status)} • ${esc(e.date||'')}</p></div><div class="flex gap-1"><button onclick="viewEvent(${e.id})" class="bg-[#0f172a] text-white px-3 py-1 rounded-full text-[10px]">View</button><button onclick="deleteEvent(${e.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div></div>`).join('')+
-    myGals.map(g=>`<div class="bg-gray-50 border rounded-xl p-3 flex justify-between items-center"><div><p class="text-xs font-semibold">🖼️ Photos: ${esc(g.title)} (${g.images?.length||0})</p><p class="text-[10px] text-gray-500">${esc(g.status)}</p></div><div class="flex gap-1"><button onclick="viewGallery(${g.id})" class="bg-[#0f172a] text-white px-3 py-1 rounded-full text-[10px]">View</button><button onclick="deleteGallery(${g.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div></div>`).join('')+
-    myVids.map(v=>`<div class="bg-gray-50 border rounded-xl p-3 flex justify-between items-center"><div><p class="text-xs font-semibold">🎥 Video: ${esc(v.title)} (${esc(v.type)})</p><p class="text-[10px] text-gray-500">${esc(v.status)}</p></div><div class="flex gap-1"><button onclick="viewVideo(${v.id})" class="bg-[#0f172a] text-white px-3 py-1 rounded-full text-[10px]">View</button><button onclick="deleteVideo(${v.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div></div>`).join('')+
-  '</div></div>';
+  document.getElementById('pPhone').innerText = phone ? 'Phone: '+phone : 'Real member';
+  document.getElementById('rPhone').innerText = phone || '';
+  document.getElementById('cGreet').innerText = 'Share professionally organized by media type, '+(fullName.split(' ')[0]||'Member')+'?';
+  updateOnline(); loadOrganizedFeed(); loadDir(); loadGroups(); loadPrayer(); loadMyUploads(); loadConversations();
+  setInterval(updateOnline, 15000);
+  setInterval(loadOrganizedFeed, 8000);
+  setInterval(loadOnlineList, 10000);
+  setInterval(loadConversations, 10000);
 }
 
-async function loadDir(){
-  const q=(document.getElementById('dirSearch')?.value||'').toLowerCase();
-  let members=await fetch('/api/community/members?q='+encodeURIComponent(q)).then(r=>r.json()).catch(()=>[]);
-  document.getElementById('dirCnt').innerText = members.length;
-  let el=document.getElementById('dirGrid');
-  if(!members.length){ el.innerHTML='<div class="col-span-2 bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center"><p class="text-xs font-semibold">No approved real members yet</p><p class="text-[11px] text-gray-500 mt-1">Only real people who registered and were approved appear. No fake fake names.</p></div>'; return; }
-  el.innerHTML=members.map(m=>`<div class="bg-gray-50 border rounded-xl p-3 flex gap-3"><img src="${fixUrl(m.photo)}" class="w-12 h-12 rounded-full object-cover"><div class="flex-1 min-w-0"><p class="font-semibold text-xs truncate">${esc(m.fullName||m.username||'Real Member')}</p><p class="text-[10px] text-gray-500">${esc(m.ministry||'Member')}</p><p class="text-[10px] text-gray-400 mt-1">${m.phoneVisible?esc(m.phone):'Phone hidden - real privacy'}</p></div></div>`).join('');
-  document.getElementById('onlineList').innerHTML=members.slice(0,6).map(m=>`<div class="flex gap-2 items-center"><img src="${fixUrl(m.photo)}" class="w-7 h-7 rounded-full"><span class="text-xs truncate">${esc(m.fullName||m.username||'Real Member')}</span></div>`).join('');
-}
-async function loadGroups(){ let groups=await fetch('/api/community/groups').then(r=>r.json()).catch(()=>[]); document.getElementById('groupsGrid').innerHTML=groups.length?groups.map(g=>`<div class="bg-gray-50 border rounded-xl p-4"><h3 class="font-semibold text-xs">${esc(g.name)}</h3><p class="text-[10px] text-gray-500 mt-1">${g.members?.length||0} real members</p><button onclick="joinGroup(${g.id})" class="mt-2 bg-[#0f172a] text-white px-3 py-1 rounded-full text-[10px]">${g.members.includes(curMember?.id)?'Joined ✓':'Join'}</button></div>`).join(''):'<p class="text-xs text-gray-400">No groups</p>'; }
-async function joinGroup(id){ await fetch('/api/community/groups/'+id+'/join',{method:'POST'}); loadGroups(); }
-async function loadPrayer(){ let prayers=await fetch('/api/community/prayers').then(r=>r.json()).catch(()=>[]); document.getElementById('prayerList').innerHTML=prayers.length?prayers.map(p=>`<div class="bg-gray-50 border rounded-xl p-3"><p class="font-semibold text-xs">${esc(p.fullName||'Real Member')}</p><p class="text-[12px] mt-1">${esc(p.content||'')}</p></div>`).join(''):'<p class="text-xs text-gray-400">No real prayers yet</p>'; }
-function saveBio(){ let bio=document.getElementById('editBio').value.trim(); fetch('/api/community/profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bio})}).then(()=>alert('Saved - real bio')); }
+async function updateOnline(){ await fetch('/api/community/online',{method:'POST'}); loadOnlineList(); }
 
-document.getElementById('eventForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/event',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('eventModal'); e.target.reset(); alert('Event submitted for admin approval - real members will see after approval'); loadMemberEvents(); loadMyUploads(); } else alert(d.error); });
-document.getElementById('photoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/photo',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('photoModal'); e.target.reset(); alert('Photos submitted for admin approval'); loadMemberGalleries(); loadMyUploads(); } else alert(d.error); });
-document.getElementById('videoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/video',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('videoModal'); e.target.reset(); alert('Video submitted for admin approval'); loadMemberVideos(); loadMyUploads(); } else alert(d.error); });
-
-
-// ============== LIKE, COMMENT, AUTO-APPEAR WITHOUT CLICKING, CHURCH EVENTS ==============
-let lastFeedCount = 0;
-let lastEventsCount = 0;
-
-// Auto-appear: poll every 8 seconds, if new approved items appear, prepend automatically without clicking
-setInterval(async () => {
-  try {
-    // Check feed
-    let posts = await fetch('/api/community/posts').then(r=>r.json()).catch(()=>[]);
-    if(posts.length > lastFeedCount && lastFeedCount!==0){
-      // New posts approved - auto reload feed if on feed tab
-      let feedTab = document.getElementById('feed');
-      if(feedTab && !feedTab.classList.contains('hidden')){
-        loadFeed();
-        showToast('New post from real church family appeared automatically');
-      }
-    }
-    lastFeedCount = posts.length;
-
-    // Check member events + church events
-    let memEvents = await fetch('/api/community/member-events').then(r=>r.json()).catch(()=>[]);
-    let churchEvents = await fetch('/api/events').then(r=>r.json()).catch(()=>[]);
-    let totalEvents = memEvents.length + churchEvents.length;
-    if(totalEvents > lastEventsCount && lastEventsCount!==0){
-      let eventsView = document.getElementById('eventsView');
-      if(eventsView && !eventsView.classList.contains('hidden')){
-        loadCombinedEvents();
-        showToast('New event appeared automatically');
-      }
-    }
-    lastEventsCount = totalEvents;
-
-    // Check photos and videos similarly
-    // For simplicity, auto reload if on those tabs
-  } catch(e){}
-}, 8000);
-
-function showToast(msg){
-  let t = document.createElement('div');
-  t.className = 'fixed bottom-4 right-4 bg-[#0f172a] text-white text-xs px-4 py-2 rounded-full shadow-lg z-[100]';
-  t.innerText = msg;
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(), 4000);
-}
-
-// Enhanced Like - works for posts, events, galleries, videos
-async function likeItem(type, id, kind='amen'){
-  // kind: amen, praying, heart, like
-  if(type==='post'){
-    await fetch('/api/community/react/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:kind})});
-    loadFeed();
-  } else if(type==='member_event'){
-    await fetch('/api/community/member-events/'+id+'/like',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind})}).catch(async ()=>{
-      // fallback to generic
-      await fetch('/api/community/react/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:kind})});
-    });
-    loadCombinedEvents();
-  } else if(type==='gallery'){
-    await fetch('/api/community/member-galleries/'+id+'/like',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind})}).catch(()=>{});
-    loadMemberGalleries();
-  } else if(type==='video'){
-    await fetch('/api/community/member-videos/'+id+'/like',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind})}).catch(()=>{});
-    loadMemberVideos();
-  }
-}
-
-// Comment system
-function openCommentModal(type, id){
-  let existing = prompt('Write your comment (real members only):');
-  if(!existing) return;
-  postComment(type, id, existing);
-}
-async function postComment(type, id, text){
-  if(!text || !text.trim()) return;
-  let endpoint = type==='post' ? '/api/community/comment/'+id : '/api/community/'+type+'/comment/'+id;
-  // Try generic comment endpoint
-  try{
-    let res = await fetch('/api/community/comment/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:text, type:type})});
-    let data = await res.json();
-    if(data.ok){
-      showToast('Comment added - real comment from real member');
-      if(type==='post') loadFeed();
-      else if(type==='member_event') loadCombinedEvents();
-      else if(type==='gallery') loadMemberGalleries();
-      else if(type==='video') loadMemberVideos();
-      return;
-    }
-  }catch(e){}
-  // Fallback: try type-specific
-  try{
-    await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:text})});
-    showToast('Comment added');
-    if(type==='post') loadFeed();
-    else if(type==='member_event') loadCombinedEvents();
-  }catch(e){ alert('Comment failed: '+e.message); }
-}
-
-async function loadComments(type, id){
-  try{
-    let comments = await fetch('/api/community/comments/'+id+'?type='+type).then(r=>r.json()).catch(()=>[]);
-    if(!comments.length) return '<p class="text-[10px] text-gray-400">No comments yet - be first real member to comment</p>';
-    return comments.map(c=>`<div class="bg-gray-50 border rounded-xl p-2 mt-2"><div class="flex gap-2"><img src="${fixUrl(c.photo||'')}" class="w-6 h-6 rounded-full"><div><p class="text-[11px] font-semibold">${esc(c.fullName||'Real Member')}</p><p class="text-[11px]">${esc(c.content||'')}</p><p class="text-[9px] text-gray-400">${esc(c.date||'')}</p></div></div></div>`).join('');
-  }catch(e){ return ''; }
-}
-
-// Combined Church Events + Member Events - viewable, like, comment, auto-appear
-async function loadCombinedEvents(){
-  let memEvents = await fetch('/api/community/member-events').then(r=>r.json()).catch(()=>[]);
-  let churchEvents = await fetch('/api/events').then(r=>r.json()).catch(()=>[]);
-  let el = document.getElementById('eventsView');
-  
-  let html = '<div class="space-y-4">';
-  
-  // Church Events - Main church events (from admin)
-  html += '<div class="bg-white rounded-2xl border p-4"><div class="flex justify-between items-center"><h2 class="font-semibold text-sm">🏛️ Church Events - Main Events (From Admin) - All Members Can See</h2><span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded-full">'+churchEvents.length+' events</span></div>';
-  if(!churchEvents.length){ html += '<p class="text-[11px] text-gray-400 mt-3">No church events yet - admin will post main church events</p>'; }
-  else {
-    html += '<div class="mt-4 grid md:grid-cols-2 gap-3">'+churchEvents.map(ev=>`<div onclick="viewChurchEvent(${ev.id})" class="cursor-pointer bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-xl p-3 flex gap-3 hover:shadow"><img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/80x80.png?text=Church+Event'}" class="w-20 h-20 rounded-xl object-cover"><div class="flex-1 min-w-0"><p class="font-semibold text-xs truncate">🏛️ ${esc(ev.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[11px] mt-1 truncate">${esc((ev.description||'').substring(0,80))}</p><div class="mt-2 flex gap-2"><span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full">Church Event</span></div></div></div>`).join('')+'</div>';
-  }
-  html += '</div>';
-  
-  // Member Events - From real members, approved by admin, auto-appears
-  html += '<div class="bg-white rounded-2xl border p-4"><div class="flex justify-between items-center"><h2 class="font-semibold text-sm">👥 Member Events - From Real Members (Approved by Admin) - Auto Appears</h2><span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full">'+memEvents.length+' events</span></div><p class="text-[10px] text-gray-500 mt-1">When a real member posts event and admin approves, it appears automatically in other members pages without clicking - live update every 8 seconds</p>';
-  if(!memEvents.length){ html += '<p class="text-[11px] text-gray-400 mt-3">No member events yet - be first real member to post event. Admin will approve, then all members see automatically.</p>'; }
-  else {
-    html += '<div class="mt-4 grid md:grid-cols-2 gap-3">'+memEvents.map(ev=>`<div class="bg-gray-50 border rounded-xl p-3 flex gap-3"><img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/80x80.png?text=Event'}" class="w-20 h-20 rounded-xl object-cover cursor-pointer" onclick="viewEvent(${ev.id})"><div class="flex-1 min-w-0"><p class="font-semibold text-xs truncate cursor-pointer" onclick="viewEvent(${ev.id})">${esc(ev.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[11px] mt-1 truncate">${esc((ev.description||'').substring(0,80))}</p><div class="mt-2 flex gap-2 items-center flex-wrap"><span class="text-[10px] px-2 py-0.5 rounded-full ${ev.status==='approved'?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}">${esc(ev.status)}</span><span class="text-[10px] text-gray-400">${esc(ev.member_name||'Real Member')}</span></div><div class="mt-2 flex gap-2 text-[11px]"><button onclick="likeItem('member_event', ${ev.id}, 'amen')" class="bg-white border px-2 py-1 rounded-full hover:bg-gray-50"><i class="fas fa-heart text-red-500"></i> Like ${ev.likes||0}</button><button onclick="openCommentModal('member_event', ${ev.id})" class="bg-white border px-2 py-1 rounded-full hover:bg-gray-50"><i class="fas fa-comment"></i> Comment ${ev.comments?.length||0}</button><button onclick="viewEvent(${ev.id})" class="bg-[#0f172a] text-white px-3 py-1 rounded-full text-[10px]">View Full</button></div></div></div>`).join('')+'</div>';
-  }
-  html += '</div>';
-  
-  html += '</div>';
-  el.innerHTML = html;
-  
-  // Update counts for auto-appear logic
-  lastEventsCount = memEvents.length + churchEvents.length;
-}
-
-function viewChurchEvent(id){
-  fetch('/api/events').then(r=>r.json()).then(events=>{
-    let ev = events.find(x=>x.id===id); if(!ev) return;
-    document.getElementById('viewTitle').innerText = '🏛️ Church Event: ' + ev.title;
-    document.getElementById('viewContent').innerHTML = `<img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/400x200.png?text=Church+Event'}" class="w-full h-48 object-cover rounded-xl"><h3 class="font-semibold text-sm mt-4">${esc(ev.title)}</h3><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[12px] mt-3 whitespace-pre-wrap">${esc(ev.description||'No description')}</p><p class="text-[10px] mt-3 bg-blue-50 border border-blue-100 p-2 rounded-xl">🏛️ Main Church Event - Posted by Admin - All real members can see</p><div class="mt-4 flex gap-2"><button onclick="likeItem('church_event', ${ev.id}, 'amen')" class="bg-white border px-4 py-1.5 rounded-full text-xs"><i class="fas fa-heart text-red-500"></i> Like</button><button onclick="openCommentModal('church_event', ${ev.id})" class="bg-white border px-4 py-1.5 rounded-full text-xs"><i class="fas fa-comment"></i> Comment</button><button onclick="closeModal('viewModal')" class="bg-gray-100 px-4 py-1.5 rounded-full text-xs">Close</button></div>`;
-    openModal('viewModal');
-  });
-}
-
-// Override original loadMemberEvents to use combined
-const originalLoadMemberEvents = loadMemberEvents;
-loadMemberEvents = loadCombinedEvents;
-
-// Enhance loadFeed with Like and Comment visible
-const originalLoadFeed = loadFeed;
-loadFeed = async function(){
-  let posts = await fetch('/api/community/posts').then(r=>r.json()).catch(()=>[]);
-  lastFeedCount = posts.length;
-  let el = document.getElementById('feed');
-  if(!posts.length){
-    el.innerHTML = '<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No posts yet - Real members only</p><p class="text-[11px] text-gray-500 mt-2">When admin approves real member posts, they appear automatically here without clicking - live update</p></div>';
+async function loadOnlineList(){
+  let online = await fetch('/api/community/online/list').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('onlineCount').innerText = online.length + ' online';
+  document.getElementById('onlineNowCount').innerText = online.length;
+  let leftEl = document.getElementById('onlineListLeft');
+  let nowEl = document.getElementById('onlineNowList');
+  if(!online.length){
+    leftEl.innerHTML = '<p class="text-[10px] text-gray-400">No other real members online now</p>';
+    nowEl.innerHTML = '<p class="text-[10px] text-gray-400">No one online - real members only</p>';
     return;
   }
-  el.innerHTML = posts.map(p=>`<div class="bg-white rounded-2xl border p-4">
-    <div class="flex gap-3"><img src="${fixUrl(p.photo)}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1 min-w-0">
-      <div class="flex gap-2 items-center flex-wrap"><span class="font-semibold text-xs">${esc(p.fullName||p.username||'Real Member')}</span><span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">${esc(p.ministry||'Member')}</span><span class="text-[10px] text-gray-400">${esc(p.date||'')}</span>${p.status==='pending'?'<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Pending</span>':''}</div>
-      <p class="text-[13px] mt-2 whitespace-pre-wrap">${esc(p.content||'')}</p>
-      <div class="mt-3 flex gap-2 text-[11px] flex-wrap">
-        <button onclick="likeItem('post', ${p.id}, 'amen')" class="bg-white border px-3 py-1.5 rounded-full hover:bg-red-50"><i class="fas fa-heart text-red-500"></i> Like ${p.reactions?.amen||0}</button>
-        <button onclick="likeItem('post', ${p.id}, 'praying')" class="bg-white border px-3 py-1.5 rounded-full hover:bg-blue-50"><i class="fas fa-pray text-blue-500"></i> Praying ${p.reactions?.praying||0}</button>
-        <button onclick="openCommentModal('post', ${p.id})" class="bg-white border px-3 py-1.5 rounded-full hover:bg-gray-50"><i class="fas fa-comment"></i> Comment ${p.comments?.length||0}</button>
-        ${p.member_id===curMember?.id?`<button onclick="deletePost(${p.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete My Post</button>`:''}
-      </div>
-      <div id="comments-${p.id}" class="mt-3">${(p.comments||[]).slice(0,3).map(c=>`<div class="bg-gray-50 border rounded-xl p-2 mt-2"><p class="text-[11px] font-semibold">${esc(c.fullName||'Real Member')}</p><p class="text-[11px]">${esc(c.content||'')}</p></div>`).join('')}${(p.comments||[]).length>3?`<button onclick="viewComments('post', ${p.id})" class="text-[10px] text-blue-600 mt-2">View all ${p.comments.length} comments</button>`:''}</div>
-    </div></div>
-  </div>`).join('');
-};
+  leftEl.innerHTML = online.map(m=>`<div onclick="openChat(${m.member_id})" class="cursor-pointer flex gap-2 items-center p-1.5 rounded-xl hover:bg-gray-50"><div class="relative"><img src="${fixUrl(m.photo)}" class="w-8 h-8 rounded-full object-cover"><span class="online-dot"></span></div><div class="flex-1 min-w-0"><p class="text-xs font-medium truncate">${esc(m.fullName)}</p><p class="text-[10px] text-green-600">Online now • ${esc(m.ministry||'Member')}</p></div><i class="fas fa-comment text-[10px] text-gray-400"></i></div>`).join('');
+  nowEl.innerHTML = online.map(m=>`<div onclick="openChat(${m.member_id})" class="cursor-pointer flex gap-2 items-center p-2 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100"><div class="relative"><img src="${fixUrl(m.photo)}" class="w-9 h-9 rounded-full object-cover"><span class="online-dot"></span></div><div class="flex-1 min-w-0"><p class="text-xs font-semibold truncate">${esc(m.fullName)}</p><p class="text-[10px] text-gray-500 truncate">${esc(m.ministry||'Member')}</p></div><button class="bg-[#0f172a] text-white text-[10px] px-2 py-1 rounded-full">Chat</button></div>`).join('');
+}
 
-function viewComments(type, id){
-  fetch('/api/community/posts').then(r=>r.json()).then(posts=>{
-    let p = posts.find(x=>x.id===id); if(!p) return;
-    document.getElementById('viewTitle').innerText = 'Comments - Real Members Only';
-    document.getElementById('viewContent').innerHTML = `<p class="text-xs font-semibold">${esc((p.content||'').substring(0,100))}</p><div class="mt-4 space-y-2 max-h-[300px] overflow-y-auto">${(p.comments||[]).map(c=>`<div class="bg-gray-50 border rounded-xl p-3"><div class="flex gap-2"><img src="${fixUrl(c.photo||'')}" class="w-7 h-7 rounded-full"><div><p class="text-[11px] font-semibold">${esc(c.fullName||'Real Member')}</p><p class="text-[11px] mt-1">${esc(c.content||'')}</p><p class="text-[9px] text-gray-400 mt-1">${esc(c.date||'')}</p></div></div></div>`).join('') || '<p class="text-[11px] text-gray-400">No comments yet</p>'}</div><div class="mt-4 flex gap-2"><input id="newCommentInput" placeholder="Write a comment as real member..." class="flex-1 border rounded-full px-4 py-2 text-xs"><button onclick="postCommentFromModal('${type}', ${id})" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Post Comment</button></div>`;
-    openModal('viewModal');
+async function loadOrganizedFeed(){
+  let feed = await fetch('/api/community/feed/organized').then(r=>r.json()).catch(()=>[]);
+  organizedData = feed;
+  // Auto-appear detection
+  if(feed.length > lastCount && lastCount!==0){
+    showToast('✨ New '+ (feed.length-lastCount) +' post(s) appeared automatically - organized by media type');
+  }
+  lastCount = feed.length;
+  // Update counts
+  document.getElementById('cnt-all').innerText = feed.length;
+  document.getElementById('cnt-post').innerText = feed.filter(x=>x.type==='post').length;
+  document.getElementById('cnt-church_event').innerText = feed.filter(x=>x.type==='church_event').length;
+  document.getElementById('cnt-member_event').innerText = feed.filter(x=>x.type==='member_event').length;
+  document.getElementById('cnt-photo').innerText = feed.filter(x=>x.type==='photo').length;
+  document.getElementById('cnt-video').innerText = feed.filter(x=>x.type==='video').length;
+  renderOrganizedFeed();
+}
+
+function renderOrganizedFeed(){
+  let el = document.getElementById('organizedFeed');
+  let filtered = currentFilter==='all' ? organizedData : organizedData.filter(x=>x.type===currentFilter || (currentFilter==='post' && (x.type==='post' || x.subtype==='opinion')));
+  if(!filtered.length){
+    el.innerHTML = '<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No '+esc(currentFilter)+' yet - Real members only</p><p class="text-[11px] text-gray-500 mt-2">When real members post '+esc(currentFilter)+' and admin approves, it appears automatically here organized professionally by media type. No fake data.</p></div>';
+    return;
+  }
+  el.innerHTML = filtered.map(item=>{
+    let badge = '';
+    let cardInner = '';
+    if(item.type==='post'){
+      let isOpinion = item.subtype==='opinion';
+      badge = `<span class="type-badge-${isOpinion?'opinion':'post'} text-[10px] px-2 py-0.5 rounded-full">${isOpinion?'💬 Opinion':'📝 Post'}</span>`;
+      cardInner = `<p class="text-[13px] mt-3 whitespace-pre-wrap">${esc(item.content||'')}</p>`;
+    } else if(item.type==='church_event'){
+      badge = `<span class="type-badge-church text-[10px] px-2 py-0.5 rounded-full">🏛️ Church Event - Main</span>`;
+      let ev=item.data;
+      cardInner = `<div class="mt-3 flex gap-3"><img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/100x100.png?text=Church+Event'}" class="w-24 h-24 rounded-xl object-cover"><div class="flex-1"><p class="font-semibold text-sm">${esc(item.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[11px] mt-2 line-clamp-2">${esc((ev.description||'').substring(0,120))}</p></div></div>`;
+    } else if(item.type==='member_event'){
+      badge = `<span class="type-badge-event text-[10px] px-2 py-0.5 rounded-full">📅 Member Event</span>`;
+      let ev=item.data;
+      cardInner = `<div class="mt-3 flex gap-3"><img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/100x100.png?text=Event'}" class="w-24 h-24 rounded-xl object-cover cursor-pointer" onclick="viewEvent(${item.id})"><div class="flex-1"><p class="font-semibold text-sm cursor-pointer" onclick="viewEvent(${item.id})">${esc(item.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[11px] mt-2 line-clamp-2">${esc((ev.description||'').substring(0,120))}</p></div></div>`;
+    } else if(item.type==='photo'){
+      badge = `<span class="type-badge-photo text-[10px] px-2 py-0.5 rounded-full">🖼️ Photos • ${item.data.images?.length||0} images</span>`;
+      let g=item.data;
+      cardInner = `<p class="font-semibold text-sm mt-3">${esc(item.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc((g.description||'').substring(0,100))}</p><div class="mt-3 grid grid-cols-3 gap-2">${(g.images||[]).slice(0,3).map(img=>`<div class="gallery-thumb"><img src="${fixUrl(img)}" loading="lazy"></div>`).join('')}${(g.images||[]).length>3?`<div class="gallery-thumb bg-gray-100 flex items-center justify-center text-xs">+${g.images.length-3}</div>`:''}</div>`;
+    } else if(item.type==='video'){
+      badge = `<span class="type-badge-video text-[10px] px-2 py-0.5 rounded-full">🎥 ${esc(item.subtype||'memory_verse')} Video</span>`;
+      let v=item.data;
+      cardInner = `<p class="font-semibold text-sm mt-3">${esc(item.title)}</p><div class="mt-3 video-thumb cursor-pointer" onclick="viewVideo(${item.id})">${v.yt?`<img src="https://img.youtube.com/vi/${esc(v.yt)}/hqdefault.jpg"><div class="absolute inset-0 flex items-center justify-center"><div class="bg-black/60 w-14 h-14 rounded-full flex items-center justify-center text-white text-lg">▶</div></div>`:v.local_file?`<video src="${fixUrl(v.local_file)}" class="w-full h-full object-cover"></video><div class="absolute inset-0 flex items-center justify-center"><div class="bg-black/60 w-14 h-14 rounded-full flex items-center justify-center text-white text-lg">▶</div></div>`:`<div class="w-full h-full flex items-center justify-center text-white">No preview</div>`}</div><p class="text-[11px] text-gray-500 mt-2">${esc((v.description||'').substring(0,100))}</p>`;
+    }
+    return `<div class="bg-white rounded-2xl border p-4 hover:shadow-sm transition">
+      <div class="flex gap-3">
+        <div class="relative"><img src="${fixUrl(item.member_photo)}" class="w-10 h-10 rounded-full object-cover"><span class="online-dot" style="width:8px;height:8px"></span></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex gap-2 items-center flex-wrap"><span class="font-semibold text-xs">${esc(item.member_name||'Real Member')}</span>${badge}<span class="text-[10px] text-gray-400">• ${esc(item.date||'')}</span></div>
+          ${cardInner}
+          <div class="mt-4 flex gap-2 text-[11px] flex-wrap">
+            <button onclick="likeItem('${item.type}', ${item.id})" class="bg-gray-50 border px-3 py-1.5 rounded-full hover:bg-red-50"><i class="fas fa-heart text-red-500"></i> Like ${item.likes||0}</button>
+            <button onclick="openCommentModal('${item.type}', ${item.id})" class="bg-gray-50 border px-3 py-1.5 rounded-full hover:bg-gray-100"><i class="fas fa-comment"></i> Comment ${item.comments||0}</button>
+            <button onclick="viewItem('${item.type}', ${item.id})" class="bg-[#0f172a] text-white px-4 py-1.5 rounded-full text-[11px]">View Full</button>
+            ${item.member_id===curMember?.id?`<button onclick="deleteItem('${item.type}', ${item.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete My ${esc(item.type)}</button>`:''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function viewItem(type, id){
+  if(type==='post') viewPost(id);
+  else if(type==='member_event') viewEvent(id);
+  else if(type==='church_event') viewChurchEvent(id);
+  else if(type==='photo') viewGallery(id);
+  else if(type==='video') viewVideo(id);
+}
+function viewPost(id){
+  let item = organizedData.find(x=>x.id===id); if(!item) return;
+  document.getElementById('viewTitle').innerText = item.subtype==='opinion' ? '💬 Opinion - Real Member' : '📝 Post - Real Member';
+  document.getElementById('viewContent').innerHTML = `<div class="flex gap-3"><img src="${fixUrl(item.member_photo)}" class="w-10 h-10 rounded-full"><div><p class="font-semibold text-xs">${esc(item.member_name)}</p><p class="text-[10px] text-gray-500">${esc(item.date)}</p></div></div><p class="text-[13px] mt-4 whitespace-pre-wrap">${esc(item.content)}</p><div class="mt-4 flex gap-2"><button onclick="likeItem('post', ${id})" class="bg-gray-50 border px-4 py-1.5 rounded-full text-xs">❤️ Like ${item.likes}</button><button onclick="openCommentModal('post', ${id})" class="bg-gray-50 border px-4 py-1.5 rounded-full text-xs">💬 Comment ${item.comments}</button></div><div class="mt-4"><p class="text-[11px] font-semibold">Comments - Real Members Only</p><div class="mt-2 space-y-2">${(item.data.comments||[]).map(c=>`<div class="bg-gray-50 border rounded-xl p-2"><p class="text-[11px] font-semibold">${esc(c.fullName||'Real Member')}</p><p class="text-[11px]">${esc(c.content)}</p></div>`).join('') || '<p class="text-[10px] text-gray-400">No comments yet</p>'}</div></div>`;
+  openModal('viewModal');
+}
+function viewEvent(id){ let item=organizedData.find(x=>x.id===id); if(!item) return; let ev=item.data; document.getElementById('viewTitle').innerText='📅 Member Event - Real'; document.getElementById('viewContent').innerHTML=`<img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/400x200.png?text=Event'}" class="w-full h-48 object-cover rounded-xl"><h3 class="font-semibold text-sm mt-4">${esc(ev.title)}</h3><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[12px] mt-3 whitespace-pre-wrap">${esc(ev.description||'')}</p><p class="text-[11px] mt-3">By ${esc(item.member_name)} • ${ev.likes||0} likes • ${ev.comments?.length||0} comments</p><div class="mt-4 flex gap-2"><button onclick="likeItem('member_event', ${id})" class="bg-gray-50 border px-4 py-1.5 rounded-full text-xs">❤️ Like</button><button onclick="openCommentModal('member_event', ${id})" class="bg-gray-50 border px-4 py-1.5 rounded-full text-xs">💬 Comment</button><button onclick="closeModal('viewModal')" class="bg-gray-100 px-4 py-1.5 rounded-full text-xs">Close</button></div>`; openModal('viewModal'); }
+function viewChurchEvent(id){ let item=organizedData.find(x=>x.id===id); if(!item) return; let ev=item.data; document.getElementById('viewTitle').innerText='🏛️ Church Event - Main'; document.getElementById('viewContent').innerHTML=`<img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/400x200.png?text=Church+Event'}" class="w-full h-48 object-cover rounded-xl"><h3 class="font-semibold text-sm mt-4">${esc(ev.title)}</h3><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[12px] mt-3 whitespace-pre-wrap">${esc(ev.description||'')}</p><div class="mt-4 flex gap-2"><button class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs">Church Event</button><button onclick="closeModal('viewModal')" class="bg-gray-100 px-4 py-1.5 rounded-full text-xs">Close</button></div>`; openModal('viewModal'); }
+function viewGallery(id){ let item=organizedData.find(x=>x.id===id); if(!item) return; let g=item.data; document.getElementById('viewTitle').innerText='🖼️ Photos - '+g.title; document.getElementById('viewContent').innerHTML=`<p class="text-[11px] text-gray-500">By ${esc(item.member_name)} • ${g.images?.length||0} photos</p><p class="text-[12px] mt-2">${esc(g.description||'')}</p><div class="mt-4 grid grid-cols-2 gap-2">${(g.images||[]).map(img=>`<img src="${fixUrl(img)}" class="w-full rounded-xl object-cover">`).join('')}</div><div class="mt-4 flex gap-2"><button onclick="likeItem('photo', ${id})" class="bg-gray-50 border px-4 py-1.5 rounded-full text-xs">❤️ Like ${item.likes}</button><button onclick="openCommentModal('photo', ${id})" class="bg-gray-50 border px-4 py-1.5 rounded-full text-xs">💬 Comment</button></div>`; openModal('viewModal'); }
+function viewVideo(id){ let item=organizedData.find(x=>x.id===id); if(!item) return; let v=item.data; let player=v.yt?`<iframe width="100%" height="250" src="https://www.youtube.com/embed/${esc(v.yt)}" frameborder="0" allowfullscreen class="rounded-xl"></iframe>`:v.local_file?`<video controls src="${fixUrl(v.local_file)}" class="w-full rounded-xl h-[250px]"></video>`:'<p>No video</p>'; document.getElementById('viewTitle').innerText='🎥 '+v.title; document.getElementById('viewContent').innerHTML=`${player}<p class="text-[11px] text-gray-500 mt-3">${esc(v.type||'memory_verse')} • By ${esc(item.member_name)}</p><p class="text-[12px] mt-2">${esc(v.description||'')}</p><div class="mt-4 flex gap-2"><button onclick="likeItem('video', ${id})" class="bg-gray-50 border px-4 py-1.5 rounded-full text-xs">❤️ Like</button><button onclick="openCommentModal('video', ${id})" class="bg-gray-50 border px-4 py-1.5 rounded-full text-xs">💬 Comment</button></div>`; openModal('viewModal'); }
+
+function showToast(msg){ let t=document.createElement('div'); t.className='fixed bottom-20 right-4 bg-[#0f172a] text-white text-xs px-4 py-2 rounded-full shadow-lg z-[100]'; t.innerText=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),4000); }
+
+async function likeItem(type, id){ await fetch('/api/community/react/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'amen'})}).catch(async()=>{ await fetch('/api/community/member-events/'+id+'/like',{method:'POST'}); }); loadOrganizedFeed(); }
+async function openCommentModal(type, id){ let text=prompt('Write your comment as real member (like FB/IG):'); if(!text) return; await fetch('/api/community/comment/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:text, type:type})}); showToast('Comment posted - real member'); loadOrganizedFeed(); }
+async function deleteItem(type, id){ if(!confirm('Delete your '+type+'?')) return; let endpoint = type==='post' ? '/api/community/post/'+id : type==='member_event' ? '/api/community/event/'+id : type==='photo' ? '/api/community/gallery/'+id : '/api/community/video/'+id; await fetch(endpoint,{method:'DELETE'}); loadOrganizedFeed(); loadMyUploads(); }
+
+// Chat like FB/IG
+let openChats={};
+function openChat(memberId){
+  if(openChats[memberId]) return;
+  fetch('/api/community/members?q=').then(r=>r.json()).then(members=>{
+    let m=members.find(x=>x.id===memberId); if(!m) return;
+    let win=document.createElement('div');
+    win.id='chat-'+memberId;
+    win.className='bg-white border rounded-t-2xl shadow-2xl w-[300px] h-[350px] flex flex-col';
+    win.innerHTML=`<div class="bg-[#0f172a] text-white p-3 rounded-t-2xl flex justify-between items-center"><div class="flex gap-2 items-center"><img src="${fixUrl(m.photo)}" class="w-7 h-7 rounded-full"><span class="text-xs font-semibold">${esc(m.fullName||m.username)}</span><span class="w-2 h-2 bg-green-500 rounded-full"></span></div><button onclick="closeChat(${memberId})" class="text-white text-xs">✕</button></div><div id="msgs-${memberId}" class="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50"></div><div class="p-2 border-t flex gap-2"><input id="input-${memberId}" placeholder="Message as real member..." class="flex-1 border rounded-full px-3 py-2 text-xs outline-none"><button onclick="sendChat(${memberId})" class="bg-[#0f172a] text-white px-3 py-2 rounded-full text-xs">Send</button></div>`;
+    document.getElementById('chatWindows').appendChild(win);
+    openChats[memberId]=true;
+    loadChatMessages(memberId);
+    let interval=setInterval(()=>{ if(!document.getElementById('chat-'+memberId)) clearInterval(interval); else loadChatMessages(memberId); },3000);
+    document.getElementById('input-'+memberId)?.addEventListener('keypress', e=>{ if(e.key==='Enter') sendChat(memberId); });
   });
 }
-function postCommentFromModal(type, id){
-  let text = document.getElementById('newCommentInput').value.trim(); if(!text) return;
-  postComment(type, id, text);
-  setTimeout(()=>{ closeModal('viewModal'); loadFeed(); }, 500);
+function closeChat(id){ document.getElementById('chat-'+id)?.remove(); delete openChats[id]; }
+async function loadChatMessages(otherId){
+  let msgs=await fetch('/api/community/chat/messages/'+otherId).then(r=>r.json()).catch(()=>[]);
+  let el=document.getElementById('msgs-'+otherId); if(!el) return;
+  el.innerHTML=msgs.map(m=>`<div class="flex ${m.from_id===curMember?.id?'justify-end':'justify-start'}"><div class="chat-bubble ${m.from_id===curMember?.id?'me':'them'}">${esc(m.content)}<div class="text-[9px] opacity-70 mt-1">${esc(m.date||'')}</div></div></div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+async function sendChat(otherId){
+  let input=document.getElementById('input-'+otherId); let text=input.value.trim(); if(!text) return;
+  await fetch('/api/community/chat/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to_member_id:otherId, content:text})});
+  input.value=''; loadChatMessages(otherId); loadConversations();
+}
+async function loadConversations(){
+  let convs=await fetch('/api/community/chat/conversations').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('chatConversations').innerHTML=convs.length?convs.map(c=>`<div onclick="openChat(${c.member_id})" class="cursor-pointer flex gap-2 items-center p-2 rounded-xl hover:bg-gray-50"><img src="${fixUrl(c.photo)}" class="w-8 h-8 rounded-full"><div class="flex-1 min-w-0"><p class="text-xs font-semibold truncate">${esc(c.fullName)}</p><p class="text-[10px] text-gray-500 truncate">${esc(c.last_msg)} • ${c.unread?c.unread+' new':''}</p></div></div>`).join(''):'<p class="text-[10px] text-gray-400">No chats yet - start chatting with online real members</p>';
 }
 
-// Enhance galleries and videos with like/comment too
-const originalLoadGalleries = loadMemberGalleries;
-loadMemberGalleries = async function(){
-  let gals = await fetch('/api/community/member-galleries').then(r=>r.json()).catch(()=>[]);
-  let el = document.getElementById('photosView');
-  if(!gals.length){ el.innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No member photos yet - Real only</p><p class="text-[11px] text-gray-500 mt-2">When admin approves real member photos, they appear automatically in all members pages without clicking</p></div>'; return; }
-  el.innerHTML='<div class="bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Member Photos - Real Only, Like, Comment, Auto Appears</h2><div class="mt-4 grid md:grid-cols-3 gap-3">'+gals.map(g=>`<div class="bg-white border rounded-xl overflow-hidden"><div class="gallery-thumb cursor-pointer" onclick="viewGallery(${g.id})"><img src="${g.cover?fixUrl(g.cover):(g.images&&g.images[0]?fixUrl(g.images[0]):'https://via.placeholder.com/300x200.png?text=Photo')}" loading="lazy"><div class="absolute bottom-2 right-2 bg-black/70 text-white text-[9px] px-2 py-1 rounded-full">${g.images?.length||0} photos</div><div class="absolute top-2 left-2 bg-white/90 text-[9px] px-2 py-1 rounded-full ${g.status==='approved'?'bg-green-100':'bg-yellow-100'}">${esc(g.status)}</div></div><div class="p-3"><p class="font-semibold text-xs truncate">${esc(g.title)}</p><p class="text-[10px] text-gray-500">${esc(g.member_name||'Real Member')}</p><div class="mt-2 flex gap-1"><button onclick="likeItem('gallery', ${g.id}, 'amen')" class="bg-gray-50 border px-2 py-1 rounded-full text-[10px]"><i class="fas fa-heart text-red-500"></i> ${g.likes||0}</button><button onclick="openCommentModal('gallery', ${g.id})" class="bg-gray-50 border px-2 py-1 rounded-full text-[10px]"><i class="fas fa-comment"></i> ${g.comments?.length||0}</button><button onclick="viewGallery(${g.id})" class="bg-[#0f172a] text-white px-2 py-1 rounded-full text-[10px]">View</button></div></div></div>`).join('')+'</div></div>';
-};
+// Other functions
+async function createPost(){ let content=document.getElementById('postContent').value.trim(); let type=document.getElementById('postType').value; if(!content) return alert('Write something'); let res=await fetch('/api/community/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content, type, visibility:'church'})}); let data=await res.json(); if(data.ok){ document.getElementById('postContent').value=''; showToast('Submitted for admin approval - will appear automatically organized by type'); loadOrganizedFeed(); } }
+async function createPostModal(){ let content=document.getElementById('modalPostContent').value.trim(); let type=document.getElementById('modalPostType').value; if(!content) return; let res=await fetch('/api/community/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content, type, visibility:'church'})}); let data=await res.json(); if(data.ok){ closeModal('postModal'); document.getElementById('modalPostContent').value=''; showToast('Submitted for approval - auto appears after approval'); loadOrganizedFeed(); } }
+async function loadDir(){ let q=document.getElementById('dirSearch')?.value||''; let members=await fetch('/api/community/members?q='+encodeURIComponent(q)).then(r=>r.json()).catch(()=>[]); document.getElementById('dirCnt').innerText=members.length; document.getElementById('dirGrid').innerHTML=members.length?members.map(m=>`<div class="bg-gray-50 border rounded-xl p-3 flex gap-3"><img src="${fixUrl(m.photo)}" class="w-12 h-12 rounded-full object-cover"><div class="flex-1 min-w-0"><p class="font-semibold text-xs truncate">${esc(m.fullName||m.username||'Real Member')}</p><p class="text-[10px] text-gray-500">${esc(m.ministry||'Member')}</p><div class="mt-1 flex gap-1"><button onclick="openChat(${m.id})" class="bg-[#0f172a] text-white px-2 py-0.5 rounded-full text-[9px]">Chat like FB</button></div></div></div>`).join(''):'<p class="text-xs text-gray-400">No real members</p>'; }
+async function loadMyUploads(){ let feed=await fetch('/api/community/feed/organized').then(r=>r.json()).catch(()=>[]); let my=feed.filter(x=>x.member_id===curMember?.id); document.getElementById('myView').innerHTML=my.length?'<div class="bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">My Uploads - Your CRUD - Organized by Type</h2><div class="mt-4 space-y-2">'+my.map(i=>`<div class="bg-gray-50 border rounded-xl p-3 flex justify-between items-center"><div><p class="text-xs font-semibold">${esc(i.type)}: ${esc(i.title||i.content?.substring(0,40)||'')}</p><p class="text-[10px] text-gray-500">${esc(i.date||'')}</p></div><button onclick="deleteItem('${i.type}', ${i.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete</button></div>`).join('')+'</div></div>':'<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs">No uploads yet - real only</p></div>'; document.getElementById('myUploadsMini').innerHTML=my.slice(0,3).map(i=>`<div class="bg-gray-50 border rounded-xl p-2"><p class="text-[11px] font-semibold">${esc(i.type)}: ${esc(i.title||i.content?.substring(0,30)||'')}</p></div>`).join('') || '<p class="text-[10px] text-gray-400">No uploads</p>'; }
+async function loadPrayer(){ let prayers=await fetch('/api/community/prayers').then(r=>r.json()).catch(()=>[]); document.getElementById('prayerList').innerHTML=prayers.length?prayers.map(p=>`<div class="bg-gray-50 border rounded-xl p-3"><p class="font-semibold text-xs">${esc(p.fullName||'Real Member')}</p><p class="text-[12px] mt-1">${esc(p.content||'')}</p></div>`).join(''):'<p class="text-xs text-gray-400">No prayers</p>'; }
+async function loadGroups(){ let groups=await fetch('/api/community/groups').then(r=>r.json()).catch(()=>[]); document.getElementById('groupsGrid').innerHTML=groups.length?groups.map(g=>`<div class="bg-gray-50 border rounded-xl p-4"><h3 class="font-semibold text-xs">${esc(g.name)}</h3><p class="text-[10px] text-gray-500 mt-1">${g.members?.length||0} real members</p><button onclick="joinGroup(${g.id})" class="mt-2 bg-[#0f172a] text-white px-3 py-1 rounded-full text-[10px]">${g.members.includes(curMember?.id)?'Joined ✓':'Join'}</button></div>`).join(''):'<p class="text-xs">No groups</p>'; }
+async function joinGroup(id){ await fetch('/api/community/groups/'+id+'/join',{method:'POST'}); loadGroups(); }
 
-const originalLoadVideos = loadMemberVideos;
-loadMemberVideos = async function(){
-  let vids = await fetch('/api/community/member-videos').then(r=>r.json()).catch(()=>[]);
-  let el = document.getElementById('videosView');
-  if(!vids.length){ el.innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No member videos yet - Real only</p><p class="text-[11px] text-gray-500 mt-2">Upload memory verse videos - when admin approves, appears automatically</p></div>'; return; }
-  el.innerHTML='<div class="bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Member Videos - Memory Verse, Like, Comment, Auto Appears</h2><div class="mt-4 grid md:grid-cols-2 gap-3">'+vids.map(v=>`<div class="bg-white border rounded-xl overflow-hidden"><div class="video-thumb cursor-pointer" onclick="viewVideo(${v.id})">${v.yt?`<img src="https://img.youtube.com/vi/${esc(v.yt)}/hqdefault.jpg"><div class="absolute inset-0 flex items-center justify-center"><div class="bg-black/60 w-12 h-12 rounded-full flex items-center justify-center text-white">▶</div></div>`:v.local_file?`<img src="https://via.placeholder.com/320x180.png?text=Video"><div class="absolute inset-0 flex items-center justify-center"><div class="bg-black/60 w-12 h-12 rounded-full flex items-center justify-center text-white">▶</div></div>`:`<div class="w-full h-full flex items-center justify-center text-white text-xs">No Preview</div>`}<div class="absolute top-2 left-2 bg-white/90 text-[9px] px-2 py-1 rounded-full ${v.status==='approved'?'bg-green-100':'bg-yellow-100'}">${esc(v.status)}</div></div><div class="p-3"><p class="font-semibold text-xs truncate">${esc(v.title)}</p><p class="text-[10px] text-gray-500">${esc(v.type||'memory_verse')} • ${esc(v.member_name||'Real Member')}</p><div class="mt-2 flex gap-1"><button onclick="likeItem('video', ${v.id}, 'amen')" class="bg-gray-50 border px-2 py-1 rounded-full text-[10px]"><i class="fas fa-heart text-red-500"></i> ${v.likes||0}</button><button onclick="openCommentModal('video', ${v.id})" class="bg-gray-50 border px-2 py-1 rounded-full text-[10px]"><i class="fas fa-comment"></i> ${v.comments?.length||0}</button><button onclick="viewVideo(${v.id})" class="bg-[#0f172a] text-white px-2 py-1 rounded-full text-[10px]">Play</button></div></div></div>`).join('')+'</div></div>';
-};
+document.getElementById('eventForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/event',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('eventModal'); e.target.reset(); showToast('Event submitted for approval - will appear organized automatically'); loadOrganizedFeed(); } });
+document.getElementById('photoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/photo',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('photoModal'); e.target.reset(); showToast('Photos submitted - organized by type, auto appears'); loadOrganizedFeed(); } });
+document.getElementById('videoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/video',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('videoModal'); e.target.reset(); showToast('Video submitted - organized by type'); loadOrganizedFeed(); } });
 
 init();
 </script>
