@@ -1012,6 +1012,449 @@ def robots():
 def google_verif_file():
     return Response(f"google-site-verification: google{GOOGLE_VERIFICATION}.html", mimetype='text/plain')
 
+
+
+# ============== COMMUNITY PORTAL - FACEBOOK-LIKE - PRIVATE MEMBERS ONLY ==============
+COMMUNITY_POSTS_FILE = os.path.join(DATA_DIR, 'community_posts.json')
+GROUPS_FILE = os.path.join(DATA_DIR, 'groups.json')
+NOTIFICATIONS_FILE = os.path.join(DATA_DIR, 'notifications.json')
+COMMUNITY_PRAYERS_FILE = os.path.join(DATA_DIR, 'community_prayers.json')
+EVENT_RSVP_FILE = os.path.join(DATA_DIR, 'event_rsvps.json')
+
+def member_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('member_logged_in'):
+            if request.path.startswith('/api/'):
+                return jsonify({"error": "Login required"}), 401
+            return redirect(url_for('members_login_page'))
+        members = load_json(MEMBERS_FILE, [])
+        m = next((x for x in members if x['id']==session.get('member_id')), None)
+        if not m or m['status']!='approved':
+            return render_template('member_pending.html', member=m) if not request.path.startswith('/api/') else jsonify({"error":"Not approved"}), 403
+        return f(*args, **kwargs)
+    return decorated
+
+def time_ago(date_str):
+    try:
+        dt = datetime.strptime(date_str, "%Y-%m-%d %H:%M")
+        now = datetime.now(TZ).replace(tzinfo=None)
+        diff = now - dt
+        if diff.days>0: return f"{diff.days}d ago"
+        hours = diff.seconds//3600
+        if hours>0: return f"{hours}h ago"
+        mins = diff.seconds//60
+        if mins>0: return f"{mins}m ago"
+        return "Just now"
+    except:
+        return date_str
+
+# COMMUNITY POSTS
+@app.route('/api/community/posts')
+@member_required
+def api_community_posts():
+    mine = request.args.get('mine')
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    members = load_json(MEMBERS_FILE, [])
+    # filter by visibility
+    current_id = session.get('member_id')
+    current_m = next((x for x in members if x['id']==current_id), None)
+    my_ministry = current_m.get('ministry',{}).get('department','') if current_m else ''
+    my_groups = []
+    groups = load_json(GROUPS_FILE, [])
+    for g in groups:
+        if current_id in g.get('members',[]):
+            my_groups.append(g['id'])
+    filtered=[]
+    for p in posts:
+        if mine=='1' and p['member_id']!=current_id:
+            continue
+        vis = p.get('visibility','church')
+        if vis=='church':
+            filtered.append(p)
+        elif vis=='ministry' and p.get('ministry','')==my_ministry:
+            filtered.append(p)
+        elif vis=='group' and p.get('group_id') in my_groups:
+            filtered.append(p)
+        elif p['member_id']==current_id:
+            filtered.append(p)
+        elif vis not in ['ministry','group']:
+            filtered.append(p)
+    # enrich
+    for p in filtered:
+        p['timeAgo']=time_ago(p.get('date',''))
+    filtered.sort(key=lambda x: x['id'], reverse=True)
+    return jsonify(filtered[:100])
+
+@app.route('/api/community/post', methods=['POST'])
+@member_required
+def api_community_create_post():
+    data = request.get_json()
+    content = sanitize_text(data.get('content',''), 2000)
+    if not content: return jsonify({"ok":False,"error":"Content required"}),400
+    visibility = data.get('visibility','church')
+    if visibility not in ['church','ministry','group']: visibility='church'
+    ptype = data.get('type','post')
+    if ptype not in ['post','prayer','testimony','announcement']: ptype='post'
+    members = load_json(MEMBERS_FILE, [])
+    current_id = session.get('member_id')
+    m = next((x for x in members if x['id']==current_id), None)
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    new_post = {
+        "id": int(time.time()*1000),
+        "member_id": current_id,
+        "username": m['username'],
+        "fullName": m.get('fullName') or m.get('personal',{}).get('fullName',''),
+        "photo": m.get('photo',''),
+        "ministry": m.get('ministry',{}).get('department','') or m.get('personal',{}).get('ministry','Member'),
+        "content": content,
+        "type": ptype,
+        "visibility": visibility,
+        "group_id": data.get('group_id'),
+        "reactions": {"amen":0,"praying":0,"bless":0},
+        "reacted_by": {"amen":[],"praying":[],"bless":[]},
+        "comments": [],
+        "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
+    }
+    posts.insert(0, new_post)
+    save_json(COMMUNITY_POSTS_FILE, posts)
+    # notification
+    notifs = load_json(NOTIFICATIONS_FILE, [])
+    # notify all members except self (simplified)
+    for mem in members:
+        if mem['id']!=current_id and mem['status']=='approved':
+            notifs.insert(0, {
+                "id": int(time.time()*1000)+mem['id'],
+                "member_id": mem['id'],
+                "text": f"{new_post['fullName']} shared a {ptype}: {content[:60]}...",
+                "icon": "fa-heart" if ptype=='testimony' else "fa-pray" if ptype=='prayer' else "fa-comment",
+                "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M"),
+                "read": False
+            })
+    save_json(NOTIFICATIONS_FILE, notifs[:200])
+    return jsonify({"ok":True,"post":new_post})
+
+@app.route('/api/community/react/<int:post_id>', methods=['POST'])
+@member_required
+def api_community_react(post_id):
+    data = request.get_json()
+    rtype = data.get('type','amen')
+    if rtype not in ['amen','praying','bless']: rtype='amen'
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    current_id = session.get('member_id')
+    for p in posts:
+        if p['id']==post_id:
+            if 'reacted_by' not in p: p['reacted_by']={"amen":[],"praying":[],"bless":[]}
+            if 'reactions' not in p: p['reactions']={"amen":0,"praying":0,"bless":0}
+            # toggle
+            if current_id in p['reacted_by'].get(rtype,[]):
+                p['reacted_by'][rtype].remove(current_id)
+                p['reactions'][rtype]=max(0,p['reactions'][rtype]-1)
+            else:
+                # remove from other reactions if exists? keep simple allow one type only
+                for k in ['amen','praying','bless']:
+                    if current_id in p['reacted_by'].get(k,[]):
+                        p['reacted_by'][k].remove(current_id)
+                        p['reactions'][k]=max(0,p['reactions'][k]-1)
+                p['reacted_by'][rtype].append(current_id)
+                p['reactions'][rtype]+=1
+            break
+    save_json(COMMUNITY_POSTS_FILE, posts)
+    return jsonify({"ok":True})
+
+@app.route('/api/community/comment/<int:post_id>', methods=['POST'])
+@member_required
+def api_community_comment(post_id):
+    data = request.get_json()
+    content = sanitize_text(data.get('content',''), 500)
+    if not content: return jsonify({"ok":False}),400
+    members = load_json(MEMBERS_FILE, [])
+    current_id = session.get('member_id')
+    m = next((x for x in members if x['id']==current_id), None)
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    for p in posts:
+        if p['id']==post_id:
+            if 'comments' not in p: p['comments']=[]
+            p['comments'].append({
+                "id": int(time.time()*1000),
+                "member_id": current_id,
+                "username": m['username'],
+                "fullName": m.get('fullName',''),
+                "photo": m.get('photo',''),
+                "content": content,
+                "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
+            })
+            break
+    save_json(COMMUNITY_POSTS_FILE, posts)
+    return jsonify({"ok":True})
+
+# DIRECTORY
+@app.route('/api/community/members')
+@member_required
+def api_community_directory():
+    q = request.args.get('q','').lower().strip()
+    members = load_json(MEMBERS_FILE, [])
+    current_id = session.get('member_id')
+    current_m = next((x for x in members if x['id']==current_id), None)
+    my_ministry = current_m.get('ministry',{}).get('department','') if current_m else ''
+    groups = load_json(GROUPS_FILE, [])
+    result=[]
+    for m in members:
+        if m['status']!='approved': continue
+        full = f"{m.get('fullName','')} {m.get('username','')} {m.get('ministry',{}).get('department','')}".lower()
+        if q and q not in full: continue
+        # privacy
+        privacy = m.get('privacy',{"phone":"none","email":"none"})
+        phone_vis = privacy.get('phone','none')
+        email_vis = privacy.get('email','none')
+        show_phone=False
+        show_email=False
+        if phone_vis=='church': show_phone=True
+        elif phone_vis=='ministry' and m.get('ministry',{}).get('department','')==my_ministry: show_phone=True
+        if email_vis=='church': show_email=True
+        elif email_vis=='ministry' and m.get('ministry',{}).get('department','')==my_ministry: show_email=True
+        # groups
+        my_groups_names=[]
+        for g in groups:
+            if m['id'] in g.get('members',[]):
+                my_groups_names.append(g['name'])
+        result.append({
+            "id": m['id'],
+            "fullName": m.get('fullName',''),
+            "username": m['username'],
+            "photo": m.get('photo',''),
+            "ministry": m.get('ministry',{}).get('department','') or m.get('personal',{}).get('ministry','Member'),
+            "phone": m.get('phone','') or m.get('personal',{}).get('phone',''),
+            "email": m.get('email',''),
+            "phoneVisible": show_phone,
+            "emailVisible": show_email,
+            "groups": my_groups_names,
+            "roles": m.get('roles',['member'])
+        })
+    return jsonify(result[:100])
+
+# GROUPS
+@app.route('/api/community/groups')
+@member_required
+def api_community_groups():
+    groups = load_json(GROUPS_FILE, [])
+    return jsonify(groups)
+
+@app.route('/api/community/groups/<int:gid>/join', methods=['POST'])
+@member_required
+def api_community_join_group(gid):
+    groups = load_json(GROUPS_FILE, [])
+    current_id = session.get('member_id')
+    for g in groups:
+        if g['id']==gid:
+            if current_id not in g['members']:
+                g['members'].append(current_id)
+            else:
+                # leave
+                g['members']=[x for x in g['members'] if x!=current_id]
+            break
+    save_json(GROUPS_FILE, groups)
+    return jsonify({"ok":True})
+
+# PRAYER WALL COMMUNITY
+@app.route('/api/community/prayers')
+@member_required
+def api_community_prayers():
+    # combine old prayers + community posts type prayer
+    prayers = load_json('data/prayers.json', [])
+    community_posts = load_json(COMMUNITY_POSTS_FILE, [])
+    # transform community prayer posts to prayer format
+    cp=[]
+    for p in community_posts:
+        if p.get('type')=='prayer':
+            cp.append({
+                "id": p['id'],
+                "fullName": p['fullName'],
+                "photo": p['photo'],
+                "content": p['content'],
+                "date": p['date'].split(' ')[0],
+                "prayingCount": p.get('reactions',{}).get('praying',0),
+                "prayingBy": [],
+                "status": "new",
+                "source": "community"
+            })
+    # add private prayers if user is prayer team? for now show public only
+    public_prayers=[]
+    for pr in prayers:
+        if pr.get('visibility','public')=='public':
+            public_prayers.append({
+                "id": pr['id'],
+                "fullName": pr.get('name','Anonymous'),
+                "photo": "",
+                "content": pr.get('content',''),
+                "date": pr.get('date',''),
+                "prayingCount": pr.get('pray_count',0),
+                "prayingBy": [],
+                "status": "new",
+                "source": "old"
+            })
+    all_p = cp + public_prayers
+    all_p.sort(key=lambda x: x['id'], reverse=True)
+    return jsonify(all_p[:100])
+
+@app.route('/api/community/prayer/pray/<int:pid>', methods=['POST'])
+@member_required
+def api_community_pray_prayer(pid):
+    # try community posts first
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    found=False
+    for p in posts:
+        if p['id']==pid and p.get('type')=='prayer':
+            if 'reactions' not in p: p['reactions']={"amen":0,"praying":0,"bless":0}
+            if 'reacted_by' not in p: p['reacted_by']={"amen":[],"praying":[],"bless":[]}
+            current_id=session.get('member_id')
+            if current_id not in p['reacted_by']['praying']:
+                p['reacted_by']['praying'].append(current_id)
+                p['reactions']['praying']+=1
+                found=True
+            break
+    if found:
+        save_json(COMMUNITY_POSTS_FILE, posts)
+        return jsonify({"ok":True})
+    # else old prayer wall
+    prayers = load_json('data/prayers.json', [])
+    for pr in prayers:
+        if pr['id']==pid:
+            pr['pray_count']=pr.get('pray_count',0)+1
+            break
+    save_json('data/prayers.json', prayers)
+    return jsonify({"ok":True})
+
+@app.route('/api/community/prayer/answer/<int:pid>', methods=['POST'])
+@member_required
+def api_community_answer_prayer(pid):
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    for p in posts:
+        if p['id']==pid:
+            p['status']='answered'
+            break
+    save_json(COMMUNITY_POSTS_FILE, posts)
+    return jsonify({"ok":True})
+
+# PROFILE & PRIVACY
+@app.route('/api/community/profile', methods=['POST'])
+@member_required
+def api_community_update_profile():
+    data = request.get_json()
+    bio = sanitize_text(data.get('bio',''), 500)
+    members = load_json(MEMBERS_FILE, [])
+    current_id = session.get('member_id')
+    for m in members:
+        if m['id']==current_id:
+            if 'profile' not in m: m['profile']={}
+            m['profile']['bio']=bio
+            # update session
+            if 'member_data' in session:
+                if 'profile' not in session['member_data']:
+                    session['member_data']['profile']={}
+                session['member_data']['profile']['bio']=bio
+            break
+    save_json(MEMBERS_FILE, members)
+    return jsonify({"ok":True})
+
+@app.route('/api/community/privacy', methods=['POST'])
+@member_required
+def api_community_update_privacy():
+    data = request.get_json()
+    phone_vis = data.get('phone','none')
+    email_vis = data.get('email','none')
+    if phone_vis not in ['none','ministry','church']: phone_vis='none'
+    if email_vis not in ['none','ministry','church']: email_vis='none'
+    members = load_json(MEMBERS_FILE, [])
+    current_id = session.get('member_id')
+    for m in members:
+        if m['id']==current_id:
+            m['privacy']={"phone":phone_vis,"email":email_vis}
+            break
+    save_json(MEMBERS_FILE, members)
+    return jsonify({"ok":True})
+
+# NOTIFICATIONS
+@app.route('/api/community/notifications')
+@member_required
+def api_community_notifications():
+    notifs = load_json(NOTIFICATIONS_FILE, [])
+    current_id = session.get('member_id')
+    my_notifs=[n for n in notifs if n.get('member_id')==current_id]
+    my_notifs.sort(key=lambda x: x['id'], reverse=True)
+    for n in my_notifs[:20]:
+        n['timeAgo']=time_ago(n.get('date',''))
+    return jsonify(my_notifs[:20])
+
+# EVENT RSVP
+@app.route('/api/events/rsvp/<int:eid>', methods=['POST'])
+@member_required
+def api_event_rsvp(eid):
+    data = request.get_json()
+    status = data.get('status','interested')
+    if status not in ['interested','attending']: status='interested'
+    rsvps = load_json(EVENT_RSVP_FILE, [])
+    current_id = session.get('member_id')
+    # remove existing
+    rsvps=[r for r in rsvps if not (r['event_id']==eid and r['member_id']==current_id)]
+    rsvps.append({
+        "id": int(time.time()*1000),
+        "event_id": eid,
+        "member_id": current_id,
+        "status": status,
+        "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
+    })
+    save_json(EVENT_RSVP_FILE, rsvps)
+    # notification
+    notifs = load_json(NOTIFICATIONS_FILE, [])
+    notifs.insert(0, {
+        "id": int(time.time()*1000),
+        "member_id": current_id,
+        "text": f"You marked {status} for event ID {eid}",
+        "icon": "fa-calendar",
+        "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
+    })
+    save_json(NOTIFICATIONS_FILE, notifs[:200])
+    return jsonify({"ok":True})
+
+# ADMIN - COMMUNITY MODERATION
+@app.route('/api/admin/community/posts')
+@admin_required
+def admin_community_posts():
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    return jsonify(posts)
+
+@app.route('/api/admin/community/delete-post/<int:pid>', methods=['POST'])
+@admin_required
+def admin_delete_community_post(pid):
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    posts=[p for p in posts if p['id']!=pid]
+    save_json(COMMUNITY_POSTS_FILE, posts)
+    return jsonify({"ok":True})
+
+@app.route('/api/admin/community/groups', methods=['GET','POST'])
+@admin_required
+def admin_community_groups_manage():
+    if request.method=='GET':
+        return jsonify(load_json(GROUPS_FILE, []))
+    data=request.get_json()
+    groups=load_json(GROUPS_FILE, [])
+    groups.append({
+        "id": int(time.time()*1000),
+        "name": sanitize_text(data.get('name','New Group'),100),
+        "slug": sanitize_text(data.get('slug',''),50).lower().replace(' ','-'),
+        "icon": data.get('icon','👥'),
+        "color": "#0f172a",
+        "members": [],
+        "leader": None,
+        "description": sanitize_text(data.get('description',''),200)
+    })
+    save_json(GROUPS_FILE, groups)
+    return jsonify({"ok":True})
+
+# END COMMUNITY PORTAL
+
+
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
