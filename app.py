@@ -1527,6 +1527,329 @@ def admin_delete_group(gid):
     return jsonify({"ok":True})
 
 
+
+# ============== MEMBER UPLOADS WITH APPROVAL QUEUE ==============
+MEMBER_EVENTS_FILE = os.path.join(DATA_DIR, 'member_events.json')
+MEMBER_GALLERIES_FILE = os.path.join(DATA_DIR, 'member_galleries.json')
+MEMBER_VIDEOS_FILE = os.path.join(DATA_DIR, 'member_videos.json')
+
+# Ensure files exist
+for _f in [MEMBER_EVENTS_FILE, MEMBER_GALLERIES_FILE, MEMBER_VIDEOS_FILE]:
+    if not os.path.exists(_f):
+        save_json(_f, [])
+
+@app.route('/api/community/upload/event', methods=['POST'])
+@member_required
+def api_member_upload_event():
+    title = sanitize_text(request.form.get('title',''),200)
+    if not title: return jsonify({"ok":False,"error":"Title required"}),400
+    date = sanitize_text(request.form.get('date',''),20)
+    time_e = sanitize_text(request.form.get('time',''),20)
+    location = sanitize_text(request.form.get('location',''),200)
+    desc = sanitize_text(request.form.get('description',''),2000)
+    file = request.files.get('file')
+    saved=""
+    if file and file.filename!="":
+        if allowed_file(file.filename, {'jpg','jpeg','png','webp'}):
+            saved = upload_to_cloudinary(file, folder="south_b_chapel/member_events")
+    events = load_json(MEMBER_EVENTS_FILE, [])
+    new_ev = {
+        "id": int(time.time()*1000),
+        "member_id": session.get('member_id'),
+        "title": title,
+        "date": date,
+        "time": time_e,
+        "location": location,
+        "description": desc,
+        "image": saved,
+        "status": "pending",
+        "created": datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
+    }
+    events.insert(0, new_ev)
+    save_json(MEMBER_EVENTS_FILE, events)
+    return jsonify({"ok":True, "event": new_ev, "message": "Event submitted for admin approval"})
+
+@app.route('/api/community/upload/photo', methods=['POST'])
+@member_required
+def api_member_upload_photo():
+    title = sanitize_text(request.form.get('title',''),200)
+    if not title: return jsonify({"ok":False,"error":"Title required"}),400
+    desc = sanitize_text(request.form.get('description',''),500)
+    files = request.files.getlist('files')
+    single = request.files.get('file')
+    saved=[]
+    if single and single.filename!="":
+        if allowed_file(single.filename, {'jpg','jpeg','png','webp','gif'}):
+            saved.append(upload_to_cloudinary(single, folder="south_b_chapel/member_galleries"))
+    for f in files:
+        if f and f.filename!="" and allowed_file(f.filename, {'jpg','jpeg','png','webp','gif'}):
+            saved.append(upload_to_cloudinary(f, folder="south_b_chapel/member_galleries"))
+    urls_raw = request.form.get('images','')
+    if urls_raw:
+        for u in urls_raw.split(','):
+            if u.strip(): saved.append(sanitize_text(u.strip(),500))
+    galleries = load_json(MEMBER_GALLERIES_FILE, [])
+    new_gal = {
+        "id": int(time.time()*1000),
+        "member_id": session.get('member_id'),
+        "title": title,
+        "description": desc,
+        "images": saved,
+        "cover": saved[0] if saved else "",
+        "status": "pending",
+        "created": datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
+    }
+    galleries.insert(0, new_gal)
+    save_json(MEMBER_GALLERIES_FILE, galleries)
+    return jsonify({"ok":True, "gallery": new_gal, "message": "Photos submitted for approval"})
+
+@app.route('/api/community/upload/video', methods=['POST'])
+@member_required
+def api_member_upload_video():
+    title = sanitize_text(request.form.get('title',''),200)
+    if not title: return jsonify({"ok":False,"error":"Title required"}),400
+    vtype = request.form.get('type','memory_verse')
+    if vtype not in ['memory_verse','testimony','opinion','worship','sermon_clip']: vtype='memory_verse'
+    desc = sanitize_text(request.form.get('description',''),1000)
+    yt_raw = request.form.get('yt','')
+    yt = extract_yt_id(yt_raw)
+    file = request.files.get('file')
+    saved=""
+    if file and file.filename!="":
+        if allowed_file(file.filename, {'mp4','mov','webm','avi','mkv'}):
+            saved = upload_to_cloudinary(file, folder="south_b_chapel/member_videos")
+    videos = load_json(MEMBER_VIDEOS_FILE, [])
+    new_vid = {
+        "id": int(time.time()*1000),
+        "member_id": session.get('member_id'),
+        "title": title,
+        "type": vtype,
+        "description": desc,
+        "yt": yt,
+        "yt_raw": sanitize_text(yt_raw,100),
+        "local_file": saved,
+        "status": "pending",
+        "created": datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
+    }
+    videos.insert(0, new_vid)
+    save_json(MEMBER_VIDEOS_FILE, videos)
+    return jsonify({"ok":True, "video": new_vid, "message": f"{vtype} video submitted for approval"})
+
+# Member CRUD on own uploads
+@app.route('/api/community/post/<int:pid>', methods=['DELETE'])
+@member_required
+def api_member_delete_post(pid):
+    current_id = session.get('member_id')
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    p = next((x for x in posts if x['id']==pid), None)
+    if not p: return jsonify({"ok":False,"error":"Not found"}),404
+    if p['member_id']!=current_id:
+        # check admin
+        members = load_json(MEMBERS_FILE, [])
+        m = next((x for x in members if x['id']==current_id), None)
+        if not m or 'admin' not in (m.get('roles',[]) or []):
+            return jsonify({"ok":False,"error":"Not yours"}),403
+    posts = [x for x in posts if x['id']!=pid]
+    save_json(COMMUNITY_POSTS_FILE, posts)
+    return jsonify({"ok":True})
+
+@app.route('/api/community/post/<int:pid>', methods=['PUT'])
+@member_required
+def api_member_edit_post(pid):
+    data = request.get_json()
+    content = sanitize_text(data.get('content',''),2000)
+    if not content: return jsonify({"ok":False}),400
+    current_id = session.get('member_id')
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    for p in posts:
+        if p['id']==pid and p['member_id']==current_id:
+            p['content']=content
+            p['edited']=True
+            break
+    save_json(COMMUNITY_POSTS_FILE, posts)
+    return jsonify({"ok":True})
+
+@app.route('/api/community/event/<int:eid>', methods=['DELETE'])
+@member_required
+def api_member_delete_event(eid):
+    current_id = session.get('member_id')
+    events = load_json(MEMBER_EVENTS_FILE, [])
+    ev = next((x for x in events if x['id']==eid), None)
+    if not ev: return jsonify({"ok":False}),404
+    if ev['member_id']!=current_id: return jsonify({"ok":False,"error":"Not yours"}),403
+    events = [x for x in events if x['id']!=eid]
+    save_json(MEMBER_EVENTS_FILE, events)
+    return jsonify({"ok":True})
+
+@app.route('/api/community/gallery/<int:gid>', methods=['DELETE'])
+@member_required
+def api_member_delete_gallery(gid):
+    current_id = session.get('member_id')
+    gals = load_json(MEMBER_GALLERIES_FILE, [])
+    g = next((x for x in gals if x['id']==gid), None)
+    if not g: return jsonify({"ok":False}),404
+    if g['member_id']!=current_id: return jsonify({"ok":False}),403
+    gals = [x for x in gals if x['id']!=gid]
+    save_json(MEMBER_GALLERIES_FILE, gals)
+    return jsonify({"ok":True})
+
+@app.route('/api/community/video/<int:vid>', methods=['DELETE'])
+@member_required
+def api_member_delete_video(vid):
+    current_id = session.get('member_id')
+    vids = load_json(MEMBER_VIDEOS_FILE, [])
+    v = next((x for x in vids if x['id']==vid), None)
+    if not v: return jsonify({"ok":False}),404
+    if v['member_id']!=current_id: return jsonify({"ok":False}),403
+    vids = [x for x in vids if x['id']!=vid]
+    save_json(MEMBER_VIDEOS_FILE, vids)
+    return jsonify({"ok":True})
+
+# Member views - only approved content
+@app.route('/api/community/member-events')
+@member_required
+def api_community_member_events():
+    events = load_json(MEMBER_EVENTS_FILE, [])
+    # only approved + own pending
+    current_id = session.get('member_id')
+    filtered = [e for e in events if e['status']=='approved' or e['member_id']==current_id]
+    # enrich with member info
+    members = load_json(MEMBERS_FILE, [])
+    for e in filtered:
+        m = next((x for x in members if x['id']==e['member_id']), None)
+        e['member_name'] = m.get('fullName','') if m else 'Member'
+        e['member_photo'] = m.get('photo','') if m else ''
+        e['timeAgo'] = time_ago(e.get('created',''))
+    filtered.sort(key=lambda x: x['id'], reverse=True)
+    return jsonify(filtered)
+
+@app.route('/api/community/member-galleries')
+@member_required
+def api_community_member_galleries():
+    gals = load_json(MEMBER_GALLERIES_FILE, [])
+    current_id = session.get('member_id')
+    filtered = [g for g in gals if g['status']=='approved' or g['member_id']==current_id]
+    members = load_json(MEMBERS_FILE, [])
+    for g in filtered:
+        m = next((x for x in members if x['id']==g['member_id']), None)
+        g['member_name'] = m.get('fullName','') if m else 'Member'
+        g['member_photo'] = m.get('photo','') if m else ''
+    filtered.sort(key=lambda x: x['id'], reverse=True)
+    return jsonify(filtered)
+
+@app.route('/api/community/member-videos')
+@member_required
+def api_community_member_videos():
+    vids = load_json(MEMBER_VIDEOS_FILE, [])
+    current_id = session.get('member_id')
+    filtered = [v for v in vids if v['status']=='approved' or v['member_id']==current_id]
+    members = load_json(MEMBERS_FILE, [])
+    for v in filtered:
+        m = next((x for x in members if x['id']==v['member_id']), None)
+        v['member_name'] = m.get('fullName','') if m else 'Member'
+        v['member_photo'] = m.get('photo','') if m else ''
+    filtered.sort(key=lambda x: x['id'], reverse=True)
+    return jsonify(filtered)
+
+# Admin approval queue
+@app.route('/api/admin/community/pending')
+@admin_required
+def admin_community_pending():
+    posts = load_json(COMMUNITY_POSTS_FILE, [])
+    events = load_json(MEMBER_EVENTS_FILE, [])
+    galleries = load_json(MEMBER_GALLERIES_FILE, [])
+    videos = load_json(MEMBER_VIDEOS_FILE, [])
+    pending = []
+    for p in posts:
+        if p.get('status','approved')=='pending':
+            pending.append({"id":p['id'],"type":"post","subtype":p.get('type','post'),"title":p.get('content','')[:80],"member_id":p['member_id'],"date":p.get('date',''),"data":p})
+    for e in events:
+        if e.get('status')=='pending':
+            pending.append({"id":e['id'],"type":"member_event","subtype":"event","title":e['title'],"member_id":e['member_id'],"date":e.get('created',''),"data":e})
+    for g in galleries:
+        if g.get('status')=='pending':
+            pending.append({"id":g['id'],"type":"member_gallery","subtype":"photo","title":g['title'],"member_id":g['member_id'],"date":g.get('created',''),"data":g})
+    for v in videos:
+        if v.get('status')=='pending':
+            pending.append({"id":v['id'],"type":"member_video","subtype":v.get('type','memory_verse'),"title":v['title'],"member_id":v['member_id'],"date":v.get('created',''),"data":v})
+    pending.sort(key=lambda x: x['id'], reverse=True)
+    return jsonify(pending)
+
+@app.route('/api/admin/community/approve', methods=['POST'])
+@admin_required
+def admin_community_approve():
+    data = request.get_json()
+    pid = data.get('id')
+    ptype = data.get('type')
+    if ptype=='post':
+        posts = load_json(COMMUNITY_POSTS_FILE, [])
+        for p in posts:
+            if p['id']==pid: p['status']='approved'; break
+        save_json(COMMUNITY_POSTS_FILE, posts)
+    elif ptype=='member_event':
+        events = load_json(MEMBER_EVENTS_FILE, [])
+        for e in events:
+            if e['id']==pid: e['status']='approved'; break
+        save_json(MEMBER_EVENTS_FILE, events)
+    elif ptype=='member_gallery':
+        gals = load_json(MEMBER_GALLERIES_FILE, [])
+        for g in gals:
+            if g['id']==pid: g['status']='approved'; break
+        save_json(MEMBER_GALLERIES_FILE, gals)
+    elif ptype=='member_video':
+        vids = load_json(MEMBER_VIDEOS_FILE, [])
+        for v in vids:
+            if v['id']==pid: v['status']='approved'; break
+        save_json(MEMBER_VIDEOS_FILE, vids)
+    return jsonify({"ok":True})
+
+@app.route('/api/admin/community/reject', methods=['POST'])
+@admin_required
+def admin_community_reject():
+    data = request.get_json()
+    pid = data.get('id')
+    ptype = data.get('type')
+    reason = sanitize_text(data.get('reason',''),200)
+    if ptype=='post':
+        posts = load_json(COMMUNITY_POSTS_FILE, [])
+        posts = [p for p in posts if p['id']!=pid]
+        save_json(COMMUNITY_POSTS_FILE, posts)
+    elif ptype=='member_event':
+        events = load_json(MEMBER_EVENTS_FILE, [])
+        events = [e for e in events if e['id']!=pid]
+        save_json(MEMBER_EVENTS_FILE, events)
+    elif ptype=='member_gallery':
+        gals = load_json(MEMBER_GALLERIES_FILE, [])
+        gals = [g for g in gals if g['id']!=pid]
+        save_json(MEMBER_GALLERIES_FILE, gals)
+    elif ptype=='member_video':
+        vids = load_json(MEMBER_VIDEOS_FILE, [])
+        vids = [v for v in vids if v['id']!=pid]
+        save_json(MEMBER_VIDEOS_FILE, vids)
+    return jsonify({"ok":True})
+
+@app.route('/api/admin/community/edit/<ptype>/<int:pid>', methods=['POST'])
+@admin_required
+def admin_community_edit(ptype, pid):
+    data = request.get_json()
+    if ptype=='post':
+        posts = load_json(COMMUNITY_POSTS_FILE, [])
+        for p in posts:
+            if p['id']==pid:
+                if data.get('content'): p['content']=sanitize_text(data.get('content'),2000)
+                break
+        save_json(COMMUNITY_POSTS_FILE, posts)
+    elif ptype=='member_event':
+        events = load_json(MEMBER_EVENTS_FILE, [])
+        for e in events:
+            if e['id']==pid:
+                if data.get('title'): e['title']=sanitize_text(data.get('title'),200)
+                if data.get('description'): e['description']=sanitize_text(data.get('description'),2000)
+                break
+        save_json(MEMBER_EVENTS_FILE, events)
+    return jsonify({"ok":True})
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)

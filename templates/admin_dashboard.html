@@ -38,6 +38,7 @@
   <div class="sidebar w-full md:w-[220px] glass-dark text-white md:min-h-[calc(100vh-56px)] p-2 space-y-1 m-2 rounded-2xl shrink-0 overflow-y-auto">
     <button onclick="showTab('overview')" id="btn-overview" class="tabBtn tab-active w-full text-left px-3 py-2.5 rounded-xl text-xs"><i class="fas fa-chart-line w-5"></i> Overview</button>
     <button onclick="showTab('members')" id="btn-members" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-users w-5"></i> Members</button>
+    <button onclick="showTab('pending')" id="btn-pending" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10 bg-yellow-400/20 border border-yellow-400/40"><i class="fas fa-hourglass-half w-5"></i> Pending Approvals <span id="pendingBadge" class="ml-1 bg-red-600 text-white text-[9px] px-1.5 py-0.5 rounded-full hidden">0</span></button>
     <button onclick="showTab('community')" id="btn-community" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10 border border-yellow-400/30"><i class="fas fa-comments w-5"></i> Community Feed</button>
     <button onclick="showTab('groupsAdmin')" id="btn-groupsAdmin" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-users-rectangle w-5"></i> Groups Manager</button>
     <button onclick="showTab('roles')" id="btn-roles" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-shield-halved w-5"></i> Member Roles</button>
@@ -187,6 +188,7 @@
 
     
     <!-- COMMUNITY FEED ADMIN - REAL ONLY -->
+    <div id="tab-pending" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><div class="flex justify-between items-center"><h2 class="font-semibold text-sm">⏳ Pending Approvals - Member Uploads Awaiting Admin Approval</h2><button onclick="loadPendingApprovals()" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div><p class="text-[11px] text-gray-500 mt-1">Real member uploads: opinions, events, photos, memory verse videos. Only real members. Admin must approve before other members see. View full details before approving.</p><div id="pendingList" class="mt-5 space-y-3"><p class="text-xs text-gray-400">Loading pending...</p></div></div></div>
     <div id="tab-community" class="tabContent hidden">
       <div class="glass-panel p-5 rounded-2xl">
         <div class="flex justify-between items-center"><h2 class="font-semibold text-sm">Community Feed - Real Posts Only</h2><button onclick="loadCommunityPosts()" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div>
@@ -575,6 +577,90 @@ document.getElementById('createGroupForm')?.addEventListener('submit', async(e)=
   await secureFetch('/api/admin/community/groups',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name, description:desc})});
   e.target.reset(); loadGroupsAdmin();
 });
+
+
+// ENHANCED ADMIN APPROVAL QUEUE - REAL ONLY, VIEWABLE, CRUD
+async function loadPendingApprovals(){
+  try{
+    let pending = await secureFetch('/api/admin/community/pending').then(r=>r.json()).catch(()=>[]);
+    let badge = document.getElementById('pendingBadge');
+    if(badge){ badge.innerText = pending.length; badge.classList.toggle('hidden', pending.length===0); }
+    let el = document.getElementById('pendingList');
+    if(!pending.length){ el.innerHTML = '<div class="bg-white border rounded-xl p-8 text-center"><p class="text-xs font-semibold">No pending uploads - Real only</p><p class="text-[11px] text-gray-500 mt-2">When real members upload opinions, events, photos, memory verse videos, they will appear here for admin approval before other members see.</p></div>'; return; }
+    // Enrich with member info
+    let members = await secureFetch('/api/admin/members').then(r=>r.json()).catch(()=>[]);
+    el.innerHTML = pending.map(item=>{
+      let m = members.find(x=>x.id===item.member_id);
+      let mName = m ? (m.fullName || m.personal?.fullName || m.username || 'Real Member') : 'Real Member';
+      let mPhoto = m ? m.photo : '';
+      let icon = item.type==='member_event' ? '📅' : item.type==='member_gallery' ? '🖼️' : item.type==='member_video' ? '🎥' : '📝';
+      let typeLabel = item.type==='member_event' ? 'Member Event' : item.type==='member_gallery' ? 'Photos' : item.type==='member_video' ? item.subtype : 'Post';
+      return `<div class="bg-white border rounded-xl p-4">
+        <div class="flex gap-3">
+          <img src="${fixMemberPhoto(mPhoto)}" class="w-10 h-10 rounded-full object-cover">
+          <div class="flex-1 min-w-0">
+            <div class="flex gap-2 items-center flex-wrap"><span class="font-semibold text-xs">${esc(mName)}</span><span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">${icon} ${esc(typeLabel)} • Pending</span><span class="text-[10px] text-gray-400">${esc(item.date||'')}</span></div>
+            <p class="font-medium text-xs mt-2">${esc(item.title||'No title')}</p>
+            <p class="text-[11px] text-gray-600 mt-1 truncate">${esc((item.data?.description||item.data?.content||'').substring(0,120))}</p>
+            <div class="mt-3 flex gap-2 flex-wrap">
+              <button onclick="viewPendingItem('${item.type}', ${item.id})" class="bg-[#0f172a] text-white px-4 py-1.5 rounded-full text-[11px]">View Full</button>
+              <button onclick="approvePending('${item.type}', ${item.id})" class="bg-green-600 text-white px-4 py-1.5 rounded-full text-[11px]">Approve</button>
+              <button onclick="rejectPending('${item.type}', ${item.id})" class="bg-white border border-red-200 text-red-600 px-4 py-1.5 rounded-full text-[11px]">Reject</button>
+              <button onclick="editPendingItem('${item.type}', ${item.id})" class="bg-white border px-4 py-1.5 rounded-full text-[11px]">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    document.getElementById('pendingList').innerHTML = '<p class="text-xs text-red-500">Error: '+esc(e.message)+'</p>';
+  }
+}
+async function viewPendingItem(type, id){
+  let pending = await secureFetch('/api/admin/community/pending').then(r=>r.json()).catch(()=>[]);
+  let item = pending.find(x=>x.id===id && x.type===type); if(!item) return;
+  let members = await secureFetch('/api/admin/members').then(r=>r.json()).catch(()=>[]);
+  let m = members.find(x=>x.id===item.member_id);
+  let mName = m ? (m.fullName || m.personal?.fullName || m.username) : 'Real Member';
+  let data = item.data;
+  let html = '';
+  if(type==='member_event'){
+    html = `<img src="${data.image?fixUrl(data.image):'https://via.placeholder.com/400x200.png?text=Event'}" class="w-full h-48 object-cover rounded-xl"><h3 class="font-semibold text-sm mt-4">${esc(data.title)}</h3><p class="text-[11px] text-gray-500 mt-1">${esc(data.date||'')} ${esc(data.time||'')} • ${esc(data.location||'')}</p><p class="text-[12px] mt-3 whitespace-pre-wrap">${esc(data.description||'')}</p>`;
+  } else if(type==='member_gallery'){
+    html = `<h3 class="font-semibold text-sm">${esc(data.title)}</h3><p class="text-[11px] text-gray-500 mt-1">${esc(data.description||'')} • ${data.images?.length||0} photos</p><div class="mt-3 grid grid-cols-2 gap-2">${(data.images||[]).map(img=>`<img src="${fixUrl(img)}" class="w-full rounded-xl object-cover">`).join('')}</div>`;
+  } else if(type==='member_video'){
+    let player = data.yt ? `<iframe width="100%" height="250" src="https://www.youtube.com/embed/${esc(data.yt)}" frameborder="0" allowfullscreen class="rounded-xl"></iframe>` : data.local_file ? `<video controls src="${fixUrl(data.local_file)}" class="w-full rounded-xl h-[250px]"></video>` : '<p>No video</p>';
+    html = `${player}<h3 class="font-semibold text-sm mt-4">${esc(data.title)}</h3><p class="text-[11px] text-gray-500">${esc(data.type||'')} • ${esc(data.description||'')}</p>`;
+  } else {
+    html = `<p class="text-[12px] whitespace-pre-wrap">${esc(data.content||'')}</p><p class="text-[10px] text-gray-500 mt-2">Type: ${esc(data.type||'post')} • Visibility: ${esc(data.visibility||'church')}</p>`;
+  }
+  html += `<div class="mt-4 bg-gray-50 border rounded-xl p-3"><p class="text-[11px]">Uploaded by: <span class="font-semibold">${esc(mName)}</span> • ID: ${data.member_id}</p><p class="text-[10px] text-gray-500 mt-1">Phone: ${esc(m?.phone||m?.personal?.phone||'Not provided')} • Ministry: ${esc(m?.ministry?.department||'Member')} • Emergency: ${esc(m?.emergency?.name||'')} ${esc(m?.emergency?.phone||'')}</p></div>`;
+  html += `<div class="mt-4 flex gap-2"><button onclick="approvePending('${type}', ${id})" class="bg-green-600 text-white px-5 py-2 rounded-full text-xs">Approve - All members will see</button><button onclick="rejectPending('${type}', ${id})" class="bg-red-600 text-white px-5 py-2 rounded-full text-xs">Reject - Delete</button><button onclick="closeEditModal()" class="bg-gray-100 px-5 py-2 rounded-full text-xs">Close</button></div>`;
+  openEditModal('Pending Item - Real Member Upload', html);
+}
+async function approvePending(type, id){
+  if(!confirm('Approve this real member upload? All approved members will see it.')) return;
+  await secureFetch('/api/admin/community/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id, type})});
+  closeEditModal(); loadPendingApprovals(); loadTabData('overview');
+}
+async function rejectPending(type, id){
+  let reason = prompt('Reason for rejection (optional):'); if(reason===null) return;
+  if(!confirm('Reject and delete this upload?')) return;
+  await secureFetch('/api/admin/community/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id, type, reason})});
+  closeEditModal(); loadPendingApprovals();
+}
+function editPendingItem(type, id){
+  let newTitle = prompt('Edit title/content (leave empty to keep):'); if(newTitle===null) return;
+  // For simplicity, just alert - admin can use full edit modal later
+  alert('Edit feature: For now approve then edit in respective tab. Full edit coming.');
+}
+
+// Patch loadTabData to include pending
+const origLoadTabData2 = loadTabData;
+loadTabData = async function(name){
+  if(name==='pending'){ return loadPendingApprovals(); }
+  return origLoadTabData2(name);
+};
 
 </script>
 </body>
