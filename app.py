@@ -1455,6 +1455,78 @@ def admin_community_groups_manage():
 # END COMMUNITY PORTAL
 
 
+
+@app.route('/api/admin/members/role/<int:mid>', methods=['POST'])
+@admin_required
+def admin_update_member_role(mid):
+    data = request.get_json()
+    new_role = data.get('role','member')
+    if new_role not in ['member','ministry_member','group_leader','prayer_team','pastor','moderator','admin']:
+        new_role='member'
+    members = load_json(MEMBERS_FILE, [])
+    for m in members:
+        if m['id']==mid:
+            m['roles']=[new_role]
+            break
+    save_json(MEMBERS_FILE, members)
+    return jsonify({"ok":True})
+
+@app.route('/api/admin/rsvps')
+@admin_required
+def admin_get_rsvps():
+    rsvps = load_json(EVENT_RSVP_FILE, [])
+    members = load_json(MEMBERS_FILE, [])
+    events = load_json('data/events.json', [])
+    enriched=[]
+    for r in rsvps:
+        m = next((x for x in members if x['id']==r['member_id']), None)
+        e = next((x for x in events if x['id']==r['event_id']), None)
+        enriched.append({
+            "id": r['id'],
+            "event_id": r['event_id'],
+            "event_title": e['title'] if e else f"Event {r['event_id']}",
+            "member_id": r['member_id'],
+            "member_name": m.get('fullName','') if m else 'Unknown',
+            "ministry": m.get('ministry',{}).get('department','') if m else '',
+            "status": r['status'],
+            "date": r['date']
+        })
+    enriched.sort(key=lambda x: x['id'], reverse=True)
+    return jsonify(enriched)
+
+@app.route('/api/admin/groups/<int:gid>/remove-member/<int:mid>', methods=['POST'])
+@admin_required
+def admin_remove_group_member(gid, mid):
+    groups = load_json(GROUPS_FILE, [])
+    for g in groups:
+        if g['id']==gid:
+            g['members']=[x for x in g['members'] if x!=mid]
+            break
+    save_json(GROUPS_FILE, groups)
+    return jsonify({"ok":True})
+
+@app.route('/api/admin/groups/<int:gid>/set-leader/<int:mid>', methods=['POST'])
+@admin_required
+def admin_set_group_leader(gid, mid):
+    groups = load_json(GROUPS_FILE, [])
+    for g in groups:
+        if g['id']==gid:
+            g['leader']=mid
+            if mid not in g['members']:
+                g['members'].append(mid)
+            break
+    save_json(GROUPS_FILE, groups)
+    return jsonify({"ok":True})
+
+@app.route('/api/admin/community/groups/<int:gid>', methods=['DELETE'])
+@admin_required
+def admin_delete_group(gid):
+    groups = load_json(GROUPS_FILE, [])
+    groups=[g for g in groups if g['id']!=gid]
+    save_json(GROUPS_FILE, groups)
+    return jsonify({"ok":True})
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
