@@ -31,14 +31,14 @@
 <div class="min-h-screen bg-gradient-to-br from-[#0f172a]/10 to-black/10">
 <div class="glass-dark text-white px-4 py-3 flex justify-between items-center sticky top-0 z-50">
   <div class="flex items-center gap-3"><img src="/static/uploads/god_key.jpg" class="w-9 h-9 rounded-full border border-yellow-400/50"><h1 class="font-semibold text-[13px] tracking-wide">SOUTH B POLICE CHAPEL — ADMIN</h1></div>
-  <div class="flex gap-2 items-center"><a href="/" target="_blank" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full text-[11px] border border-white/10">View Site</a><a href="/members/dashboard" target="_blank" class="bg-yellow-400 text-black px-3 py-1.5 rounded-full text-[11px] font-semibold">Community</a><a href="/admin/logout" class="bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded-full text-xs font-semibold">Logout</a></div>
+  <div class="flex gap-2 items-center"><a href="/" target="_blank" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full text-[11px] border border-white/10">View Site</a><a href="/admin/logout" class="bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded-full text-xs font-semibold">Logout</a></div>
 </div>
 
 <div class="flex main-flex">
   <div class="sidebar w-full md:w-[220px] glass-dark text-white md:min-h-[calc(100vh-56px)] p-2 space-y-1 m-2 rounded-2xl shrink-0 overflow-y-auto">
     <button onclick="showTab('overview')" id="btn-overview" class="tabBtn tab-active w-full text-left px-3 py-2.5 rounded-xl text-xs"><i class="fas fa-chart-line w-5"></i> Overview</button>
     <button onclick="showTab('members')" id="btn-members" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-users w-5"></i> Members</button>
-    <button onclick="showTab('community')" id="btn-community" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10 border border-yellow-400/20"><i class="fas fa-comments w-5"></i> Community Feed <span id="communityCountBadge" class="ml-1 bg-yellow-400 text-black text-[9px] px-1.5 py-0.5 rounded-full hidden">0</span></button>
+    <button onclick="showTab('community')" id="btn-community" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10 border border-yellow-400/30"><i class="fas fa-comments w-5"></i> Community Feed</button>
     <button onclick="showTab('groupsAdmin')" id="btn-groupsAdmin" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-users-rectangle w-5"></i> Groups Manager</button>
     <button onclick="showTab('roles')" id="btn-roles" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-shield-halved w-5"></i> Member Roles</button>
     <button onclick="showTab('rsvps')" id="btn-rsvps" class="tabBtn w-full text-left px-3 py-2.5 rounded-xl text-xs hover:bg-white/10"><i class="fas fa-calendar-check w-5"></i> Event RSVPs</button>
@@ -63,7 +63,6 @@
         <h2 class="font-semibold text-sm">Dashboard Overview</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
           <div class="bg-white border rounded-xl p-4"><p class="text-[10px] text-gray-500">Members</p><h3 id="statMembers" class="font-bold text-xl mt-1">0</h3><p id="statMembersPending" class="text-[10px] text-gray-400 mt-1"></p></div>
-          <div class="bg-white border rounded-xl p-4"><p class="text-[10px] text-gray-500">Community Posts</p><h3 id="statCommunity" class="font-bold text-xl mt-1">0</h3><p class="text-[10px] text-gray-400 mt-1">Private feed</p></div>
           <div class="bg-white border rounded-xl p-4"><p class="text-[10px] text-gray-500">Check-ins Today</p><h3 id="statCheckins" class="font-bold text-xl mt-1">0</h3></div>
           <div class="bg-white border rounded-xl p-4"><p class="text-[10px] text-gray-500">Videos</p><h3 id="statVideos" class="font-bold text-xl mt-1">0</h3></div>
           <div class="bg-white border rounded-xl p-4"><p class="text-[10px] text-gray-500">Gallery</p><h3 id="statGallery" class="font-bold text-xl mt-1">0</h3></div>
@@ -71,7 +70,6 @@
           <div class="bg-white border rounded-xl p-4"><p class="text-[10px] text-gray-500">Sermons</p><h3 id="statSermons" class="font-bold text-xl mt-1">0</h3></div>
           <div class="bg-white border rounded-xl p-4"><p class="text-[10px] text-gray-500">Prayers</p><h3 id="statPrayers" class="font-bold text-xl mt-1">0</h3></div>
           <div class="bg-white border rounded-xl p-4"><p class="text-[10px] text-gray-500">Encounters</p><h3 id="statEncounters" class="font-bold text-xl mt-1">0</h3></div>
-          <div class="bg-white border rounded-xl p-4"><p class="text-[10px] text-gray-500">RSVPs</p><h3 id="statRsvps" class="font-bold text-xl mt-1">0</h3></div>
         </div>
       </div>
     </div>
@@ -91,62 +89,6 @@
         </div>
       </div>
       <div id="membersList" class="mt-5 space-y-3"></div>
-    </div>
-
-    <!-- COMMUNITY FEED ADMIN -->
-    <div id="tab-community" class="tabContent hidden">
-      <div class="glass-panel p-5 rounded-2xl">
-        <div class="flex justify-between items-center"><h2 class="font-semibold text-sm">Community Feed Moderation</h2><button onclick="loadTabData('community')" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div>
-        <p class="text-[11px] text-gray-500 mt-1">All posts from members private portal — you can delete inappropriate content. Same website, only members see, but admin moderates.</p>
-        <div class="mt-4 grid grid-cols-3 gap-2">
-          <div class="bg-white border rounded-xl p-3 text-center"><p class="text-[10px] text-gray-500">Total Posts</p><p id="commTotal" class="font-bold text-lg">0</p></div>
-          <div class="bg-white border rounded-xl p-3 text-center"><p class="text-[10px] text-gray-500">Prayer Requests</p><p id="commPrayer" class="font-bold text-lg">0</p></div>
-          <div class="bg-white border rounded-xl p-3 text-center"><p class="text-[10px] text-gray-500">Today</p><p id="commToday" class="font-bold text-lg">0</p></div>
-        </div>
-        <div id="communityPostsList" class="mt-5 space-y-3"></div>
-      </div>
-    </div>
-
-    <!-- GROUPS ADMIN -->
-    <div id="tab-groupsAdmin" class="tabContent hidden">
-      <div class="glass-panel p-5 rounded-2xl">
-        <div class="flex justify-between items-center"><h2 class="font-semibold text-sm">Groups Manager</h2><button onclick="loadTabData('groupsAdmin')" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div>
-        <p class="text-[11px] text-gray-500 mt-1">8 default groups — assign leaders, remove members, create new group</p>
-        <form id="createGroupForm" class="mt-4 upload-zone p-4 rounded-xl flex gap-2">
-          <input name="name" placeholder="Group Name *" required class="flex-1 border p-2.5 rounded-xl text-xs">
-          <input name="description" placeholder="Description" class="flex-1 border p-2.5 rounded-xl text-xs">
-          <button type="submit" class="bg-[#0f172a] text-white px-6 py-2.5 rounded-full text-xs">Create Group</button>
-        </form>
-        <div id="groupsAdminList" class="mt-6 grid md:grid-cols-2 gap-3"></div>
-      </div>
-    </div>
-
-    <!-- ROLES ADMIN -->
-    <div id="tab-roles" class="tabContent hidden">
-      <div class="glass-panel p-5 rounded-2xl">
-        <div class="flex justify-between items-center"><h2 class="font-semibold text-sm">Member Roles & Privileges</h2><button onclick="loadTabData('roles')" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div>
-        <p class="text-[11px] text-gray-500 mt-1">Assign roles: Member → Ministry Member → Group Leader → Prayer Team → Pastor → Moderator → Admin</p>
-        <div class="mt-4 bg-white border rounded-xl p-3 text-[11px]">
-          <p class="font-semibold">Privileges:</p>
-          <ul class="mt-2 list-disc ml-4 space-y-1 text-gray-600">
-            <li><b>Member:</b> Post, react Amen/Praying, comment, join groups, RSVP, prayer wall</li>
-            <li><b>Group Leader:</b> + Create announcements in own group, manage group members</li>
-            <li><b>Prayer Team:</b> + See private prayers marked private</li>
-            <li><b>Pastor:</b> + Publish sermons, church-wide announcements, moderate prayers</li>
-            <li><b>Moderator/Admin:</b> + Delete any post, manage roles, full access</li>
-          </ul>
-        </div>
-        <div id="rolesList" class="mt-5 space-y-2"></div>
-      </div>
-    </div>
-
-    <!-- RSVPs ADMIN -->
-    <div id="tab-rsvps" class="tabContent hidden">
-      <div class="glass-panel p-5 rounded-2xl">
-        <div class="flex justify-between items-center"><h2 class="font-semibold text-sm">Event RSVPs</h2><button onclick="loadTabData('rsvps')" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div>
-        <p class="text-[11px] text-gray-500 mt-1">Who clicked Interested / Attending in community portal</p>
-        <div id="rsvpsList" class="mt-5 space-y-2"></div>
-      </div>
     </div>
 
     <div id="tab-checkin" class="tabContent hidden">
@@ -243,6 +185,42 @@
 
     <div id="tab-counselling" class="tabContent hidden"><div class="glass-panel p-5 rounded-2xl"><h3 class="font-semibold text-xs">Counselling Requests</h3><div class="mt-3 flex gap-2"><input id="counselPwd" type="password" placeholder="Enter password" class="border border-gray-200 p-2 rounded-xl text-xs flex-1"><button onclick="loadCounselling()" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Unlock</button></div><div id="counsellingList" class="mt-4 space-y-3"></div></div></div>
 
+    
+    <!-- COMMUNITY FEED ADMIN - REAL ONLY -->
+    <div id="tab-community" class="tabContent hidden">
+      <div class="glass-panel p-5 rounded-2xl">
+        <div class="flex justify-between items-center"><h2 class="font-semibold text-sm">Community Feed - Real Posts Only</h2><button onclick="loadCommunityPosts()" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div>
+        <p class="text-[11px] text-gray-500 mt-1">Only real posts from approved registered members. No fake data.</p>
+        <div id="communityPostsList" class="mt-5 space-y-3"><p class="text-xs text-gray-400 text-center py-6">Loading real posts...</p></div>
+      </div>
+    </div>
+
+    <div id="tab-groupsAdmin" class="tabContent hidden">
+      <div class="glass-panel p-5 rounded-2xl">
+        <div class="flex justify-between items-center"><h2 class="font-semibold text-sm">Groups Manager - Real Groups</h2><button onclick="loadGroupsAdmin()" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div>
+        <form id="createGroupForm" class="mt-4 upload-zone p-4 rounded-xl flex gap-2">
+          <input name="name" placeholder="Group Name *" required class="flex-1 border p-2.5 rounded-xl text-xs">
+          <input name="description" placeholder="Description" class="flex-1 border p-2.5 rounded-xl text-xs">
+          <button type="submit" class="bg-[#0f172a] text-white px-6 py-2.5 rounded-full text-xs">Create</button>
+        </form>
+        <div id="groupsAdminList" class="mt-6 grid md:grid-cols-2 gap-3"><p class="text-xs text-gray-400">Loading real groups...</p></div>
+      </div>
+    </div>
+
+    <div id="tab-roles" class="tabContent hidden">
+      <div class="glass-panel p-5 rounded-2xl">
+        <div class="flex justify-between items-center"><h2 class="font-semibold text-sm">Member Roles - Real Members Only</h2><button onclick="loadRolesAdmin()" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div>
+        <div id="rolesList" class="mt-5 space-y-2"><p class="text-xs text-gray-400">Loading real approved members...</p></div>
+      </div>
+    </div>
+
+    <div id="tab-rsvps" class="tabContent hidden">
+      <div class="glass-panel p-5 rounded-2xl">
+        <div class="flex justify-between items-center"><h2 class="font-semibold text-sm">Event RSVPs - Real RSVPs</h2><button onclick="loadRsvpsAdmin()" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Refresh</button></div>
+        <div id="rsvpsList" class="mt-5 space-y-2"><p class="text-xs text-gray-400">Loading real RSVPs...</p></div>
+      </div>
+    </div>
+
     <div id="tab-testimonies" class="tabContent hidden">
       <div class="grid md:grid-cols-2 gap-4">
         <div class="glass-panel p-5 rounded-2xl"><h3 class="font-semibold text-xs">Testimonies</h3><div id="testimoniesList" class="mt-3 space-y-2 max-h-[600px] overflow-y-auto"></div><h4 class="font-semibold text-[11px] mt-6">Transcripts</h4><div id="transcriptsList" class="mt-2 space-y-1 max-h-[200px] overflow-y-auto"></div></div>
@@ -303,9 +281,9 @@ function renderMembersList(list){
     return `<div class="bg-white rounded-xl p-4 border flex gap-4 items-center">
       <img src="${fixMemberPhoto(x.photo)}" class="w-14 h-14 rounded-full object-cover bg-gray-100 shrink-0">
       <div class="flex-1 min-w-0">
-        <div class="flex gap-2 items-center flex-wrap"><h3 class="font-semibold text-sm truncate">${esc(fullName)}</h3><span class="text-[10px] px-2 py-1 rounded-full ${isPending?'bg-orange-100 text-orange-700':'bg-green-100 text-green-700'}">${esc(x.status)}</span><span class="text-[10px] bg-gray-100 px-2 py-1 rounded-full">${esc(x.roles?.[0]||'member')}</span></div>
+        <div class="flex gap-2 items-center flex-wrap"><h3 class="font-semibold text-sm truncate">${esc(fullName)}</h3><span class="text-[10px] px-2 py-1 rounded-full ${isPending?'bg-orange-100 text-orange-700':'bg-green-100 text-green-700'}">${esc(x.status)}</span></div>
         <div class="mt-1.5 flex flex-wrap gap-2 text-[11px] text-gray-600"><span>Ministry: ${esc(ministry)}</span><span>•</span><span>Phone: ${esc(phone)}</span><span>•</span><span>Emergency: ${esc(eName)} ${esc(ePhone)}</span></div>
-        <p class="text-[10px] text-gray-400 mt-1">ID:${x.id} • ${esc(x.username)} • ${esc(x.email||'')}</p>
+        <p class="text-[10px] text-gray-400 mt-1">ID:${x.id} • ${esc(x.username)}</p>
       </div>
       <div class="flex flex-col gap-1.5"><button onclick="openMemberView(${x.id})" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">View</button>${isPending?`<button onclick="approveMember(${x.id})" class="bg-green-600 text-white px-4 py-1.5 rounded-full text-xs">Approve</button>`:''}</div>
     </div>`;
@@ -324,7 +302,7 @@ function openMemberView(id){
   document.getElementById('memberViewModal').classList.remove('hidden'); document.body.style.overflow='hidden';
   document.getElementById('memberViewContent').innerHTML=`
   <div class="bg-white rounded-2xl p-6 max-w-3xl mx-auto border shadow-2xl">
-    <div class="text-center"><img src="${photo}" class="w-28 h-28 rounded-full mx-auto object-cover border"><h2 class="font-semibold text-lg mt-3">${esc(fullName)}</h2><p class="text-xs mt-2 inline-block px-3 py-1 rounded-full ${x.status==='pending'?'bg-orange-100 text-orange-700':'bg-green-100 text-green-700'}">${esc(x.status)}</p><p class="text-[11px] text-gray-400 mt-2">ID:${x.id} • ${esc(x.username)} • ${esc(x.email||'')}</p><p class="text-[11px] mt-1">Role: <span class="bg-gray-100 px-2 py-1 rounded-full">${esc(x.roles?.[0]||'member')}</span></p></div>
+    <div class="text-center"><img src="${photo}" class="w-28 h-28 rounded-full mx-auto object-cover border"><h2 class="font-semibold text-lg mt-3">${esc(fullName)}</h2><p class="text-xs mt-2 inline-block px-3 py-1 rounded-full ${x.status==='pending'?'bg-orange-100 text-orange-700':'bg-green-100 text-green-700'}">${esc(x.status)}</p><p class="text-[11px] text-gray-400 mt-2">ID:${x.id} • ${esc(x.username)} • ${esc(x.email||'')}</p></div>
     <div class="mt-6 grid md:grid-cols-2 gap-4">
       <div class="bg-gray-50 border rounded-xl p-4"><h3 class="text-[11px] font-semibold text-gray-500">Full Names</h3><p class="font-medium text-sm mt-2">${esc(fullName)}</p></div>
       <div class="bg-gray-50 border rounded-xl p-4"><h3 class="text-[11px] font-semibold text-gray-500">Phone Number</h3><p class="font-medium text-sm mt-2">${esc(phone)}</p><a href="tel:${esc(phone)}" class="mt-2 inline-block text-[11px] bg-white border px-3 py-1 rounded-full">Call</a></div>
@@ -371,8 +349,6 @@ async function loadTabData(name){
       let s=await fetch('/api/sermons').then(r=>r.json()).catch(()=>[]); document.getElementById('statSermons').innerText=s.length;
       let p=await fetch('/api/prayers').then(r=>r.json()).catch(()=>[]); document.getElementById('statPrayers').innerText=p.length;
       let enc=await fetch('/api/admin/encounters/count').then(r=>r.json()).catch(()=>({count:0})); document.getElementById('statEncounters').innerText=enc.count||0;
-      let comm=await fetch('/api/admin/community/posts').then(r=>r.json()).catch(()=>[]); document.getElementById('statCommunity').innerText=comm.length; document.getElementById('communityCountBadge').innerText=comm.length; if(comm.length) document.getElementById('communityCountBadge').classList.remove('hidden');
-      let rsvps=await fetch('/api/admin/rsvps').then(r=>r.json()).catch(()=>[]); document.getElementById('statRsvps').innerText=rsvps.length;
     }catch(e){}
   }
   if(name==='members'){
@@ -380,35 +356,6 @@ async function loadTabData(name){
     let c=await fetch('/api/admin/members/count').then(r=>r.json()).catch(()=>({total:0,pending:0,approved:0}));
     document.getElementById('memberCount').innerText=c.total+' total'; document.getElementById('memberPending').innerText=c.pending+' pending'; document.getElementById('memberApproved').innerText=c.approved+' approved';
     window._allMembers=m; renderMembersList(m);
-  }
-  if(name==='community'){
-    let posts=await fetch('/api/admin/community/posts').then(r=>r.json()).catch(()=>[]);
-    document.getElementById('commTotal').innerText=posts.length;
-    document.getElementById('commPrayer').innerText=posts.filter(p=>p.type==='prayer').length;
-    document.getElementById('commToday').innerText=posts.filter(p=>{ try{ return p.date && p.date.includes(new Date().toISOString().split('T')[0]) }catch(e){return false} }).length;
-    document.getElementById('communityPostsList').innerHTML=posts.length?posts.map(p=>`<div class="bg-white border rounded-xl p-4">
-      <div class="flex gap-3"><img src="${fixMemberPhoto(p.photo)}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1 min-w-0"><div class="flex gap-2 items-center flex-wrap"><p class="font-semibold text-xs">${esc(p.fullName||p.username)}</p><span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">${esc(p.ministry||'Member')}</span><span class="text-[10px] px-2 py-0.5 rounded-full ${p.type==='prayer'?'bg-blue-100 text-blue-700':p.type==='testimony'?'bg-green-100 text-green-700':p.type==='announcement'?'bg-yellow-100 text-yellow-700':'bg-gray-100'}">${esc(p.type)}</span><span class="text-[10px] text-gray-400">${esc(p.date||'')}</span></div><p class="text-[12px] mt-2 whitespace-pre-wrap">${esc(p.content).substring(0,600)}</p><p class="text-[10px] text-gray-400 mt-2">Visibility: ${esc(p.visibility)} • ${p.reactions?Object.values(p.reactions).reduce((a,b)=>a+b,0):0} reactions • ${p.comments?.length||0} comments</p><div class="mt-3 flex gap-2"><button onclick="deleteCommunityPost(${p.id})" class="bg-red-600 text-white px-4 py-1.5 rounded-full text-[11px]">Delete Post</button></div></div></div>
-    </div>`).join(''):`<p class="text-xs text-gray-400 text-center py-8">No community posts yet</p>`;
-  }
-  if(name==='groupsAdmin'){
-    let groups=await fetch('/api/community/groups').then(r=>r.json()).catch(()=>await fetch('/api/admin/community/groups').then(r=>r.json()).catch(()=>[]));
-    document.getElementById('groupsAdminList').innerHTML=groups.length?groups.map(g=>`<div class="bg-white border rounded-xl p-4">
-      <div class="flex justify-between items-start"><div><h3 class="font-semibold text-xs">${esc(g.icon||'👥')} ${esc(g.name)}</h3><p class="text-[11px] text-gray-500 mt-1">${esc(g.description||'')}</p><p class="text-[10px] text-gray-400 mt-2">${g.members?.length||0} members • Leader: ${g.leader? 'ID '+g.leader:'Not set'}</p></div><span class="text-[10px] bg-gray-100 px-2 py-1 rounded-full">${g.members?.length||0}</span></div>
-      <div class="mt-3 flex gap-2 flex-wrap"><button onclick="viewGroupMembers(${g.id})" class="bg-[#0f172a] text-white px-3 py-1.5 rounded-full text-[10px]">View Members</button><button onclick="setGroupLeaderPrompt(${g.id})" class="bg-white border px-3 py-1.5 rounded-full text-[10px]">Set Leader</button><button onclick="deleteGroup(${g.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1.5 rounded-full text-[10px]">Delete Group</button></div>
-      <div id="groupMembers-${g.id}" class="mt-3 hidden"></div>
-    </div>`).join(''):`<p class="text-xs text-gray-400">No groups</p>`;
-  }
-  if(name==='roles'){
-    let members=await fetch('/api/admin/members').then(r=>r.json()).catch(()=>[]);
-    document.getElementById('rolesList').innerHTML=members.filter(m=>m.status==='approved').map(m=>`<div class="bg-white border rounded-xl p-3 flex gap-3 items-center">
-      <img src="${fixMemberPhoto(m.photo)}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1 min-w-0"><p class="font-semibold text-xs">${esc(m.fullName||m.personal?.fullName||m.username)}</p><p class="text-[10px] text-gray-500">${esc(m.ministry?.department||'Member')} • ${esc(m.email||'')}</p></div>
-      <select id="role-${m.id}" class="border rounded-full px-3 py-1.5 text-[11px]"><option value="member" ${(m.roles?.[0]||'member')==='member'?'selected':''}>Member</option><option value="ministry_member" ${(m.roles?.[0]||'')==='ministry_member'?'selected':''}>Ministry Member</option><option value="group_leader" ${(m.roles?.[0]||'')==='group_leader'?'selected':''}>Group Leader</option><option value="prayer_team" ${(m.roles?.[0]||'')==='prayer_team'?'selected':''}>Prayer Team</option><option value="pastor" ${(m.roles?.[0]||'')==='pastor'?'selected':''}>Pastor</option><option value="moderator" ${(m.roles?.[0]||'')==='moderator'?'selected':''}>Moderator</option><option value="admin" ${(m.roles?.[0]||'')==='admin'?'selected':''}>Admin</option></select>
-      <button onclick="saveRole(${m.id})" class="bg-[#0f172a] text-white px-4 py-1.5 rounded-full text-[11px]">Save</button>
-    </div>`).join('') || '<p class="text-xs text-gray-400">No approved members</p>';
-  }
-  if(name==='rsvps'){
-    let rsvps=await fetch('/api/admin/rsvps').then(r=>r.json()).catch(()=>[]);
-    document.getElementById('rsvpsList').innerHTML=rsvps.length?rsvps.map(r=>`<div class="bg-white border rounded-xl p-3 flex justify-between items-center"><div><p class="font-semibold text-xs">${esc(r.event_title)} • <span class="text-[10px] px-2 py-0.5 rounded-full ${r.status==='attending'?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}">${esc(r.status)}</span></p><p class="text-[11px] text-gray-600 mt-1">${esc(r.member_name)} • ${esc(r.ministry||'Member')}</p><p class="text-[10px] text-gray-400">${esc(r.date)}</p></div></div>`).join(''):`<p class="text-xs text-gray-400">No RSVPs yet</p>`;
   }
   if(name==='checkin'){ loadCheckins(); }
   if(name==='videos'){
@@ -467,34 +414,6 @@ async function loadTabData(name){
     }
   }
 }
-
-async function deleteCommunityPost(id){ if(confirm('Delete this community post? Members will not see it anymore.')){ await secureFetch('/api/admin/community/delete-post/'+id,{method:'POST'}); loadTabData('community'); loadTabData('overview'); } }
-async function deleteGroup(id){ if(confirm('Delete this group?')){ await secureFetch('/api/admin/community/groups/'+id,{method:'DELETE'}); loadTabData('groupsAdmin'); } }
-async function viewGroupMembers(gid){
-  let groups=await fetch('/api/community/groups').then(r=>r.json()).catch(()=>[]);
-  let g=groups.find(x=>x.id===gid); if(!g) return;
-  let members=await fetch('/api/admin/members').then(r=>r.json()).catch(()=>[]);
-  let mems=members.filter(m=>g.members.includes(m.id));
-  let el=document.getElementById('groupMembers-'+gid);
-  if(el.classList.contains('hidden')){
-    el.classList.remove('hidden');
-    el.innerHTML=mems.length?mems.map(m=>`<div class="bg-gray-50 border rounded-xl p-2 flex justify-between items-center mt-2"><div class="flex gap-2 items-center"><img src="${fixMemberPhoto(m.photo)}" class="w-7 h-7 rounded-full"><span class="text-xs">${esc(m.fullName||m.personal?.fullName||m.username)}</span></div><button onclick="removeMemberFromGroup(${gid},${m.id})" class="bg-white border px-2 py-1 rounded-full text-[9px]">Remove</button></div>`).join(''):`<p class="text-[10px] text-gray-400 mt-2">No members</p>`;
-  } else el.classList.add('hidden');
-}
-async function removeMemberFromGroup(gid,mid){ await secureFetch('/api/admin/groups/'+gid+'/remove-member/'+mid,{method:'POST'}); loadTabData('groupsAdmin'); }
-async function setGroupLeaderPrompt(gid){ let mid=prompt('Enter Member ID to set as leader'); if(!mid) return; await secureFetch('/api/admin/groups/'+gid+'/set-leader/'+mid,{method:'POST'}); loadTabData('groupsAdmin'); }
-async function saveRole(mid){
-  const role=document.getElementById('role-'+mid).value;
-  if(!confirm('Change role to '+role+'?')) return;
-  await secureFetch('/api/admin/members/role/'+mid,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role})});
-  alert('Role updated to '+role); loadTabData('roles'); loadTabData('members');
-}
-
-document.getElementById('createGroupForm')?.addEventListener('submit', async(e)=>{
-  e.preventDefault(); let fd=new FormData(e.target); let name=fd.get('name'); let desc=fd.get('description');
-  await secureFetch('/api/admin/community/groups',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name, description:desc})});
-  e.target.reset(); loadTabData('groupsAdmin');
-});
 
 async function deleteVideo(id){ if(confirm('Delete video?')){ await secureFetch('/api/admin/delete-video/'+id,{method:'POST'}); loadTabData('videos'); } }
 async function deleteGallery(id){ if(confirm('Delete album?')){ await secureFetch('/api/admin/delete-gallery/'+id,{method:'POST'}); loadTabData('gallery'); } }
@@ -582,6 +501,81 @@ function initEncounterMap(encounters){
   encounters.forEach(en=>{ if(en.lat && en.lng){ let m=L.marker([en.lat,en.lng]).addTo(markersLayer); m.bindPopup(`<b>${esc(en.text||'')}</b><br>${esc(en.name||'')} • ${esc(en.date||'')}`); } });
 }
 showTab('overview');
+
+// COMMUNITY ADMIN - REAL DATA ONLY - FIXED LINKS
+async function loadCommunityPosts(){
+  try{
+    let posts = await secureFetch('/api/admin/community/posts').then(r=>r.json()).catch(()=>[]);
+    let el = document.getElementById('communityPostsList');
+    if(!posts.length){ el.innerHTML = '<div class="bg-white border rounded-xl p-6 text-center"><p class="text-xs font-semibold">No community posts yet</p><p class="text-[11px] text-gray-500 mt-1">Only real posts from real approved members will appear here. No fake data.</p></div>'; return; }
+    el.innerHTML = posts.map(p=>`<div class="bg-white border rounded-xl p-4"><div class="flex gap-3"><img src="${fixMemberPhoto(p.photo)}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1 min-w-0"><div class="flex gap-2 items-center flex-wrap"><p class="font-semibold text-xs">${esc(p.fullName||p.username||'Member')}</p><span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">${esc(p.ministry||'Member')}</span><span class="text-[10px] px-2 py-0.5 rounded-full ${p.type==='prayer'?'bg-blue-100 text-blue-700':'bg-gray-100'}">${esc(p.type||'post')}</span><span class="text-[10px] text-gray-400">${esc(p.date||'')}</span></div><p class="text-[12px] mt-2 whitespace-pre-wrap">${esc((p.content||'').substring(0,500))}</p><div class="mt-3"><button onclick="deleteCommunityPost(${p.id})" class="bg-red-600 text-white px-4 py-1.5 rounded-full text-[11px]">Delete Post</button></div></div></div></div>`).join('');
+  }catch(e){ document.getElementById('communityPostsList').innerHTML = '<p class="text-xs text-red-500">Error loading posts: '+esc(e.message)+'</p>'; }
+}
+async function deleteCommunityPost(id){ if(!confirm('Delete this real post?')) return; await secureFetch('/api/admin/community/delete-post/'+id,{method:'POST'}); loadCommunityPosts(); }
+
+async function loadGroupsAdmin(){
+  try{
+    let groups = await secureFetch('/api/admin/community/groups').then(r=>r.json()).catch(()=>[]);
+    let el = document.getElementById('groupsAdminList');
+    if(!groups.length){ el.innerHTML = '<p class="text-xs text-gray-400">No groups yet. Create one.</p>'; return; }
+    el.innerHTML = groups.map(g=>`<div class="bg-white border rounded-xl p-4"><h3 class="font-semibold text-xs">${esc(g.icon||'👥')} ${esc(g.name)}</h3><p class="text-[11px] text-gray-500 mt-1">${esc(g.description||'')}</p><p class="text-[10px] text-gray-400 mt-2">${g.members?.length||0} members</p><div class="mt-3 flex gap-2"><button onclick="viewGroupMembers(${g.id})" class="bg-[#0f172a] text-white px-3 py-1.5 rounded-full text-[10px]">View</button><button onclick="deleteGroupAdmin(${g.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1.5 rounded-full text-[10px]">Delete</button></div><div id="groupMembers-${g.id}" class="mt-3 hidden"></div></div>`).join('');
+  }catch(e){ document.getElementById('groupsAdminList').innerHTML = '<p class="text-xs text-red-500">Error: '+esc(e.message)+'</p>'; }
+}
+async function viewGroupMembers(gid){
+  let groups = await secureFetch('/api/admin/community/groups').then(r=>r.json()).catch(()=>[]);
+  let g = groups.find(x=>x.id===gid); if(!g) return;
+  let members = await secureFetch('/api/admin/members').then(r=>r.json()).catch(()=>[]);
+  let mems = members.filter(m=>g.members.includes(m.id));
+  let el = document.getElementById('groupMembers-'+gid);
+  if(el.classList.contains('hidden')){
+    el.classList.remove('hidden');
+    el.innerHTML = mems.length ? mems.map(m=>`<div class="bg-gray-50 border rounded-xl p-2 flex justify-between items-center mt-2"><div class="flex gap-2 items-center"><img src="${fixMemberPhoto(m.photo)}" class="w-7 h-7 rounded-full"><span class="text-xs">${esc(m.fullName||m.personal?.fullName||m.username)}</span></div><button onclick="removeMemberFromGroup(${gid},${m.id})" class="bg-white border px-2 py-1 rounded-full text-[9px]">Remove</button></div>`).join('') : '<p class="text-[10px] text-gray-400 mt-2">No members in this group</p>';
+  } else el.classList.add('hidden');
+}
+async function removeMemberFromGroup(gid,mid){ await secureFetch('/api/admin/groups/'+gid+'/remove-member/'+mid,{method:'POST'}); loadGroupsAdmin(); }
+async function deleteGroupAdmin(gid){ if(!confirm('Delete group?')) return; await secureFetch('/api/admin/community/groups/'+gid,{method:'DELETE'}); loadGroupsAdmin(); }
+
+async function loadRolesAdmin(){
+  try{
+    let members = await secureFetch('/api/admin/members').then(r=>r.json()).catch(()=>[]);
+    let approved = members.filter(m=>m.status==='approved');
+    let el = document.getElementById('rolesList');
+    if(!approved.length){ el.innerHTML = '<p class="text-xs text-gray-400">No approved members yet. Approve members first in Members tab.</p>'; return; }
+    el.innerHTML = approved.map(m=>`<div class="bg-white border rounded-xl p-3 flex gap-3 items-center"><img src="${fixMemberPhoto(m.photo)}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1 min-w-0"><p class="font-semibold text-xs">${esc(m.fullName||m.personal?.fullName||m.username)}</p><p class="text-[10px] text-gray-500">${esc(m.ministry?.department||'Member')} • ${esc(m.email||'')}</p></div><select id="role-${m.id}" class="border rounded-full px-3 py-1.5 text-[11px]"><option value="member" ${(m.roles?.[0]||'member')==='member'?'selected':''}>Member</option><option value="group_leader" ${(m.roles?.[0]||'')==='group_leader'?'selected':''}>Group Leader</option><option value="prayer_team" ${(m.roles?.[0]||'')==='prayer_team'?'selected':''}>Prayer Team</option><option value="pastor" ${(m.roles?.[0]||'')==='pastor'?'selected':''}>Pastor</option><option value="moderator" ${(m.roles?.[0]||'')==='moderator'?'selected':''}>Moderator</option><option value="admin" ${(m.roles?.[0]||'')==='admin'?'selected':''}>Admin</option></select><button onclick="saveRoleAdmin(${m.id})" class="bg-[#0f172a] text-white px-4 py-1.5 rounded-full text-[11px]">Save</button></div>`).join('');
+  }catch(e){ document.getElementById('rolesList').innerHTML = '<p class="text-xs text-red-500">Error: '+esc(e.message)+'</p>'; }
+}
+async function saveRoleAdmin(mid){
+  const role = document.getElementById('role-'+mid).value;
+  if(!confirm('Change role to '+role+'?')) return;
+  await secureFetch('/api/admin/members/role/'+mid,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role})});
+  alert('Role updated to '+role);
+}
+
+async function loadRsvpsAdmin(){
+  try{
+    let rsvps = await secureFetch('/api/admin/rsvps').then(r=>r.json()).catch(()=>[]);
+    let el = document.getElementById('rsvpsList');
+    if(!rsvps.length){ el.innerHTML = '<p class="text-xs text-gray-400">No RSVPs yet. Members RSVP from Community Portal.</p>'; return; }
+    el.innerHTML = rsvps.map(r=>`<div class="bg-white border rounded-xl p-3 flex justify-between items-center"><div><p class="font-semibold text-xs">${esc(r.event_title)} • <span class="text-[10px] px-2 py-0.5 rounded-full ${r.status==='attending'?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}">${esc(r.status)}</span></p><p class="text-[11px] text-gray-600 mt-1">${esc(r.member_name)} • ${esc(r.ministry||'Member')}</p><p class="text-[10px] text-gray-400">${esc(r.date)}</p></div></div>`).join('');
+  }catch(e){ document.getElementById('rsvpsList').innerHTML = '<p class="text-xs text-red-500">Error: '+esc(e.message)+'</p>'; }
+}
+
+// Patch loadTabData to include new tabs without breaking old ones
+const originalLoadTabData = loadTabData;
+loadTabData = async function(name){
+  if(name==='community'){ return loadCommunityPosts(); }
+  if(name==='groupsAdmin'){ return loadGroupsAdmin(); }
+  if(name==='roles'){ return loadRolesAdmin(); }
+  if(name==='rsvps'){ return loadRsvpsAdmin(); }
+  return originalLoadTabData(name);
+};
+
+document.getElementById('createGroupForm')?.addEventListener('submit', async(e)=>{
+  e.preventDefault(); let fd=new FormData(e.target); let name=fd.get('name'); let desc=fd.get('description');
+  await secureFetch('/api/admin/community/groups',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name, description:desc})});
+  e.target.reset(); loadGroupsAdmin();
+});
+
 </script>
 </body>
 </html>
