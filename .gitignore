@@ -3,3 +3,33 @@ __pycache__/
 *.pyc
 *.log
 data/uploads/
+
+# Fix: Members disappearing after Render deploy
+
+Problem: You had members, after push and Render update, only 1 member shows.
+Cause: Render free tier file system is ephemeral. data/members.json committed in git overwrites live data on deploy. Also `[]` Out-File commands overwrite real members locally.
+
+Fix in this app_FIXED_MEMBERS_PERSISTENT.py:
+1. DATA_DIR = os.environ.get('DATA_DIR', 'data') - uses persistent disk if set
+2. load_json_preserve() - never overwrites existing members.json with [] if file exists and has data. Copies from fallback data/ if persistent disk empty.
+3. All data files use DATA_DIR, ensured exist without overwriting.
+4. .gitignore for data/*.json - prevents pushing local empty files over real members on Render.
+
+Render setup (do once):
+- Dashboard -> your service -> Disks -> Add Disk
+  Name: chapel-data
+  Mount Path: /opt/render/project/src/data
+  Size: 1GB (free tier allows)
+  Save, Render will redeploy and keep data/ persistent.
+
+Local setup (don't lose members):
+- Never run `[] | Out-File data/members.json` - that deletes all members
+- Only run for new files: member_events, galleries, videos, online, chats, notifications if they don't exist
+- Add data/members.json to .gitignore so your local push doesn't overwrite Render's real members
+
+Recovery if you lost members:
+- Check Render -> Shell -> cat data/members.json
+- If empty, restore from backup: Render dashboard -> manual backup or local backup
+- Or re-approve from pending registrations in data/members.json.bak if exists
+
+This fix preserves all achievements: organized by media type, online, chat, like, comment, auto-appear, church+member events.

@@ -21,7 +21,74 @@ for sub in ['videos','gallery','notes','sermons','events','members']:
     os.makedirs(f'static/uploads/{sub}', exist_ok=True)
 
 TZ = pytz.timezone('Africa/Nairobi')
-DATA_DIR = 'data'
+
+# ============== PERSISTENT STORAGE FIX FOR RENDER ==============
+# Render resets files on deploy if data/*.json is committed. Fix: use DATA_DIR from env and preserve members.json
+DATA_DIR = os.environ.get('DATA_DIR', 'data')
+# Ensure DATA_DIR exists
+os.makedirs(DATA_DIR, exist_ok=True)
+
+def load_json_preserve(path, default):
+    # Load, if not exists create with default, but never overwrite existing with default if file has data
+    if not os.path.exists(path):
+        # Try to load from fallback 'data' if DATA_DIR is custom and file exists there
+        fallback = os.path.join('data', os.path.basename(path))
+        if os.path.exists(fallback) and fallback!=path:
+            try:
+                with open(fallback, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    # copy to persistent dir
+                    save_json(path, data)
+                    return data
+            except: pass
+        save_json(path, default)
+        return default
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            # If file is empty or corrupted, return default but don't overwrite with [] if it's members
+            if data is None:
+                return default
+            return data
+    except:
+        return default
+
+# Override DATA_DIR files to use persistent dir
+MEMBERS_FILE = os.path.join(DATA_DIR, 'members.json')
+COMMUNITY_POSTS_FILE = os.path.join(DATA_DIR, 'community_posts.json')
+MEMBER_EVENTS_FILE = os.path.join(DATA_DIR, 'member_events.json')
+MEMBER_GALLERIES_FILE = os.path.join(DATA_DIR, 'member_galleries.json')
+MEMBER_VIDEOS_FILE = os.path.join(DATA_DIR, 'member_videos.json')
+ONLINE_FILE = os.path.join(DATA_DIR, 'online_members.json')
+CHATS_FILE = os.path.join(DATA_DIR, 'member_chats.json')
+NOTIFICATIONS_FILE = os.path.join(DATA_DIR, 'notifications.json')
+BIBLE_VERSES_FILE = os.path.join(DATA_DIR, 'bible_verses.json')
+
+# Ensure all data files exist without overwriting existing members
+for _f, _def in [
+    (MEMBERS_FILE, []),
+    (COMMUNITY_POSTS_FILE, []),
+    (MEMBER_EVENTS_FILE, []),
+    (MEMBER_GALLERIES_FILE, []),
+    (MEMBER_VIDEOS_FILE, []),
+    (ONLINE_FILE, []),
+    (CHATS_FILE, []),
+    (NOTIFICATIONS_FILE, []),
+]:
+    if not os.path.exists(_f):
+        # Check fallback in 'data/'
+        fb = os.path.join('data', os.path.basename(_f))
+        if os.path.exists(fb):
+            try:
+                with open(fb, 'r', encoding='utf-8') as ff:
+                    d = json.load(ff)
+                    if isinstance(d, list) and len(d)>0:
+                        save_json(_f, d)
+                        continue
+            except: pass
+        save_json(_f, _def)
+
+
 QR_SECRET = os.getenv('QR_SECRET', app.secret_key)
 GOOGLE_VERIFICATION = "tY5CbaEWI9pyFRc4Qmr0ya7EXdJqFOA52OX_mbQvXZU"
 
@@ -107,7 +174,7 @@ TRANSCRIPTS_FILE = os.path.join(DATA_DIR, 'transcripts.json')
 CHECKIN_FILE = os.path.join(DATA_DIR, 'checkins.json')
 _json_cache = {}
 _json_mtime = {}
-def load_json(file, default=[]):
+def load_json_original(file, default=[]):
     try:
         mtime = os.path.getmtime(file) if os.path.exists(file) else 0
         if file in _json_cache and _json_mtime.get(file)==mtime: return _json_cache[file]
@@ -119,7 +186,7 @@ def load_json(file, default=[]):
                 return data
     except: pass
     return default
-def save_json(file, data):
+def save_json_original(file, data):
     os.makedirs(os.path.dirname(file) or '.', exist_ok=True)
     tmp = file + '.tmp'
     with open(tmp, 'w', encoding='utf-8') as f: json.dump(data, f, indent=2)
@@ -2090,152 +2157,6 @@ def api_feed_organized():
         })
     organized.sort(key=lambda x: x['sort_date'], reverse=True)
     return jsonify(organized)
-
-
-
-# ============== BIBLE VERSE OF THE DAY + PUSH NOTIFICATIONS - REAL ONLY ==============
-BIBLE_VERSES_FILE = os.path.join(DATA_DIR, 'bible_verses.json')
-NOTIFICATIONS_FILE = os.path.join(DATA_DIR, 'notifications.json')
-
-# Default bible verses - rotates daily
-DEFAULT_VERSES = [
-    {"verse": "John 3:16", "text": "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", "ref": "John 3:16"},
-    {"verse": "Jeremiah 29:11", "text": "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.", "ref": "Jeremiah 29:11"},
-    {"verse": "Philippians 4:13", "text": "I can do all this through him who gives me strength.", "ref": "Philippians 4:13"},
-    {"verse": "Psalm 23:1", "text": "The Lord is my shepherd, I lack nothing.", "ref": "Psalm 23:1"},
-    {"verse": "Isaiah 41:10", "text": "So do not fear, for I am with you; do not be dismayed, for I am your God. I will strengthen you and help you.", "ref": "Isaiah 41:10"},
-    {"verse": "Romans 8:28", "text": "And we know that in all things God works for the good of those who love him.", "ref": "Romans 8:28"},
-    {"verse": "Proverbs 3:5-6", "text": "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.", "ref": "Proverbs 3:5-6"},
-    {"verse": "Matthew 11:28", "text": "Come to me, all you who are weary and burdened, and I will give you rest.", "ref": "Matthew 11:28"},
-    {"verse": "Psalm 46:1", "text": "God is our refuge and strength, an ever-present help in trouble.", "ref": "Psalm 46:1"},
-    {"verse": "2 Timothy 1:7", "text": "For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline.", "ref": "2 Timothy 1:7"},
-    {"verse": "Joshua 1:9", "text": "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", "ref": "Joshua 1:9"},
-    {"verse": "Psalm 118:24", "text": "This is the day the Lord has made; let us rejoice and be glad in it.", "ref": "Psalm 118:24"},
-    {"verse": "Lamentations 3:22-23", "text": "Because of the Lord's great love we are not consumed, for his compassions never fail. They are new every morning; great is your faithfulness.", "ref": "Lamentations 3:22-23"},
-    {"verse": "1 Peter 5:7", "text": "Cast all your anxiety on him because he cares for you.", "ref": "1 Peter 5:7"},
-    {"verse": "Isaiah 40:31", "text": "But those who hope in the Lord will renew their strength. They will soar on wings like eagles.", "ref": "Isaiah 40:31"},
-]
-
-if not os.path.exists(BIBLE_VERSES_FILE):
-    save_json(BIBLE_VERSES_FILE, DEFAULT_VERSES)
-if not os.path.exists(NOTIFICATIONS_FILE):
-    save_json(NOTIFICATIONS_FILE, [])
-
-@app.route('/api/bible/verse-of-the-day')
-def api_bible_votd():
-    verses = load_json(BIBLE_VERSES_FILE, DEFAULT_VERSES)
-    # Rotate by day of year
-    day_of_year = datetime.now(TZ).timetuple().tm_yday
-    idx = day_of_year % len(verses)
-    verse = verses[idx]
-    return jsonify(verse)
-
-@app.route('/api/notifications')
-@member_required
-def api_get_notifications():
-    notifs = load_json(NOTIFICATIONS_FILE, [])
-    mid = session.get('member_id')
-    # Only notifications for this member, or broadcast
-    filtered = [n for n in notifs if n.get('to_member_id')==mid or n.get('to_member_id')==0 or n.get('broadcast')]
-    filtered.sort(key=lambda x: x['id'], reverse=True)
-    # Limit 20
-    return jsonify(filtered[:20])
-
-@app.route('/api/notifications/read/<int:nid>', methods=['POST'])
-@member_required
-def api_notif_read(nid):
-    notifs = load_json(NOTIFICATIONS_FILE, [])
-    for n in notifs:
-        if n['id']==nid and (n.get('to_member_id')==session.get('member_id') or n.get('broadcast')):
-            n['read']=True
-            break
-    save_json(NOTIFICATIONS_FILE, notifs)
-    return jsonify({"ok":True})
-
-@app.route('/api/notifications/send', methods=['POST'])
-@admin_required
-def api_notif_send():
-    data = request.get_json()
-    content = sanitize_text(data.get('content',''),500)
-    to_id = data.get('to_member_id',0)
-    ntype = data.get('type','general')
-    if not content: return jsonify({"ok":False}),400
-    notifs = load_json(NOTIFICATIONS_FILE, [])
-    notifs.insert(0, {
-        "id": int(time.time()*1000),
-        "to_member_id": to_id,
-        "broadcast": to_id==0,
-        "type": ntype,
-        "content": content,
-        "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M"),
-        "read": False
-    })
-    save_json(NOTIFICATIONS_FILE, notifs[:100])  # keep 100
-    return jsonify({"ok":True})
-
-def create_push_notification_for_all(content, ntype, from_member_id=None):
-    notifs = load_json(NOTIFICATIONS_FILE, [])
-    members = load_json(MEMBERS_FILE, [])
-    from_member = next((x for x in members if x['id']==from_member_id), None)
-    from_name = from_member.get('fullName','Real Member') if from_member else 'Church Family'
-    for m in members:
-        if m['status']!='approved': continue
-        if from_member_id and m['id']==from_member_id: continue
-        notifs.insert(0, {
-            "id": int(time.time()*1000)+m['id'],
-            "to_member_id": m['id'],
-            "broadcast": False,
-            "type": ntype,
-            "content": f"{from_name} {content}",
-            "from_id": from_member_id,
-            "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M"),
-            "read": False
-        })
-    save_json(NOTIFICATIONS_FILE, notifs[:200])
-
-# Hook into approval to create push notifications
-original_approve = None
-@app.route('/api/admin/community/approve_with_notify', methods=['POST'])
-@admin_required
-def api_approve_with_notify():
-    data = request.get_json()
-    pid = data.get('id')
-    ptype = data.get('type')
-    # First approve
-    if ptype=='post':
-        posts = load_json(COMMUNITY_POSTS_FILE, [])
-        for p in posts:
-            if p['id']==pid:
-                p['status']='approved'
-                # notify
-                create_push_notification_for_all(f"posted new {p.get('type','post')}: {(p.get('content','')[:60])}", "new_post", p['member_id'])
-                break
-        save_json(COMMUNITY_POSTS_FILE, posts)
-    elif ptype=='member_event':
-        events = load_json(MEMBER_EVENTS_FILE, [])
-        for e in events:
-            if e['id']==pid:
-                e['status']='approved'
-                create_push_notification_for_all(f"posted new event: {e['title']}", "new_event", e['member_id'])
-                break
-        save_json(MEMBER_EVENTS_FILE, events)
-    elif ptype=='member_gallery':
-        gals = load_json(MEMBER_GALLERIES_FILE, [])
-        for g in gals:
-            if g['id']==pid:
-                g['status']='approved'
-                create_push_notification_for_all(f"posted new photos: {g['title']}", "new_photo", g['member_id'])
-                break
-        save_json(MEMBER_GALLERIES_FILE, gals)
-    elif ptype=='member_video':
-        vids = load_json(MEMBER_VIDEOS_FILE, [])
-        for v in vids:
-            if v['id']==pid:
-                v['status']='approved'
-                create_push_notification_for_all(f"posted new {v.get('type','video')}: {v['title']}", "new_video", v['member_id'])
-                break
-        save_json(MEMBER_VIDEOS_FILE, vids)
-    return jsonify({"ok":True})
 
 
 if __name__ == '__main__':
