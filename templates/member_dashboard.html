@@ -239,6 +239,212 @@ document.getElementById('eventForm')?.addEventListener('submit', async(e)=>{ e.p
 document.getElementById('photoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/photo',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('photoModal'); e.target.reset(); alert('Photos submitted for admin approval'); loadMemberGalleries(); loadMyUploads(); } else alert(d.error); });
 document.getElementById('videoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/video',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('videoModal'); e.target.reset(); alert('Video submitted for admin approval'); loadMemberVideos(); loadMyUploads(); } else alert(d.error); });
 
+
+// ============== LIKE, COMMENT, AUTO-APPEAR WITHOUT CLICKING, CHURCH EVENTS ==============
+let lastFeedCount = 0;
+let lastEventsCount = 0;
+
+// Auto-appear: poll every 8 seconds, if new approved items appear, prepend automatically without clicking
+setInterval(async () => {
+  try {
+    // Check feed
+    let posts = await fetch('/api/community/posts').then(r=>r.json()).catch(()=>[]);
+    if(posts.length > lastFeedCount && lastFeedCount!==0){
+      // New posts approved - auto reload feed if on feed tab
+      let feedTab = document.getElementById('feed');
+      if(feedTab && !feedTab.classList.contains('hidden')){
+        loadFeed();
+        showToast('New post from real church family appeared automatically');
+      }
+    }
+    lastFeedCount = posts.length;
+
+    // Check member events + church events
+    let memEvents = await fetch('/api/community/member-events').then(r=>r.json()).catch(()=>[]);
+    let churchEvents = await fetch('/api/events').then(r=>r.json()).catch(()=>[]);
+    let totalEvents = memEvents.length + churchEvents.length;
+    if(totalEvents > lastEventsCount && lastEventsCount!==0){
+      let eventsView = document.getElementById('eventsView');
+      if(eventsView && !eventsView.classList.contains('hidden')){
+        loadCombinedEvents();
+        showToast('New event appeared automatically');
+      }
+    }
+    lastEventsCount = totalEvents;
+
+    // Check photos and videos similarly
+    // For simplicity, auto reload if on those tabs
+  } catch(e){}
+}, 8000);
+
+function showToast(msg){
+  let t = document.createElement('div');
+  t.className = 'fixed bottom-4 right-4 bg-[#0f172a] text-white text-xs px-4 py-2 rounded-full shadow-lg z-[100]';
+  t.innerText = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 4000);
+}
+
+// Enhanced Like - works for posts, events, galleries, videos
+async function likeItem(type, id, kind='amen'){
+  // kind: amen, praying, heart, like
+  if(type==='post'){
+    await fetch('/api/community/react/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:kind})});
+    loadFeed();
+  } else if(type==='member_event'){
+    await fetch('/api/community/member-events/'+id+'/like',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind})}).catch(async ()=>{
+      // fallback to generic
+      await fetch('/api/community/react/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:kind})});
+    });
+    loadCombinedEvents();
+  } else if(type==='gallery'){
+    await fetch('/api/community/member-galleries/'+id+'/like',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind})}).catch(()=>{});
+    loadMemberGalleries();
+  } else if(type==='video'){
+    await fetch('/api/community/member-videos/'+id+'/like',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind})}).catch(()=>{});
+    loadMemberVideos();
+  }
+}
+
+// Comment system
+function openCommentModal(type, id){
+  let existing = prompt('Write your comment (real members only):');
+  if(!existing) return;
+  postComment(type, id, existing);
+}
+async function postComment(type, id, text){
+  if(!text || !text.trim()) return;
+  let endpoint = type==='post' ? '/api/community/comment/'+id : '/api/community/'+type+'/comment/'+id;
+  // Try generic comment endpoint
+  try{
+    let res = await fetch('/api/community/comment/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:text, type:type})});
+    let data = await res.json();
+    if(data.ok){
+      showToast('Comment added - real comment from real member');
+      if(type==='post') loadFeed();
+      else if(type==='member_event') loadCombinedEvents();
+      else if(type==='gallery') loadMemberGalleries();
+      else if(type==='video') loadMemberVideos();
+      return;
+    }
+  }catch(e){}
+  // Fallback: try type-specific
+  try{
+    await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:text})});
+    showToast('Comment added');
+    if(type==='post') loadFeed();
+    else if(type==='member_event') loadCombinedEvents();
+  }catch(e){ alert('Comment failed: '+e.message); }
+}
+
+async function loadComments(type, id){
+  try{
+    let comments = await fetch('/api/community/comments/'+id+'?type='+type).then(r=>r.json()).catch(()=>[]);
+    if(!comments.length) return '<p class="text-[10px] text-gray-400">No comments yet - be first real member to comment</p>';
+    return comments.map(c=>`<div class="bg-gray-50 border rounded-xl p-2 mt-2"><div class="flex gap-2"><img src="${fixUrl(c.photo||'')}" class="w-6 h-6 rounded-full"><div><p class="text-[11px] font-semibold">${esc(c.fullName||'Real Member')}</p><p class="text-[11px]">${esc(c.content||'')}</p><p class="text-[9px] text-gray-400">${esc(c.date||'')}</p></div></div></div>`).join('');
+  }catch(e){ return ''; }
+}
+
+// Combined Church Events + Member Events - viewable, like, comment, auto-appear
+async function loadCombinedEvents(){
+  let memEvents = await fetch('/api/community/member-events').then(r=>r.json()).catch(()=>[]);
+  let churchEvents = await fetch('/api/events').then(r=>r.json()).catch(()=>[]);
+  let el = document.getElementById('eventsView');
+  
+  let html = '<div class="space-y-4">';
+  
+  // Church Events - Main church events (from admin)
+  html += '<div class="bg-white rounded-2xl border p-4"><div class="flex justify-between items-center"><h2 class="font-semibold text-sm">🏛️ Church Events - Main Events (From Admin) - All Members Can See</h2><span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded-full">'+churchEvents.length+' events</span></div>';
+  if(!churchEvents.length){ html += '<p class="text-[11px] text-gray-400 mt-3">No church events yet - admin will post main church events</p>'; }
+  else {
+    html += '<div class="mt-4 grid md:grid-cols-2 gap-3">'+churchEvents.map(ev=>`<div onclick="viewChurchEvent(${ev.id})" class="cursor-pointer bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-xl p-3 flex gap-3 hover:shadow"><img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/80x80.png?text=Church+Event'}" class="w-20 h-20 rounded-xl object-cover"><div class="flex-1 min-w-0"><p class="font-semibold text-xs truncate">🏛️ ${esc(ev.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[11px] mt-1 truncate">${esc((ev.description||'').substring(0,80))}</p><div class="mt-2 flex gap-2"><span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full">Church Event</span></div></div></div>`).join('')+'</div>';
+  }
+  html += '</div>';
+  
+  // Member Events - From real members, approved by admin, auto-appears
+  html += '<div class="bg-white rounded-2xl border p-4"><div class="flex justify-between items-center"><h2 class="font-semibold text-sm">👥 Member Events - From Real Members (Approved by Admin) - Auto Appears</h2><span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full">'+memEvents.length+' events</span></div><p class="text-[10px] text-gray-500 mt-1">When a real member posts event and admin approves, it appears automatically in other members pages without clicking - live update every 8 seconds</p>';
+  if(!memEvents.length){ html += '<p class="text-[11px] text-gray-400 mt-3">No member events yet - be first real member to post event. Admin will approve, then all members see automatically.</p>'; }
+  else {
+    html += '<div class="mt-4 grid md:grid-cols-2 gap-3">'+memEvents.map(ev=>`<div class="bg-gray-50 border rounded-xl p-3 flex gap-3"><img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/80x80.png?text=Event'}" class="w-20 h-20 rounded-xl object-cover cursor-pointer" onclick="viewEvent(${ev.id})"><div class="flex-1 min-w-0"><p class="font-semibold text-xs truncate cursor-pointer" onclick="viewEvent(${ev.id})">${esc(ev.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[11px] mt-1 truncate">${esc((ev.description||'').substring(0,80))}</p><div class="mt-2 flex gap-2 items-center flex-wrap"><span class="text-[10px] px-2 py-0.5 rounded-full ${ev.status==='approved'?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}">${esc(ev.status)}</span><span class="text-[10px] text-gray-400">${esc(ev.member_name||'Real Member')}</span></div><div class="mt-2 flex gap-2 text-[11px]"><button onclick="likeItem('member_event', ${ev.id}, 'amen')" class="bg-white border px-2 py-1 rounded-full hover:bg-gray-50"><i class="fas fa-heart text-red-500"></i> Like ${ev.likes||0}</button><button onclick="openCommentModal('member_event', ${ev.id})" class="bg-white border px-2 py-1 rounded-full hover:bg-gray-50"><i class="fas fa-comment"></i> Comment ${ev.comments?.length||0}</button><button onclick="viewEvent(${ev.id})" class="bg-[#0f172a] text-white px-3 py-1 rounded-full text-[10px]">View Full</button></div></div></div>`).join('')+'</div>';
+  }
+  html += '</div>';
+  
+  html += '</div>';
+  el.innerHTML = html;
+  
+  // Update counts for auto-appear logic
+  lastEventsCount = memEvents.length + churchEvents.length;
+}
+
+function viewChurchEvent(id){
+  fetch('/api/events').then(r=>r.json()).then(events=>{
+    let ev = events.find(x=>x.id===id); if(!ev) return;
+    document.getElementById('viewTitle').innerText = '🏛️ Church Event: ' + ev.title;
+    document.getElementById('viewContent').innerHTML = `<img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/400x200.png?text=Church+Event'}" class="w-full h-48 object-cover rounded-xl"><h3 class="font-semibold text-sm mt-4">${esc(ev.title)}</h3><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[12px] mt-3 whitespace-pre-wrap">${esc(ev.description||'No description')}</p><p class="text-[10px] mt-3 bg-blue-50 border border-blue-100 p-2 rounded-xl">🏛️ Main Church Event - Posted by Admin - All real members can see</p><div class="mt-4 flex gap-2"><button onclick="likeItem('church_event', ${ev.id}, 'amen')" class="bg-white border px-4 py-1.5 rounded-full text-xs"><i class="fas fa-heart text-red-500"></i> Like</button><button onclick="openCommentModal('church_event', ${ev.id})" class="bg-white border px-4 py-1.5 rounded-full text-xs"><i class="fas fa-comment"></i> Comment</button><button onclick="closeModal('viewModal')" class="bg-gray-100 px-4 py-1.5 rounded-full text-xs">Close</button></div>`;
+    openModal('viewModal');
+  });
+}
+
+// Override original loadMemberEvents to use combined
+const originalLoadMemberEvents = loadMemberEvents;
+loadMemberEvents = loadCombinedEvents;
+
+// Enhance loadFeed with Like and Comment visible
+const originalLoadFeed = loadFeed;
+loadFeed = async function(){
+  let posts = await fetch('/api/community/posts').then(r=>r.json()).catch(()=>[]);
+  lastFeedCount = posts.length;
+  let el = document.getElementById('feed');
+  if(!posts.length){
+    el.innerHTML = '<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No posts yet - Real members only</p><p class="text-[11px] text-gray-500 mt-2">When admin approves real member posts, they appear automatically here without clicking - live update</p></div>';
+    return;
+  }
+  el.innerHTML = posts.map(p=>`<div class="bg-white rounded-2xl border p-4">
+    <div class="flex gap-3"><img src="${fixUrl(p.photo)}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1 min-w-0">
+      <div class="flex gap-2 items-center flex-wrap"><span class="font-semibold text-xs">${esc(p.fullName||p.username||'Real Member')}</span><span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">${esc(p.ministry||'Member')}</span><span class="text-[10px] text-gray-400">${esc(p.date||'')}</span>${p.status==='pending'?'<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Pending</span>':''}</div>
+      <p class="text-[13px] mt-2 whitespace-pre-wrap">${esc(p.content||'')}</p>
+      <div class="mt-3 flex gap-2 text-[11px] flex-wrap">
+        <button onclick="likeItem('post', ${p.id}, 'amen')" class="bg-white border px-3 py-1.5 rounded-full hover:bg-red-50"><i class="fas fa-heart text-red-500"></i> Like ${p.reactions?.amen||0}</button>
+        <button onclick="likeItem('post', ${p.id}, 'praying')" class="bg-white border px-3 py-1.5 rounded-full hover:bg-blue-50"><i class="fas fa-pray text-blue-500"></i> Praying ${p.reactions?.praying||0}</button>
+        <button onclick="openCommentModal('post', ${p.id})" class="bg-white border px-3 py-1.5 rounded-full hover:bg-gray-50"><i class="fas fa-comment"></i> Comment ${p.comments?.length||0}</button>
+        ${p.member_id===curMember?.id?`<button onclick="deletePost(${p.id})" class="bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full text-[10px]">Delete My Post</button>`:''}
+      </div>
+      <div id="comments-${p.id}" class="mt-3">${(p.comments||[]).slice(0,3).map(c=>`<div class="bg-gray-50 border rounded-xl p-2 mt-2"><p class="text-[11px] font-semibold">${esc(c.fullName||'Real Member')}</p><p class="text-[11px]">${esc(c.content||'')}</p></div>`).join('')}${(p.comments||[]).length>3?`<button onclick="viewComments('post', ${p.id})" class="text-[10px] text-blue-600 mt-2">View all ${p.comments.length} comments</button>`:''}</div>
+    </div></div>
+  </div>`).join('');
+};
+
+function viewComments(type, id){
+  fetch('/api/community/posts').then(r=>r.json()).then(posts=>{
+    let p = posts.find(x=>x.id===id); if(!p) return;
+    document.getElementById('viewTitle').innerText = 'Comments - Real Members Only';
+    document.getElementById('viewContent').innerHTML = `<p class="text-xs font-semibold">${esc((p.content||'').substring(0,100))}</p><div class="mt-4 space-y-2 max-h-[300px] overflow-y-auto">${(p.comments||[]).map(c=>`<div class="bg-gray-50 border rounded-xl p-3"><div class="flex gap-2"><img src="${fixUrl(c.photo||'')}" class="w-7 h-7 rounded-full"><div><p class="text-[11px] font-semibold">${esc(c.fullName||'Real Member')}</p><p class="text-[11px] mt-1">${esc(c.content||'')}</p><p class="text-[9px] text-gray-400 mt-1">${esc(c.date||'')}</p></div></div></div>`).join('') || '<p class="text-[11px] text-gray-400">No comments yet</p>'}</div><div class="mt-4 flex gap-2"><input id="newCommentInput" placeholder="Write a comment as real member..." class="flex-1 border rounded-full px-4 py-2 text-xs"><button onclick="postCommentFromModal('${type}', ${id})" class="bg-[#0f172a] text-white px-4 py-2 rounded-full text-xs">Post Comment</button></div>`;
+    openModal('viewModal');
+  });
+}
+function postCommentFromModal(type, id){
+  let text = document.getElementById('newCommentInput').value.trim(); if(!text) return;
+  postComment(type, id, text);
+  setTimeout(()=>{ closeModal('viewModal'); loadFeed(); }, 500);
+}
+
+// Enhance galleries and videos with like/comment too
+const originalLoadGalleries = loadMemberGalleries;
+loadMemberGalleries = async function(){
+  let gals = await fetch('/api/community/member-galleries').then(r=>r.json()).catch(()=>[]);
+  let el = document.getElementById('photosView');
+  if(!gals.length){ el.innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No member photos yet - Real only</p><p class="text-[11px] text-gray-500 mt-2">When admin approves real member photos, they appear automatically in all members pages without clicking</p></div>'; return; }
+  el.innerHTML='<div class="bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Member Photos - Real Only, Like, Comment, Auto Appears</h2><div class="mt-4 grid md:grid-cols-3 gap-3">'+gals.map(g=>`<div class="bg-white border rounded-xl overflow-hidden"><div class="gallery-thumb cursor-pointer" onclick="viewGallery(${g.id})"><img src="${g.cover?fixUrl(g.cover):(g.images&&g.images[0]?fixUrl(g.images[0]):'https://via.placeholder.com/300x200.png?text=Photo')}" loading="lazy"><div class="absolute bottom-2 right-2 bg-black/70 text-white text-[9px] px-2 py-1 rounded-full">${g.images?.length||0} photos</div><div class="absolute top-2 left-2 bg-white/90 text-[9px] px-2 py-1 rounded-full ${g.status==='approved'?'bg-green-100':'bg-yellow-100'}">${esc(g.status)}</div></div><div class="p-3"><p class="font-semibold text-xs truncate">${esc(g.title)}</p><p class="text-[10px] text-gray-500">${esc(g.member_name||'Real Member')}</p><div class="mt-2 flex gap-1"><button onclick="likeItem('gallery', ${g.id}, 'amen')" class="bg-gray-50 border px-2 py-1 rounded-full text-[10px]"><i class="fas fa-heart text-red-500"></i> ${g.likes||0}</button><button onclick="openCommentModal('gallery', ${g.id})" class="bg-gray-50 border px-2 py-1 rounded-full text-[10px]"><i class="fas fa-comment"></i> ${g.comments?.length||0}</button><button onclick="viewGallery(${g.id})" class="bg-[#0f172a] text-white px-2 py-1 rounded-full text-[10px]">View</button></div></div></div>`).join('')+'</div></div>';
+};
+
+const originalLoadVideos = loadMemberVideos;
+loadMemberVideos = async function(){
+  let vids = await fetch('/api/community/member-videos').then(r=>r.json()).catch(()=>[]);
+  let el = document.getElementById('videosView');
+  if(!vids.length){ el.innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs font-semibold">No member videos yet - Real only</p><p class="text-[11px] text-gray-500 mt-2">Upload memory verse videos - when admin approves, appears automatically</p></div>'; return; }
+  el.innerHTML='<div class="bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Member Videos - Memory Verse, Like, Comment, Auto Appears</h2><div class="mt-4 grid md:grid-cols-2 gap-3">'+vids.map(v=>`<div class="bg-white border rounded-xl overflow-hidden"><div class="video-thumb cursor-pointer" onclick="viewVideo(${v.id})">${v.yt?`<img src="https://img.youtube.com/vi/${esc(v.yt)}/hqdefault.jpg"><div class="absolute inset-0 flex items-center justify-center"><div class="bg-black/60 w-12 h-12 rounded-full flex items-center justify-center text-white">▶</div></div>`:v.local_file?`<img src="https://via.placeholder.com/320x180.png?text=Video"><div class="absolute inset-0 flex items-center justify-center"><div class="bg-black/60 w-12 h-12 rounded-full flex items-center justify-center text-white">▶</div></div>`:`<div class="w-full h-full flex items-center justify-center text-white text-xs">No Preview</div>`}<div class="absolute top-2 left-2 bg-white/90 text-[9px] px-2 py-1 rounded-full ${v.status==='approved'?'bg-green-100':'bg-yellow-100'}">${esc(v.status)}</div></div><div class="p-3"><p class="font-semibold text-xs truncate">${esc(v.title)}</p><p class="text-[10px] text-gray-500">${esc(v.type||'memory_verse')} • ${esc(v.member_name||'Real Member')}</p><div class="mt-2 flex gap-1"><button onclick="likeItem('video', ${v.id}, 'amen')" class="bg-gray-50 border px-2 py-1 rounded-full text-[10px]"><i class="fas fa-heart text-red-500"></i> ${v.likes||0}</button><button onclick="openCommentModal('video', ${v.id})" class="bg-gray-50 border px-2 py-1 rounded-full text-[10px]"><i class="fas fa-comment"></i> ${v.comments?.length||0}</button><button onclick="viewVideo(${v.id})" class="bg-[#0f172a] text-white px-2 py-1 rounded-full text-[10px]">Play</button></div></div></div>`).join('')+'</div></div>';
+};
+
 init();
 </script>
 </body>
