@@ -1,0 +1,59 @@
+[
+  {
+    "id": 1787436786211,
+    "personal": {
+      "fullName": "Nelson Muleke",
+      "idNumber": "32452656",
+      "dob": "2005-04-16",
+      "gender": "Male",
+      "marital": "Single",
+      "nationality": "Kenya"
+    },
+    "contact": {
+      "phone": "0705285231",
+      "whatsapp": "0705285231",
+      "email": "navaltactics5@gmail.com",
+      "estate": "South B",
+      "city": "Nairobi",
+      "address": "South B Police Band"
+    },
+    "church": {
+      "howLong": "2+ years",
+      "membershipElsewhere": "Yes - still member",
+      "prevChurch": "No",
+      "baptismStatus": "Baptized - immersion",
+      "reasonJoin": "To embrace God's will"
+    },
+    "spiritual": {
+      "salvation": "I love Jesus Christ",
+      "baptismInterest": "Already baptized",
+      "supportNeeded": "Dancing",
+      "prayerRequest": "Pray for my well being"
+    },
+    "ministry": {
+      "preferredMinistry": "Youth",
+      "skills": "Instrumentalists",
+      "prevMinistry": "Teacher",
+      "availability": "Sundays only"
+    },
+    "emergency": {
+      "name": "Alex Azango",
+      "relationship": "Friend",
+      "phone": "0799889988",
+      "email": "mulekenelsonkidiavai@gmail.com"
+    },
+    "photo": "uploads/members/1787436786_Nelson.jpeg",
+    "account": {
+      "username": "Nelson",
+      "email": "navaltactics5@gmail.com",
+      "password": "scrypt:32768:8:1$1A0dOS3wTklQWsVf$7ec9b42db30c62326bdd4ee54df3a1b166b070dd6a3a2ee0006f418a20718ab7ccfe5976d22dd90a3352e0f70c5aed638e4aa1119dd675e8e8cb3f9d6db9d3da"
+    },
+    "username": "Nelson",
+    "email": "navaltactics5@gmail.com",
+    "status": "approved",
+    "date": "2026-08-23 01:13",
+    "terms_accepted": true,
+    "communication_consent": true,
+    "approved_date": "2026-08-23 01:43"
+  }
+]

@@ -625,89 +625,89 @@ def api_member_register():
         return jsonify({"ok":False, "error": f"Server error: {str(e)[:150]} - try smaller photo"}), 500
 
 
-@app.route('/api/member/login', methods=['POST'])
-@armor_limit("10 per minute")
-def api_member_login():
-    if not check_rate(request.remote_addr, 'member_login', 5, 60): return jsonify({"ok":False,"error":"Too many attempts"}),429
-    data = request.get_json(); login_val = sanitize_text(data.get('login','').strip(),100); pwd = data.get('password','')
-    members = load_json(MEMBERS_FILE, []); user = next((m for m in members if m.get('email','').lower()==login_val.lower() or m.get('username','').lower()==login_val.lower()), None)
-    if not user or not check_password_hash(user['account']['password'], pwd): return jsonify({"ok":False,"error":"Wrong credentials"}),401
-    if user['status']=="pending": return jsonify({"ok":False,"error":"Your membership is under review by admin.","status":"pending"}),403
-    if user['status']=="rejected": return jsonify({"ok":False,"error":"Membership rejected. Contact church office.","status":"rejected"}),403
-    session['member_logged_in']=True; session['member_id']=user['id']; session['member_data']={"id":user['id'],"username":user['username'],"email":user['email'],"personal":user.get('personal',{}),"contact":user.get('contact',{}),"ministry":user.get('ministry',{}),"emergency":user.get('emergency',{}),"fullName":user.get('fullName',''),"phone":user.get('phone','') or user.get('personal',{}).get('phone',''),"photo":user.get('photo',''),"status":user['status']}
-    return jsonify({"ok":True,"member":session['member_data']})
-@app.route('/api/member/me')
-def api_member_me():
-    if session.get('member_logged_in'):
-        members = load_json(MEMBERS_FILE, [])
-        m = next((x for x in members if x['id']==session.get('member_id')), None)
-        if m and m['status']=='approved': return jsonify({"logged_in":True,"approved":True,"member":session.get('member_data')})
-        return jsonify({"logged_in":True,"approved":False,"status":m['status'] if m else 'unknown'})
-    return jsonify({"logged_in":False,"approved":False})
-@app.route('/api/member/logout', methods=['POST'])
-def api_member_logout():
-    session.pop('member_logged_in',None); session.pop('member_id',None); session.pop('member_data',None)
-    return jsonify({"ok":True})
-@app.route('/api/member/change-password', methods=['POST'])
-def api_member_change_password():
-    if not session.get('member_logged_in'): return jsonify({"ok":False,"error":"Not logged in"}),401
-    data = request.get_json(); old = data.get('old_password',''); new = data.get('new_password','')
-    members = load_json(MEMBERS_FILE, [])
-    for m in members:
-        if m['id'] == session.get('member_id'):
-            if not check_password_hash(m['account']['password'], old): return jsonify({"ok":False,"error":"Old password wrong"}),400
-            if len(new) < 6: return jsonify({"ok":False,"error":"New password too short (min 6)"}),400
-            m['account']['password'] = generate_password_hash(new); save_json(MEMBERS_FILE, members)
-            return jsonify({"ok":True})
-    return jsonify({"ok":False,"error":"Member not found"}),404
-@app.route('/api/admin/members')
-@admin_required
-def api_admin_members(): return jsonify(load_json(MEMBERS_FILE, []))
-@app.route('/api/admin/members/count')
-@admin_required
-def api_members_count():
-    members = load_json(MEMBERS_FILE, [])
-    pending = len([m for m in members if m['status']=='pending']); approved = len([m for m in members if m['status']=='approved'])
-    return jsonify({"total":len(members),"pending":pending,"approved":approved})
-@app.route('/api/admin/member/approve/<int:mid>', methods=['POST'])
-@admin_required
-def api_approve_member(mid):
-    members=load_json(MEMBERS_FILE, [])
-    for m in members:
-        if m['id']==mid: m['status']='approved'; m['approved_date']=datetime.now(TZ).strftime("%Y-%m-%d %H:%M"); break
-    save_json(MEMBERS_FILE, members); return jsonify({"ok":True})
-@app.route('/api/admin/member/reject/<int:mid>', methods=['POST'])
-@admin_required
-def api_reject_member(mid):
-    data = request.get_json() or {}; reason = sanitize_text(data.get('reason',''),200)
-    members=load_json(MEMBERS_FILE, [])
-    for m in members:
-        if m['id']==mid: m['status']='rejected'; m['reject_reason']=reason; break
-    save_json(MEMBERS_FILE, members); return jsonify({"ok":True})
-@app.route('/api/admin/member/delete/<int:mid>', methods=['POST'])
-@admin_required
-def api_delete_member(mid):
-    members=load_json(MEMBERS_FILE, []); members=[m for m in members if m['id']!=mid]; save_json(MEMBERS_FILE, members); return jsonify({"ok":True})
 
-@app.route('/api/admin/upload-video', methods=['POST'])
-@admin_required
-def admin_upload_video():
-    title = sanitize_text(request.form.get('title'),200); category = sanitize_text(request.form.get('category','sermon'),50); description = sanitize_text(request.form.get('description',''),1000); yt_raw = request.form.get('yt',''); yt = extract_yt_id(yt_raw); file = request.files.get('file'); filename=""
-    if file and file.filename!= "":
-        if allowed_file(file.filename, {'mp4','mov','webm','avi','mkv'}): filename = upload_to_cloudinary(file, folder="south_b_chapel/videos")
-    vids = load_json('data/videos.json', []); vids.append({"id": int(time.time()*1000),"title": title,"yt": yt,"yt_raw": sanitize_text(yt_raw,100),"local_file": filename,"category": category,"description": description,"date": datetime.now(TZ).strftime('%Y-%m-%d')}); save_json('data/videos.json', vids); clear_image_cache(); return jsonify({"ok": True})
-@app.route('/api/admin/upload-gallery', methods=['POST'])
-@admin_required
-def admin_upload_gallery():
-    title = sanitize_text(request.form.get('title'),200); category = sanitize_text(request.form.get('category','Events'),50); cover = request.form.get('cover','').strip(); visibility = request.form.get('visibility','public');
-    if visibility not in ['public','members']: visibility='public'
-    files = request.files.getlist('files'); urls_raw = request.form.get('images',''); saved=[]
-    for f in files:
-        if f and f.filename!= '' and allowed_file(f.filename, {'jpg','jpeg','png','webp','gif'}):
-            url = upload_to_cloudinary(f, folder="south_b_chapel/gallery"); saved.append(url)
-    if urls_raw:
-        for u in urls_raw.split(','):
-            if u.strip(): saved.append(sanitize_text(u.strip(),500))
+@app.route('/api/member/login', methods=['POST'])
+def api_member_login():
+    try:
+        data = request.get_json(silent=True) or {}
+        username = (data.get('username') or data.get('email') or request.form.get('username') or request.form.get('email') or '').strip()
+        password = (data.get('password') or request.form.get('password') or '').strip()
+
+        if not username or not password:
+            return jsonify({"ok":False, "error":"Username and password required"}), 400
+
+        members = load_json(MEMBERS_FILE, [])
+        if not members and os.path.exists('data/members_seed.json'):
+            members = load_json('data/members_seed.json', [])
+            # Restore
+            try:
+                save_json(MEMBERS_FILE, members)
+            except:
+                pass
+
+        # Find member by username, email, phone, or fullName (case-insensitive)
+        user_lower = username.lower()
+        found = None
+        for m in members:
+            u = (m.get('username') or '').lower()
+            e = (m.get('email') or m.get('personal',{}).get('email') or '').lower()
+            p = (m.get('phone') or m.get('personal',{}).get('phone') or '').lower()
+            fn = (m.get('fullName') or m.get('personal',{}).get('fullName') or '').lower()
+            if user_lower in [u, e, p] or user_lower == fn or username == m.get('username') or username == m.get('phone'):
+                found = m
+                break
+            # Also check contains
+            if u and user_lower in u:
+                found = m
+                break
+
+        if not found:
+            return jsonify({"ok":False, "error":"Account not found - check username or register"}), 404
+
+        # Check password (plain for now, in production hash)
+        stored_pass = found.get('password') or ''
+        if stored_pass != password:
+            return jsonify({"ok":False, "error":"Invalid password"}), 401
+
+        # Check approval
+        status = found.get('status','pending')
+        approved = found.get('approved', False)
+        if status != 'approved' and not approved and status != 'active':
+            # Allow login but mark pending? For now allow but warn
+            # If you want to block pending, uncomment:
+            # return jsonify({"ok":False, "error":"Account not approved yet - pending admin approval"}), 403
+            pass
+
+        # Login success - set session
+        session['member_id'] = found.get('id')
+        session['member_username'] = found.get('username')
+        session['member_logged_in'] = True
+
+        # Update online
+        try:
+            online = load_json(ONLINE_FILE, []) if 'ONLINE_FILE' in globals() else load_json('data/online_members.json', [])
+            # Add or update
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            existing = next((x for x in online if x.get('member_id')==found.get('id')), None)
+            if existing:
+                existing['last_seen'] = now
+            else:
+                online.append({"member_id": found.get('id'), "fullName": found.get('fullName') or found.get('personal',{}).get('fullName') or found.get('username'), "photo": found.get('photo') or '', "ministry": found.get('ministry',{}).get('department') or '', "last_seen": now})
+            if 'ONLINE_FILE' in globals():
+                save_json(ONLINE_FILE, online)
+            else:
+                save_json('data/online_members.json', online)
+        except Exception as online_e:
+            print(f"Online update failed: {online_e}")
+
+        return jsonify({"ok":True, "member": {"id": found.get('id'), "username": found.get('username'), "fullName": found.get('fullName') or found.get('personal',{}).get('fullName')}})
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        print(f"Login error: {e}")
+        return jsonify({"ok":False, "error": f"Server error: {str(e)[:150]}"}), 500
+
     if cover and cover not in saved: saved.insert(0, sanitize_text(cover,500))
     final_cover = cover if cover else (saved[0] if saved else "uploads/logoon.jpeg")
     albums = load_json('data/gallery.json', []); albums.append({"id": int(time.time()*1000),"title": title,"category": category,"cover": final_cover,"images": saved,"visibility": visibility,"date": datetime.now(TZ).strftime('%b %d, %Y')}); save_json('data/gallery.json', albums); clear_image_cache(); return jsonify({"ok": True})

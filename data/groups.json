@@ -1,0 +1,84 @@
+[
+  {
+    "id": 1,
+    "name": "Youth Fellowship",
+    "slug": "youth",
+    "icon": "\ud83d\udc65",
+    "color": "#0f172a",
+    "members": [],
+    "leader": null,
+    "description": "Young people serving God and growing together",
+    "posts": [],
+    "events": []
+  },
+  {
+    "id": 2,
+    "name": "Men's Fellowship",
+    "slug": "men",
+    "icon": "\ud83d\udc54",
+    "color": "#1e3a8a",
+    "members": [],
+    "leader": null,
+    "description": "Men of faith, leadership and service"
+  },
+  {
+    "id": 3,
+    "name": "Women's Fellowship",
+    "slug": "women",
+    "icon": "\ud83d\udc69",
+    "color": "#9d174d",
+    "members": [],
+    "leader": null,
+    "description": "Women of prayer and strength"
+  },
+  {
+    "id": 4,
+    "name": "Choir / Worship",
+    "slug": "choir",
+    "icon": "\ud83c\udfb5",
+    "color": "#065f46",
+    "members": [],
+    "leader": null,
+    "description": "Leading worship and praise"
+  },
+  {
+    "id": 5,
+    "name": "Media Team",
+    "slug": "media",
+    "icon": "\ud83c\udfa5",
+    "color": "#7c2d12",
+    "members": [],
+    "leader": null,
+    "description": "Sound, media, livestream and evangelism"
+  },
+  {
+    "id": 6,
+    "name": "Sunday School",
+    "slug": "sunday",
+    "icon": "\ud83e\uddd2",
+    "color": "#3730a3",
+    "members": [],
+    "leader": null,
+    "description": "Teaching children the Word"
+  },
+  {
+    "id": 7,
+    "name": "Prayer Team",
+    "slug": "prayer",
+    "icon": "\ud83d\ude4f",
+    "color": "#0e7490",
+    "members": [],
+    "leader": null,
+    "description": "Intercession and spiritual covering"
+  },
+  {
+    "id": 8,
+    "name": "Ushering",
+    "slug": "ushering",
+    "icon": "\ud83e\udd1d",
+    "color": "#44403c",
+    "members": [],
+    "leader": null,
+    "description": "Order and welcome in church"
+  }
+]

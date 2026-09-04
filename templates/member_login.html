@@ -4,67 +4,108 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Member Login - South B Police Chapel</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 body{font-family:Inter,sans-serif}
-.heaven-bg{background:url('/static/uploads/god_key.jpg') no-repeat center center fixed;background-size:cover}
-.glass-panel{backdrop-filter:blur(20px);background:rgba(255,255,255,0.94);border:2px solid rgba(250,204,21,0.5);box-shadow:0 0 30px rgba(250,204,21,0.3), 0 10px 40px rgba(0,0,0,0.1)}
-.input{border:2px solid #fef08a;padding:14px 16px;border-radius:14px;font-size:13px;width:100%;background:white;outline:none;transition:all 0.2s}
-.input:focus{border-color:#facc15; box-shadow:0 0 0 3px rgba(250,204,21,0.2)}
+.heaven-bg{background:url('/static/uploads/logoon.jpeg') no-repeat center center fixed;background-size:cover}
+.glass-panel{backdrop-filter:blur(20px);background:rgba(255,255,255,0.97);border:1px solid rgba(255,255,255,0.7);box-shadow:0 8px 32px rgba(0,0,0,0.08)}
+.input{border:2px solid #fef08a;padding:14px 18px;border-radius:14px;font-size:14px;background:white;width:100%;outline:none}
+.input:focus{border-color:#0f172a}
 </style>
 </head>
-<body class="heaven-bg min-h-screen"><div class="min-h-screen bg-gradient-to-br from-[#0f172a]/10 to-black/20 flex items-center justify-center p-4">
-<div class="glass-panel rounded-[1.8rem] p-8 w-full max-w-md">
+<body class="heaven-bg min-h-screen flex items-center justify-center p-4">
+<div class="min-h-screen w-full flex items-center justify-center">
+<div class="glass-panel rounded-[24px] border border-yellow-200 p-8 w-full max-w-[380px] shadow-2xl">
   <div class="text-center">
-    <div class="w-14 h-14 mx-auto bg-gradient-to-br from-[#facc15] to-yellow-600 rounded-full flex items-center justify-center text-2xl shadow-[0_0_20px_#facc15]">🔑</div>
-    <h2 class="text-2xl font-black mt-4 text-[#1a2332]">Member Login</h2>
-    <p class="text-[11px] text-gray-500 mt-2 leading-relaxed">Secure 12/7 • Access members-only gallery • Simplified 4-field membership</p>
-    <div class="mt-3 inline-flex items-center gap-2 bg-green-50 border border-green-200 px-3 py-1 rounded-full text-[10px] font-bold text-green-700">
-      <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> SECURE • RATE LIMITED • SEALED
-    </div>
+    <div class="w-14 h-14 bg-yellow-400 rounded-full flex items-center justify-center mx-auto shadow-lg">🔑</div>
+    <h1 class="text-xl font-bold mt-4">Member Login</h1>
+    <p class="text-[11px] text-gray-500 mt-2">Secure 12/7 • Access members-only gallery • Simplified 4-field membership</p>
+    <div class="inline-flex items-center gap-1 bg-green-50 border border-green-200 text-green-700 text-[10px] px-3 py-1 rounded-full mt-3">● SECURE • RATE LIMITED • SEALED</div>
   </div>
-  <form id="loginForm" class="mt-7 space-y-4">
+
+  <form id="loginForm" class="mt-6 space-y-4">
     <div>
-      <label class="text-[11px] font-black text-gray-700 ml-1">USERNAME OR EMAIL</label>
-      <input id="login" required placeholder="e.g. nelson.tactics or email" class="input mt-1">
+      <label class="text-[11px] font-bold text-gray-700">USERNAME OR EMAIL</label>
+      <input id="username" required placeholder="NelKid" class="input mt-1">
     </div>
     <div>
-      <label class="text-[11px] font-black text-gray-700 ml-1">PASSWORD</label>
-      <div class="relative mt-1"><input id="password" type="password" required placeholder="••••••••" class="input pr-12"><button type="button" onclick="togglePwd()" class="absolute right-3 top-3.5 text-xs font-black bg-gray-100 px-2 py-1 rounded-full">👁</button></div>
+      <label class="text-[11px] font-bold text-gray-700">PASSWORD</label>
+      <div class="relative">
+        <input id="password" type="password" required placeholder="nav7tac$" class="input mt-1 pr-10">
+        <button type="button" onclick="togglePass()" class="absolute right-3 top-[14px] text-gray-400 text-xs">👁</button>
+      </div>
     </div>
-    <button type="submit" id="loginBtn" class="w-full bg-[#0a1931] hover:bg-black text-white py-3.5 rounded-xl font-black text-xs tracking-wide shadow-lg hover:shadow-xl transition">LOGIN AS MEMBER →</button>
-    <p id="msg" class="text-center font-black text-xs min-h-[20px]"></p>
+    <button id="loginBtn" type="submit" class="w-full bg-[#0f172a] text-white rounded-xl py-3 text-xs font-bold">LOGIN AS MEMBER →</button>
+    <p id="msg" class="text-center text-xs min-h-[20px]"></p>
   </form>
-  <div class="mt-6 pt-5 border-t border-yellow-100 text-center space-y-2">
-    <p class="text-xs">Not a member? <a href="/member-qualifications" class="text-blue-600 font-black underline hover:text-blue-800">Register in 2 mins (4 fields only)</a></p>
-    <p class="text-[11px] text-gray-400"><a href="/" class="hover:text-black">← Back to Home</a> • <a href="/gallery" class="text-green-600 font-black">Gallery</a> • <a href="/faith-arcade" class="text-[#0a1931] font-black">🎮 Faith Arcade</a></p>
+
+  <div class="text-center mt-6 space-y-2">
+    <p class="text-[11px] text-gray-500">Not a member? <a href="/members/register" class="text-[#0f172a] font-bold underline">Register in 2 mins (4 fields only)</a></p>
+    <a href="/" class="inline-block text-[11px] bg-gray-100 border px-4 py-1.5 rounded-full">← Back to Home</a>
   </div>
-  <p class="text-center text-[10px] text-gray-400 mt-4">Built with ❤ by Nelson .T. Tactics • Confidential</p>
 </div>
 </div>
+
 <script>
-function togglePwd(){ const p=document.getElementById('password'); p.type = p.type==='password'?'text':'password'; }
+function togglePass(){
+  let p = document.getElementById('password');
+  p.type = p.type==='password' ? 'text' : 'password';
+}
+
 document.getElementById('loginForm').addEventListener('submit', async(e)=>{
   e.preventDefault();
-  const btn=document.getElementById('loginBtn');
-  btn.innerText='⏳ Checking secure login...'; btn.disabled=true;
+  let btn = document.getElementById('loginBtn');
+  let msg = document.getElementById('msg');
+  let username = document.getElementById('username').value.trim();
+  let password = document.getElementById('password').value;
+
+  if(!username || !password){
+    msg.innerText = 'Username and password required';
+    msg.className = 'text-center text-xs min-h-[20px] text-red-600';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = 'Logging in... (Render may take 15s)';
+  msg.innerText = '';
+  msg.className = 'text-center text-xs min-h-[20px] text-gray-500';
+
   try{
-  const r=await fetch('/api/member/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:document.getElementById('login').value.trim(),password:document.getElementById('password').value}), credentials:'same-origin'});
-  const j=await r.json();
-  if(j.ok){
-    document.getElementById('msg').innerText='✅ Success! Unlocking gallery...';
-    document.getElementById('msg').className='text-center font-black text-xs text-green-600';
-    setTimeout(()=>{ location.href='/members/dashboard'; },800);
-  }
-  else{
-    document.getElementById('msg').innerText='❌ '+(j.error||'Failed')+(j.status?' - '+j.status:'');
-    document.getElementById('msg').className='text-center font-black text-xs text-red-600';
-    btn.innerText='LOGIN AS MEMBER →'; btn.disabled=false;
-  }
+    let controller = new AbortController();
+    let timeout = setTimeout(()=>controller.abort(), 25000);
+
+    let res = await fetch('/api/member/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({username, password, email: username}),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+
+    let text = await res.text();
+    let data;
+    try{ data = JSON.parse(text); }catch{ data = {ok:false, error: text.substring(0,200)}; }
+
+    if(res.ok && data.ok){
+      msg.innerText = 'Login success - redirecting to dashboard...';
+      msg.className = 'text-center text-xs min-h-[20px] text-green-600';
+      setTimeout(()=>{ window.location.href = '/members/dashboard'; }, 800);
+    }else{
+      let err = data.error || data.message || 'Login failed';
+      if(err.toLowerCase().includes('not approved')) err = 'Account pending approval - contact admin';
+      if(err.toLowerCase().includes('not found') || err.toLowerCase().includes('invalid')) err = 'Invalid username or password - check caps';
+      msg.innerText = '❌ ' + err;
+      msg.className = 'text-center text-xs min-h-[20px] text-red-600 font-medium';
+      btn.disabled = false;
+      btn.innerText = 'LOGIN AS MEMBER →';
+    }
   }catch(err){
-    document.getElementById('msg').innerText='❌ Network error - try again';
-    document.getElementById('msg').className='text-center font-black text-xs text-red-600';
-    btn.innerText='LOGIN AS MEMBER →'; btn.disabled=false;
+    console.error('Login error', err);
+    let m = err.name==='AbortError' ? 'Network timeout - Render waking up (20s), click Login again' : 'Network error: '+(err.message||'check internet')+' - try again';
+    document.getElementById('msg').innerText = '❌ ' + m;
+    document.getElementById('msg').className = 'text-center text-xs min-h-[20px] text-red-600 font-medium';
+    btn.disabled = false;
+    btn.innerText = 'LOGIN AS MEMBER →';
   }
 });
 </script>

@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "title": "Love",
+    "speaker": "Nelson Muleke",
+    "type": "video",
+    "series": "Love",
+    "description": "Love is Great",
+    "yt": "gFYGEKmfW5o",
+    "local_file": "uploads/sermons/1787347429_Lords_Army.mp4",
+    "date": "2026-08-21"
+  },
+  {
+    "id": 2,
+    "title": "Lord's Army",
+    "speaker": "Angela",
+    "type": "written",
+    "series": "Strong",
+    "description": "Ready to Serve in the Lord's Army",
+    "yt": "",
+    "yt_raw": "",
+    "local_file": "uploads/sermons/1787348336_Lords_Army_Song_Printable.pdf",
+    "date": "2026-08-22"
+  },
+  {
+    "id": 3,
+    "title": "Lord Give me Strenght",
+    "speaker": "Amos Kinywa",
+    "type": "audio",
+    "series": "Strong",
+    "description": "",
+    "yt": "",
+    "yt_raw": "",
+    "local_file": "uploads/sermons/1787348492_Audio.mp4",
+    "date": "2026-08-22"
+  }
+]
