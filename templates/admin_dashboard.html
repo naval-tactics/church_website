@@ -26,6 +26,22 @@
 @media(max-width:768px){.main-flex{flex-direction:column}.sidebar{width:100%;position:relative}}
 @media(min-width:769px){.sidebar{position:sticky;top:64px;max-height:calc(100dvh - 76px)}}
 </style>
+
+<style>
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+.marquee-container:hover .marquee-track {
+  animation-play-state: paused;
+}
+</style>
+
 </head>
 <body class="heaven-bg min-h-screen">
 <div class="min-h-screen bg-gradient-to-br from-[#0f172a]/10 to-black/10">
@@ -235,10 +251,7 @@
 </div>
 
 
-<div class="mt-6 bg-white rounded-2xl border p-4 flex gap-3 items-center">
-  <img src="/static/uploads/Nelson.jpeg" class="w-10 h-10 rounded-full object-cover">
-  <div><p class="text-xs font-medium">Built with love by Nelson T. Tactics</p><p class="text-[10px] text-gray-400">Admin Portal</p></div>
-</div>
+
 
 <div id="memberViewModal" class="member-modal hidden bg-black/70 backdrop-blur z-[200] flex items-center justify-center p-3"><div class="member-modal-inner bg-transparent flex flex-col relative"><button onclick="closeMemberView()" class="absolute top-2 right-2 bg-white text-black w-9 h-9 rounded-full text-sm border z-30">✕</button><div id="memberViewContent" class="member-modal-content"></div></div></div>
 <div id="editModal" class="edit-modal hidden"><div class="bg-white max-w-2xl w-full p-6 rounded-2xl max-h-[90vh] overflow-y-auto shadow-2xl"><div class="flex justify-between items-center mb-4"><h3 id="editModalTitle" class="font-semibold text-sm">Edit</h3><button onclick="closeEditModal()" class="bg-gray-100 w-8 h-8 rounded-full text-sm">✕</button></div><div id="editModalContent"></div></div></div>
@@ -669,5 +682,42 @@ loadTabData = async function(name){
 };
 
 </script>
+
+<!-- Fixed Footer at Bottom - Dark, Marquee Right to Left Animated -->
+<div class="fixed bottom-0 left-0 right-0 bg-[#0a1931] text-white border-t border-white/10 z-50 marquee-container overflow-hidden">
+  <div class="marquee-track py-2.5 flex items-center gap-8">
+    <div class="flex items-center gap-3 shrink-0">
+      <span class="text-[11px] opacity-80">South B Police Chapel © 2026</span>
+      <span class="text-[11px] text-white/30">•</span>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <img src="/static/uploads/Nelson.jpeg" class="w-6 h-6 rounded-full object-cover border border-yellow-400/30">
+      <span class="text-[11px] text-[#d4af37]">Built with <span class="text-yellow-400">♥</span> by</span>
+      <span class="text-[11px] font-semibold text-[#d4af37]">Nelson .T. Tactics</span>
+      <span class="text-[11px] text-[#d4af37]">• Lead Developer</span>
+      <span class="text-[11px] text-white/30 ml-6">•</span>
+    </div>
+    <div class="flex items-center gap-3 shrink-0">
+      <span class="text-[11px] opacity-80">South B Police Chapel • Members Portal</span>
+      <span class="text-[11px] text-white/30">•</span>
+      <span class="text-[11px] text-[#d4af37]">Built with ♥ by Nelson .T. Tactics • Lead Developer</span>
+      <span class="text-[11px] text-white/30 ml-6">•</span>
+      <span class="text-[11px] opacity-80">South B Police Chapel © 2026</span>
+    </div>
+    <!-- Duplicate for seamless loop -->
+    <div class="flex items-center gap-3 shrink-0 ml-8">
+      <span class="text-[11px] opacity-80">South B Police Chapel © 2026</span>
+      <span class="text-[11px] text-white/30">•</span>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <img src="/static/uploads/Nelson.jpeg" class="w-6 h-6 rounded-full object-cover border border-yellow-400/30">
+      <span class="text-[11px] text-[#d4af37]">Built with <span class="text-yellow-400">♥</span> by</span>
+      <span class="text-[11px] font-semibold text-[#d4af37]">Nelson .T. Tactics</span>
+      <span class="text-[11px] text-[#d4af37]">• Lead Developer</span>
+    </div>
+  </div>
+</div>
+<div class="h-[40px]"></div>
+
 </body>
 </html>
