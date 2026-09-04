@@ -23,8 +23,22 @@ body{font-family:Inter,sans-serif;background:#f0f2f5}
 <body class="min-h-screen">
 <header class="sticky top-0 z-40 bg-[#0f172a] text-white">
   <div class="max-w-[1600px] mx-auto px-4 h-[56px] flex items-center justify-between">
-    <div class="flex items-center gap-3"><img src="/static/uploads/god_key.jpg" class="w-8 h-8 rounded-full"><span class="font-semibold text-[13px]">SOUTH B POLICE CHAPEL</span><span class="ml-2 bg-white/10 text-[10px] px-2.5 py-1 rounded-full">Members Portal</span></div>
-    <div class="flex items-center gap-3"><div class="relative"><img id="hAvatar" src="" class="w-8 h-8 rounded-full object-cover"><span class="online-dot"></span></div><span id="hName" class="text-xs"></span><span id="onlineCount" class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">0 online</span><button onclick="logout()" class="text-[10px] bg-white text-black px-3 py-1 rounded-full">Logout</button></div>
+    <div class="flex items-center gap-3"><img src="/static/uploads/logoon.jpeg" class="w-8 h-8 rounded-full"><span class="font-semibold text-[13px]">SOUTH B POLICE CHAPEL</span><span class="ml-2 bg-white/10 text-[10px] px-2.5 py-1 rounded-full">Members Portal</span></div>
+    <div class="flex items-center gap-3"><div class="relative"><img id="hAvatar" src="" class="w-8 h-8 rounded-full object-cover"><span class="online-dot"></span></div><span id="hName" class="text-xs"></span>
+<div class="relative">
+  <button onclick="document.getElementById('notifPanel').classList.toggle('hidden')" class="relative bg-white/10 w-8 h-8 rounded-full flex items-center justify-center">
+    <i class="fas fa-bell text-xs"></i>
+    <span id="notifCount" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+  </button>
+  <div id="notifPanel" class="hidden absolute right-0 top-10 w-[320px] bg-white rounded-2xl border shadow-2xl z-50 overflow-hidden">
+    <div class="p-3 bg-[#0f172a] text-white flex justify-between items-center">
+      <span class="text-xs">Notifications</span>
+      <button onclick="requestNotifPermission()" class="text-[10px] bg-white/10 px-2 py-1 rounded-full">Enable</button>
+    </div>
+    <div id="notifList" class="max-h-[300px] overflow-y-auto"></div>
+  </div>
+</div>
+<span id="onlineCount" class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">0 online</span><button onclick="logout()" class="text-[10px] bg-white text-black px-3 py-1 rounded-full">Logout</button></div>
   </div>
 </header>
 
@@ -70,14 +84,31 @@ body{font-family:Inter,sans-serif;background:#f0f2f5}
       </div>
     </div>
 
-    <div id="organizedFeed" class="mt-4 space-y-4"></div>
+    
+<div id="bibleVerseCard" class="mt-4 bg-gradient-to-br from-[#0f172a] to-[#1e293b] text-white rounded-2xl p-4 border border-white/10">
+  <p class="text-[10px] tracking-widest text-white/50">BIBLE VERSE OF THE DAY</p>
+  <p id="bibleRef" class="font-medium text-sm mt-1">Loading...</p>
+  <p id="bibleText" class="text-[13px] mt-2 italic leading-relaxed opacity-90"></p>
+</div>
+
+<div id="organizedFeed" class="mt-4 space-y-4"></div>
 
     <div id="dirView" class="hidden mt-4 bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Directory</h2><input id="dirSearch" oninput="loadDir()" placeholder="Search members..." class="w-full mt-3 border rounded-full px-4 py-2.5 text-xs"><div id="dirGrid" class="mt-4 grid md:grid-cols-2 gap-3"></div></div>
     <div id="myView" class="hidden mt-4 space-y-3"></div>
     <div id="prayerView" class="hidden mt-4 bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Prayer Wall</h2><div id="prayerList" class="mt-4 space-y-3"></div></div>
     <div id="groupsView" class="hidden mt-4 bg-white rounded-2xl border p-4"><h2 class="font-semibold text-sm">Groups</h2><div id="groupsGrid" class="mt-4 grid md:grid-cols-2 gap-3"></div></div>
     <div id="profileView" class="hidden mt-4 bg-white rounded-2xl border p-6 text-center"><img id="pAvatar" src="" class="w-24 h-24 rounded-full mx-auto object-cover border"><h2 id="pName" class="font-semibold text-lg mt-3"></h2><p id="pMinistry" class="text-xs text-gray-500"></p><p id="pPhone" class="text-xs mt-1"></p></div>
-  </main>
+  
+<div class="mt-6 bg-white rounded-2xl border p-4 flex gap-3 items-center">
+  <img src="/static/uploads/Nelson.jpeg" class="w-10 h-10 rounded-full object-cover">
+  <div class="flex-1">
+    <p class="text-xs font-medium">Built with love by Nelson T. Tactics</p>
+    <p class="text-[10px] text-gray-400 mt-0.5">South B Police Chapel • Members Portal</p>
+  </div>
+  <p class="text-[9px] text-gray-400">© 2026</p>
+</div>
+
+</main>
 
   <aside class="hidden xl:block w-[320px] shrink-0">
     <div class="space-y-3 sticky top-[72px]">
@@ -144,7 +175,7 @@ async function init(){
   document.getElementById('rMinistry').innerText = ministry;
   document.getElementById('pPhone').innerText = phone ? 'Phone: '+phone : '';
   document.getElementById('cGreet').innerText = 'What is on your heart, '+(fullName.split(' ')[0]||'')+'?';
-  updateOnline(); loadOrganizedFeed(); loadDir(); loadGroups(); loadPrayer(); loadMyUploads(); loadConversations();
+  loadBibleVerse(); loadNotifications(); updateOnline(); loadOrganizedFeed(); loadDir(); loadGroups(); loadPrayer(); loadMyUploads(); loadConversations();
   setInterval(updateOnline, 15000); setInterval(loadOrganizedFeed, 8000); setInterval(loadOnlineList, 10000); setInterval(loadConversations, 10000);
 }
 async function updateOnline(){ await fetch('/api/community/online',{method:'POST'}); loadOnlineList(); }
@@ -238,6 +269,39 @@ document.getElementById('eventForm')?.addEventListener('submit', async(e)=>{ e.p
 document.getElementById('photoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/photo',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('photoModal'); e.target.reset(); loadOrganizedFeed(); } });
 document.getElementById('videoForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); let fd=new FormData(e.target); let r=await fetch('/api/community/upload/video',{method:'POST',body:fd}); let d=await r.json(); if(d.ok){ closeModal('videoModal'); e.target.reset(); loadOrganizedFeed(); } });
 init();
+
+<script>
+let bibleData=null;
+async function loadBibleVerse(){
+  try{
+    let v=await fetch('/api/bible/verse-of-the-day').then(r=>r.json());
+    bibleData=v;
+    document.getElementById('bibleRef').innerText=v.ref||v.verse||'Bible Verse';
+    document.getElementById('bibleText').innerText='"'+(v.text||'')+'"';
+  }catch(e){}
+}
+let notifPerm=false;
+async function requestNotifPermission(){
+  if('Notification' in window){
+    let p=await Notification.requestPermission();
+    notifPerm=p==='granted';
+  }
+}
+async function loadNotifications(){
+  try{
+    let notifs=await fetch('/api/notifications').then(r=>r.json()).catch(()=>[]);
+    let unread=notifs.filter(n=>!n.read).length;
+    let cnt=document.getElementById('notifCount');
+    if(cnt){ cnt.innerText=unread; cnt.classList.toggle('hidden', unread===0); }
+    let list=document.getElementById('notifList');
+    if(list){
+      list.innerHTML=notifs.length?notifs.slice(0,10).map(n=>`<div class="p-3 border-b hover:bg-gray-50"><p class="text-[11px]">${n.content||''}</p><p class="text-[9px] text-gray-400 mt-1">${n.date||''}</p></div>`).join(''):'<p class="text-[10px] text-gray-400 p-3">No notifications</p>';
+    }
+  }catch(e){}
+}
+setInterval(loadNotifications, 15000);
+</script>
+
 </script>
 </body>
 </html>
