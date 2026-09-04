@@ -8,87 +8,6 @@ from werkzeug.utils import secure_filename
 from functools import wraps, lru_cache
 import random, json, os, time, re, html, hmac, hashlib, base64
 
-
-# ============== FIX FOR RENDER MEMBERS PERSISTENT - WITHOUT BREAKING PUBLIC PAGE ==============
-# Keep original load_json/save_json, just ensure DATA_DIR uses env and files exist
-import os as _os_persist
-_PERSIST_DIR = _os_persist.environ.get('DATA_DIR', 'data')
-_os_persist.makedirs(_PERSIST_DIR, exist_ok=True)
-
-# Override file paths to use persistent dir
-MEMBERS_FILE = _os_persist.path.join(_PERSIST_DIR, 'members.json')
-COMMUNITY_POSTS_FILE = _os_persist.path.join(_PERSIST_DIR, 'community_posts.json')
-MEMBER_EVENTS_FILE = _os_persist.path.join(_PERSIST_DIR, 'member_events.json')
-MEMBER_GALLERIES_FILE = _os_persist.path.join(_PERSIST_DIR, 'member_galleries.json')
-MEMBER_VIDEOS_FILE = _os_persist.path.join(_PERSIST_DIR, 'member_videos.json')
-ONLINE_FILE = _os_persist.path.join(_PERSIST_DIR, 'online_members.json')
-CHATS_FILE = _os_persist.path.join(_PERSIST_DIR, 'member_chats.json')
-NOTIFICATIONS_FILE = _os_persist.path.join(_PERSIST_DIR, 'notifications.json')
-BIBLE_VERSES_FILE = _os_persist.path.join(_PERSIST_DIR, 'bible_verses.json')
-
-# Ensure files exist without overwriting real members
-for _fp, _def in [
-    (MEMBERS_FILE, []),
-    (COMMUNITY_POSTS_FILE, []),
-    (MEMBER_EVENTS_FILE, []),
-    (MEMBER_GALLERIES_FILE, []),
-    (MEMBER_VIDEOS_FILE, []),
-    (ONLINE_FILE, []),
-    (CHATS_FILE, []),
-    (NOTIFICATIONS_FILE, []),
-]:
-    if not _os_persist.path.exists(_fp):
-        # Try fallback from 'data/'
-        _fallback = _os_persist.path.join('data', _os_persist.path.basename(_fp))
-        if _os_persist.path.exists(_fallback) and _fallback != _fp:
-            try:
-                import json as _js
-                with open(_fallback, 'r', encoding='utf-8') as _f:
-                    _d = _js.load(_f)
-                    if isinstance(_d, list) and len(_d)>0:
-                        save_json(_fp, _d)
-                        continue
-            except: pass
-        save_json(_fp, _def)
-
-# Bible verses default
-if not _os_persist.path.exists(BIBLE_VERSES_FILE):
-    save_json(BIBLE_VERSES_FILE, [
-        {"verse": "John 3:16", "text": "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", "ref": "John 3:16"},
-        {"verse": "Jeremiah 29:11", "text": "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you.", "ref": "Jeremiah 29:11"},
-        {"verse": "Philippians 4:13", "text": "I can do all this through him who gives me strength.", "ref": "Philippians 4:13"},
-    ])
-
-# Bible verse endpoint
-@app.route('/api/bible/verse-of-the-day')
-def api_bible_votd_fixed():
-    verses = load_json(BIBLE_VERSES_FILE, [])
-    if not verses:
-        verses = [{"ref": "John 3:16", "text": "For God so loved the world..."}]
-    import datetime as _dt
-    day = _dt.datetime.now().timetuple().tm_yday
-    return jsonify(verses[day % len(verses)])
-
-# Notifications endpoints
-@app.route('/api/notifications')
-@member_required
-def api_notifs_fixed():
-    notifs = load_json(NOTIFICATIONS_FILE, [])
-    mid = session.get('member_id')
-    filtered = [n for n in notifs if n.get('to_member_id')==mid or n.get('broadcast')]
-    filtered.sort(key=lambda x: x.get('id',0), reverse=True)
-    return jsonify(filtered[:20])
-
-@app.route('/api/notifications/read/<int:nid>', methods=['POST'])
-@member_required
-def api_notif_read_fixed(nid):
-    notifs = load_json(NOTIFICATIONS_FILE, [])
-    for n in notifs:
-        if n.get('id')==nid:
-            n['read']=True
-    save_json(NOTIFICATIONS_FILE, notifs)
-    return jsonify({"ok":True})
-
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'pentagon-church-secret-2025-ENCRYPTED-@2026#')
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
@@ -257,7 +176,7 @@ def verify_pwd(req_pwd, expected): return req_pwd == expected
 def find_file_cached(base_name: str) -> str:
     base_name = re.sub(r'[^a-zA-Z0-9_\-/]', '', base_name.strip())
     base_name = base_name.strip('/').strip('\\')
-    if '..' in base_name: return "uploads/logoon.jpeg"
+    if '..' in base_name: return "uploads/god_key.jpg"
     static_dir = Path(app.static_folder)
     clean_stem = Path(base_name).name.lower()
     extensions = ['.webp', '.png', '.jpg', '.jpeg', '.gif', '.mp4', '.mov', '.webm']
@@ -786,7 +705,7 @@ def admin_upload_gallery():
         for u in urls_raw.split(','):
             if u.strip(): saved.append(sanitize_text(u.strip(),500))
     if cover and cover not in saved: saved.insert(0, sanitize_text(cover,500))
-    final_cover = cover if cover else (saved[0] if saved else "uploads/logoon.jpeg")
+    final_cover = cover if cover else (saved[0] if saved else "uploads/god_key.jpg")
     albums = load_json('data/gallery.json', []); albums.append({"id": int(time.time()*1000),"title": title,"category": category,"cover": final_cover,"images": saved,"visibility": visibility,"date": datetime.now(TZ).strftime('%b %d, %Y')}); save_json('data/gallery.json', albums); clear_image_cache(); return jsonify({"ok": True})
 @app.route('/api/admin/update-gallery-visibility/<int:gid>', methods=['POST'])
 @admin_required
@@ -2126,7 +2045,7 @@ def api_feed_organized():
             "content": ev.get('description',''),
             "member_id": 0,
             "member_name": "Church Admin",
-            "member_photo": "/static/uploads/logoon.jpeg",
+            "member_photo": "/static/uploads/god_key.jpg",
             "date": ev.get('date',''),
             "likes": ev.get('likes',0),
             "comments": len(ev.get('comments',[])),
