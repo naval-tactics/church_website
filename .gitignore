@@ -1,4 +1,5 @@
-﻿data/members.json
+﻿# Ignore real data - so push doesn't overwrite Render
+data/members.json
 data/community_posts.json
 data/member_events.json
 data/member_galleries.json
@@ -6,4 +7,6 @@ data/member_videos.json
 data/online_members.json
 data/member_chats.json
 data/notifications.json
+data/bible_verses.json
 __pycache__/
+*.pyc
