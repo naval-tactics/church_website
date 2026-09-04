@@ -33,3 +33,11 @@ Recovery if you lost members:
 - Or re-approve from pending registrations in data/members.json.bak if exists
 
 This fix preserves all achievements: organized by media type, online, chat, like, comment, auto-appear, church+member events.
+data/members.json
+data/community_posts.json
+data/member_events.json
+data/member_galleries.json
+data/member_videos.json
+data/online_members.json
+data/member_chats.json
+data/notifications.json
