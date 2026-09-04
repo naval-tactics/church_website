@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 body{font-family:Inter,sans-serif}
-.heaven-bg{background:url('/static/uploads/god_key.jpg') no-repeat center center fixed;background-size:cover}
+.heaven-bg{background:url('/static/uploads/logoon.jpeg') no-repeat center center fixed;background-size:cover}
 .glass-panel{backdrop-filter:blur(20px);background:rgba(255,255,255,0.97);border:1px solid rgba(255,255,255,0.7);box-shadow:0 8px 32px rgba(0,0,0,0.08)}
 .step-active{background:#0f172a!important;color:#fff!important;font-weight:600}
 .input{border:1px solid #e5e7eb;padding:12px 16px;border-radius:12px;font-size:13px;background:white;width:100%;outline:none}
@@ -46,8 +46,8 @@ body{font-family:Inter,sans-serif}
           <img id="photoPreview" src="https://via.placeholder.com/110x110.png?text=Photo" class="photo-preview">
           <div class="flex-1 min-w-[240px]">
             <label class="text-xs font-medium">Photo *</label>
-            <input id="photo" type="file" accept="image/*" required class="w-full mt-2 text-xs bg-white p-2.5 rounded-xl border">
-            <p class="text-[11px] text-gray-500 mt-2">Clear face photo. Max 5MB.</p>
+            <input id="photo" type="file" accept="image/*" capture="user" required class="w-full mt-2 text-xs bg-white p-2.5 rounded-xl border">
+            <p id="photoInfo" class="text-[10px] text-gray-500 mt-2">Clear face photo. Max 5MB. On phone, will be compressed to ~100KB automatically.</p>
           </div>
         </div>
 
@@ -165,12 +165,14 @@ body{font-family:Inter,sans-serif}
 
 <script>
 let cur=1;
+let compressedPhotoFile = null;
+
 function goStep(n){ document.querySelectorAll('.step').forEach(s=>s.classList.add('hidden')); document.getElementById('step'+n).classList.remove('hidden'); document.querySelectorAll('[id^=s]').forEach(b=>{ if(b.id==='s1'||b.id==='s2') b.className='bg-white border px-5 py-2 rounded-full text-xs'; }); document.getElementById('s'+n).className='step-active px-5 py-2 rounded-full text-xs'; cur=n; updateBtns(); }
 function nextStep(){
   if(cur===1){
     if(!document.getElementById('fullName').value.trim()){ alert('Full Name required'); return; }
     if(!document.getElementById('phone').value.trim()){ alert('Phone Number required'); return; }
-    if(!document.getElementById('photo').files[0]){ alert('Photo required'); return; }
+    if(!document.getElementById('photo').files[0] && !compressedPhotoFile){ alert('Photo required'); return; }
     if(!document.getElementById('username').value.trim()){ alert('Username required'); return; }
     if(!document.getElementById('regEmail').value.includes('@')){ alert('Valid email required'); return; }
     if(document.getElementById('password').value.length<6){ alert('Password min 6 chars'); return; }
@@ -182,15 +184,53 @@ function prevStep(){ if(cur>1){ goStep(cur-1); } }
 function updateBtns(){ document.getElementById('prevBtn').classList.toggle('hidden', cur===1); document.getElementById('nextBtn').classList.toggle('hidden', cur===2); document.getElementById('submitBtn').classList.toggle('hidden', cur!==2); }
 function closeRegistration(){ if(confirm('Close registration?')){ window.location.href='/'; } }
 function closeSuccessAndRedirect(){ document.getElementById('successModal').classList.add('hidden'); window.location.href='/'; }
-function closeSuccessStay(){ document.getElementById('successModal').classList.add('hidden'); document.getElementById('memberForm').reset(); document.getElementById('photoPreview').src='https://via.placeholder.com/110x110.png?text=Photo'; goStep(1); document.getElementById('msg').innerText=''; }
+function closeSuccessStay(){ document.getElementById('successModal').classList.add('hidden'); document.getElementById('memberForm').reset(); document.getElementById('photoPreview').src='https://via.placeholder.com/110x110.png?text=Photo'; goStep(1); document.getElementById('msg').innerText=''; compressedPhotoFile=null; }
 
-document.getElementById('photo').addEventListener('change', e=>{
+// PHONE FIX: Compress image to ~100KB before upload to avoid Network error on phone
+function compressImage(file, maxWidth, quality){
+  return new Promise((resolve, reject)=>{
+    let img = new Image();
+    img.onload = ()=>{
+      let canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+      if(width > maxWidth){ height = Math.round(height * maxWidth / width); width = maxWidth; }
+      canvas.width = width; canvas.height = height;
+      let ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob((blob)=>{
+        if(!blob) return reject(new Error('Compress failed'));
+        resolve(new File([blob], file.name, {type: 'image/jpeg'}));
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = ()=>reject(new Error('Image load failed'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+document.getElementById('photo').addEventListener('change', async e=>{
   const f=e.target.files[0];
-  if(f){
-    if(f.size > 5*1024*1024){ alert('Photo max 5MB'); e.target.value=''; return; }
+  if(!f) return;
+  let info = document.getElementById('photoInfo');
+  info.innerText = 'Original: '+(f.size/1024/1024).toFixed(2)+'MB - compressing for phone...';
+  try{
+    if(f.size > 500*1024){
+      compressedPhotoFile = await compressImage(f, 800, 0.7);
+      info.innerText = 'Compressed: '+(compressedPhotoFile.size/1024).toFixed(0)+'KB (was '+(f.size/1024/1024).toFixed(2)+'MB) - ready for phone';
+      let url = URL.createObjectURL(compressedPhotoFile);
+      document.getElementById('photoPreview').src = url;
+    }else{
+      compressedPhotoFile = f;
+      const r=new FileReader(); r.onload=ev=>{ document.getElementById('photoPreview').src=ev.target.result; }; r.readAsDataURL(f);
+      info.innerText = 'Photo ready: '+(f.size/1024).toFixed(0)+'KB';
+    }
+  }catch(err){
+    compressedPhotoFile = f;
     const r=new FileReader(); r.onload=ev=>{ document.getElementById('photoPreview').src=ev.target.result; }; r.readAsDataURL(f);
+    info.innerText = 'Using original photo - '+err.message;
   }
 });
+
 document.getElementById('memberForm').addEventListener('submit', async(e)=>{
   e.preventDefault();
   if(!document.getElementById('phone').value.trim()){ document.getElementById('msg').innerText='Phone Number required'; return; }
@@ -209,7 +249,8 @@ document.getElementById('memberForm').addEventListener('submit', async(e)=>{
   };
 
   const fd=new FormData();
-  fd.append('photo', document.getElementById('photo').files[0]);
+  let photoFile = compressedPhotoFile || document.getElementById('photo').files[0];
+  fd.append('photo', photoFile);
   fd.append('data', JSON.stringify(payload));
   fd.append('username', payload.username);
   fd.append('email', payload.email);
@@ -226,13 +267,23 @@ document.getElementById('memberForm').addEventListener('submit', async(e)=>{
   fd.append('ministry', JSON.stringify(payload.ministry));
   fd.append('emergency', JSON.stringify(payload.emergency));
 
-  document.getElementById('msg').innerText='Submitting...';
+  document.getElementById('msg').innerText='Submitting... (phone may take 15s on Render cold start)';
+  document.getElementById('submitBtn').disabled = true;
   try{
-    const r=await fetch('/api/member/register',{method:'POST',body:fd});
-    const j=await r.json();
+    let controller = new AbortController();
+    let timeout = setTimeout(()=>controller.abort(), 30000);
+    const r=await fetch('/api/member/register',{method:'POST',body:fd, signal: controller.signal});
+    clearTimeout(timeout);
+    const text = await r.text();
+    let j;
+    try{ j=JSON.parse(text); }catch{ j={ok:false, error:text}; }
     if(j.ok){ document.getElementById('successId').innerText=j.id; document.getElementById('successModal').classList.remove('hidden'); document.getElementById('msg').innerText=''; }
-    else { document.getElementById('msg').innerText=j.error||'Failed'; }
-  }catch(err){ document.getElementById('msg').innerText='Network error'; }
+    else { document.getElementById('msg').innerText=j.error||'Failed: '+(text.substring(0,100)); document.getElementById('submitBtn').disabled=false; }
+  }catch(err){
+    let msg = err.name==='AbortError' ? 'Network timeout - Render waking up (20s), please try again' : 'Network error: '+(err.message||'check internet')+' - photo compressed to '+(compressedPhotoFile? (compressedPhotoFile.size/1024).toFixed(0)+'KB' : 'small');
+    document.getElementById('msg').innerText=msg;
+    document.getElementById('submitBtn').disabled=false;
+  }
 });
 updateBtns();
 </script>

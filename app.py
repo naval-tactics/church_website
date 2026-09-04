@@ -176,7 +176,7 @@ def verify_pwd(req_pwd, expected): return req_pwd == expected
 def find_file_cached(base_name: str) -> str:
     base_name = re.sub(r'[^a-zA-Z0-9_\-/]', '', base_name.strip())
     base_name = base_name.strip('/').strip('\\')
-    if '..' in base_name: return "uploads/god_key.jpg"
+    if '..' in base_name: return "uploads/logoon.jpeg"
     static_dir = Path(app.static_folder)
     clean_stem = Path(base_name).name.lower()
     extensions = ['.webp', '.png', '.jpg', '.jpeg', '.gif', '.mp4', '.mov', '.webm']
@@ -530,96 +530,100 @@ def delete_encounter(eid):
     return jsonify({"ok": True})
 
 # REGISTER - 5 FIELDS WITH PHONE - CLEAN, PRESERVING ALL ACHIEVEMENTS
-@app.route('/api/member/register', methods=['POST'])
-@armor_limit("5 per minute")
-def api_member_register():
-    if not check_rate(request.remote_addr, 'register', 3, 300):
-        return jsonify({"ok":False,"error":"Too many registrations - try later"}),429
-    try:
-        photo_path = ""; photo_file = None; fullName = ""; phone = ""; ministry_dept = ""; emergency_name = ""; emergency_phone = ""; emergency_rel = ""; username = ""; email = ""; pwd = ""; data_json = {}
-        if request.content_type and 'multipart/form-data' in request.content_type:
-            photo_file = request.files.get('photo')
-            fullName = (request.form.get('fullName') or '').strip()
-            phone = (request.form.get('phone') or request.form.get('phoneNumber') or '').strip()
-            ministry_dept = (request.form.get('ministry_department') or request.form.get('ministry') or '').strip()
-            emergency_name = (request.form.get('emergency_name') or '').strip()
-            emergency_phone = (request.form.get('emergency_phone') or '').strip()
-            emergency_rel = (request.form.get('emergency_relationship') or '').strip()
-            username = (request.form.get('username') or '').strip()
-            email = (request.form.get('email') or '').strip().lower()
-            pwd = request.form.get('password','')
-            raw = request.form.get('data')
-            if raw:
-                try:
-                    data_json = json.loads(raw)
-                    if not fullName: fullName = data_json.get('personal',{}).get('fullName','').strip() or data_json.get('fullName','')
-                    if not phone: phone = data_json.get('personal',{}).get('phone','').strip() or data_json.get('phone','').strip() or data_json.get('phoneNumber','').strip() or data_json.get('contact',{}).get('phone','').strip()
-                    if not ministry_dept: ministry_dept = data_json.get('ministry',{}).get('department','') or data_json.get('ministry',{}).get('preferredMinistry','') or data_json.get('ministry_department','')
-                    if not emergency_name: emergency_name = data_json.get('emergency',{}).get('name','').strip()
-                    if not emergency_phone: emergency_phone = data_json.get('emergency',{}).get('phone','').strip()
-                    if not emergency_rel: emergency_rel = data_json.get('emergency',{}).get('relationship','')
-                    if not username: username = data_json.get('username','').strip()
-                    if not email: email = data_json.get('email','').strip().lower()
-                    if not pwd: pwd = data_json.get('password','')
-                except: pass
-            try:
-                if not fullName:
-                    p = json.loads(request.form.get('personal','{}')); fullName = p.get('fullName','').strip()
-                    if not phone: phone = p.get('phone','').strip()
-                if not ministry_dept:
-                    m = json.loads(request.form.get('ministry','{}')); ministry_dept = m.get('department','') or m.get('preferredMinistry','')
-                if not emergency_name:
-                    e = json.loads(request.form.get('emergency','{}')); emergency_name = e.get('name','').strip(); emergency_phone = e.get('phone','').strip(); emergency_rel = e.get('relationship','')
-                if not phone:
-                    c = json.loads(request.form.get('contact','{}')); phone = c.get('phone','').strip()
-            except: pass
-            if photo_file and photo_file.filename != "":
-                if allowed_file(photo_file.filename, {'jpg','jpeg','png','webp','gif'}):
-                    photo_path = upload_to_cloudinary(photo_file, folder="south_b_chapel/members")
-                    clear_image_cache()
-        else:
-            data_json = request.get_json() or {}
-            fullName = data_json.get('fullName') or data_json.get('personal',{}).get('fullName','')
-            phone = data_json.get('phone') or data_json.get('phoneNumber') or data_json.get('personal',{}).get('phone','') or data_json.get('contact',{}).get('phone','')
-            ministry_dept = data_json.get('ministry_department') or data_json.get('ministry',{}).get('department','')
-            emergency_name = data_json.get('emergency_name') or data_json.get('emergency',{}).get('name','')
-            emergency_phone = data_json.get('emergency_phone') or data_json.get('emergency',{}).get('phone','')
-            emergency_rel = data_json.get('emergency_relationship') or data_json.get('emergency',{}).get('relationship','')
-            username = data_json.get('username',''); email = data_json.get('email','').lower(); pwd = data_json.get('password','')
 
-        if not fullName: return jsonify({"ok":False,"error":"Full Name required"}),400
-        if len(fullName) < 3: return jsonify({"ok":False,"error":"Full Name too short"}),400
-        if not phone: return jsonify({"ok":False,"error":"Phone Number required"}),400
-        if not photo_path: return jsonify({"ok":False,"error":"Photo required"}),400
-        if not ministry_dept: return jsonify({"ok":False,"error":"Ministry required"}),400
-        if not emergency_name: return jsonify({"ok":False,"error":"Emergency name required"}),400
-        if not emergency_phone: return jsonify({"ok":False,"error":"Emergency phone required"}),400
-        if not username: return jsonify({"ok":False,"error":"Username required"}),400
-        if not email or '@' not in email: return jsonify({"ok":False,"error":"Valid email required"}),400
-        if len(pwd) < 6: return jsonify({"ok":False,"error":"Password min 6 chars"}),400
+@app.route('/api/member/register', methods=['POST'])
+def api_member_register():
+    try:
+        fullName = request.form.get('fullName','').strip()
+        phone = request.form.get('phone','').strip() or request.form.get('phoneNumber','').strip()
+        email = request.form.get('email','').strip()
+        ministry = request.form.get('ministry_department','').strip() or request.form.get('ministry','').strip()
+        emergencyName = request.form.get('emergency_name','').strip()
+        emergencyPhone = request.form.get('emergency_phone','').strip()
+        emergencyRel = request.form.get('emergency_relationship','').strip()
+        username = request.form.get('username','').strip() or phone
+        password = request.form.get('password','').strip()
+        photo = request.files.get('photo')
+
+        # Also try parse data json if exists
+        data_json = request.form.get('data')
+        if data_json:
+            try:
+                import json
+                dj = json.loads(data_json)
+                if not fullName and dj.get('personal',{}).get('fullName'):
+                    fullName = dj['personal']['fullName']
+                if not phone and dj.get('personal',{}).get('phone'):
+                    phone = dj['personal']['phone']
+                if not ministry and dj.get('ministry',{}).get('department'):
+                    ministry = dj['ministry']['department']
+                if not emergencyName and dj.get('emergency',{}).get('name'):
+                    emergencyName = dj['emergency']['name']
+                if not emergencyPhone and dj.get('emergency',{}).get('phone'):
+                    emergencyPhone = dj['emergency']['phone']
+            except:
+                pass
+
+        if not fullName or not phone or not ministry or not emergencyName or not emergencyPhone or not password:
+            return jsonify({"ok":False, "error":"All * fields required - Full Name, Phone, Ministry, Emergency Name/Phone, Password"}), 400
+        if not photo or photo.filename=='':
+            return jsonify({"ok":False, "error":"Photo required"}), 400
 
         members = load_json(MEMBERS_FILE, [])
-        if any(m.get('email','').lower()==email for m in members): return jsonify({"ok":False,"error":"Email already registered"}),400
-        if any(m.get('username','').lower()==username.lower() for m in members): return jsonify({"ok":False,"error":"Username taken"}),400
+        # Check duplicate phone or username
+        for m in members:
+            if (m.get('personal',{}).get('phone')==phone) or (m.get('phone')==phone) or (m.get('username')==username):
+                return jsonify({"ok":False, "error":"Phone or Username already registered - try login"}), 400
 
+        import os, uuid
+        from werkzeug.utils import secure_filename
+        os.makedirs('static/uploads', exist_ok=True)
+        ext = secure_filename(photo.filename).split('.')[-1].lower() if '.' in photo.filename else 'jpg'
+        if ext not in ['jpg','jpeg','png','webp','JPG','JPEG','PNG','jpg']:
+            ext = 'jpg'
+        filename = f"member_{uuid.uuid4().hex[:8]}.{ext}"
+        filepath = os.path.join('static/uploads', filename)
+        photo.save(filepath)
+
+        # Compress if still large (phone fix)
+        try:
+            size = os.path.getsize(filepath)
+            if size > 500*1024:
+                from PIL import Image
+                im = Image.open(filepath)
+                if im.mode in ('RGBA','P','LA'):
+                    im = im.convert('RGB')
+                im.thumbnail((800, 800))
+                im.save(filepath, optimize=True, quality=70)
+        except Exception as comp_e:
+            print(f"Compression warning: {comp_e}")
+
+        new_id = max([m.get('id',0) for m in members], default=0) + 1
         new_member = {
-            "id": int(time.time()*1000),
+            "id": new_id,
+            "username": username,
             "fullName": fullName,
-            "phone": phone,
-            "personal": {"fullName": fullName, "phone": phone, "ministry": ministry_dept, "emergencyName": emergency_name, "emergencyPhone": emergency_phone},
+            "personal": {"fullName": fullName, "phone": phone, "email": email},
             "contact": {"phone": phone, "email": email},
-            "ministry": {"department": ministry_dept, "preferredMinistry": ministry_dept},
-            "emergency": {"name": emergency_name, "relationship": emergency_rel, "phone": emergency_phone},
-            "photo": photo_path,
-            "account": {"username": username, "email": email, "password": generate_password_hash(pwd)},
-            "username": username, "email": email, "status": "pending",
-            "date": datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
+            "ministry": {"department": ministry, "preferredMinistry": ministry},
+            "emergency": {"name": emergencyName, "relationship": emergencyRel, "phone": emergencyPhone},
+            "phone": phone,
+            "email": email,
+            "photo": f"/static/uploads/{filename}",
+            "password": password,
+            "status": "pending",
+            "approved": False,
+            "date": datetime.now().strftime("%Y-%m-%d")
         }
-        members.insert(0, new_member); save_json(MEMBERS_FILE, members)
-        return jsonify({"ok":True,"id":new_member['id']})
+        members.append(new_member)
+        save_json(MEMBERS_FILE, members)
+        return jsonify({"ok":True, "id": new_id, "message":"Registered, awaiting approval"})
+
     except Exception as e:
-        print(f"Register error: {e}")
-        return jsonify({"ok":False,"error":f"Server error: {str(e)}"}),500
+        import traceback
+        traceback.print_exc()
+        return jsonify({"ok":False, "error": f"Server error: {str(e)[:150]} - try smaller photo"}), 500
+
 
 @app.route('/api/member/login', methods=['POST'])
 @armor_limit("10 per minute")
@@ -705,7 +709,7 @@ def admin_upload_gallery():
         for u in urls_raw.split(','):
             if u.strip(): saved.append(sanitize_text(u.strip(),500))
     if cover and cover not in saved: saved.insert(0, sanitize_text(cover,500))
-    final_cover = cover if cover else (saved[0] if saved else "uploads/god_key.jpg")
+    final_cover = cover if cover else (saved[0] if saved else "uploads/logoon.jpeg")
     albums = load_json('data/gallery.json', []); albums.append({"id": int(time.time()*1000),"title": title,"category": category,"cover": final_cover,"images": saved,"visibility": visibility,"date": datetime.now(TZ).strftime('%b %d, %Y')}); save_json('data/gallery.json', albums); clear_image_cache(); return jsonify({"ok": True})
 @app.route('/api/admin/update-gallery-visibility/<int:gid>', methods=['POST'])
 @admin_required
@@ -1986,110 +1990,244 @@ def api_chat_conversations():
     result.sort(key=lambda x: x['date'], reverse=True)
     return jsonify(result)
 
+
+# ============== FIX FEED AND CHAT PERSISTENCE ==============
+# Ensure organized feed shows posts for all members (approved) + author's own posts even if pending
+
 @app.route('/api/community/feed/organized')
-@member_required
-def api_feed_organized():
-    # Returns feed organized professionally by media type - posts, events (church+member), photos, videos
-    posts = load_json(COMMUNITY_POSTS_FILE, [])
-    mem_events = load_json(MEMBER_EVENTS_FILE, [])
-    church_events = load_json(os.path.join(DATA_DIR, 'events.json'), [])
-    galleries = load_json(MEMBER_GALLERIES_FILE, [])
-    videos = load_json(MEMBER_VIDEOS_FILE, [])
-    members = load_json(MEMBERS_FILE, [])
-    
-    # Only approved + own pending already filtered for posts? For organized feed, only approved
-    organized=[]
-    for p in posts:
-        if p.get('status','approved')!='approved': continue
-        m = next((x for x in members if x['id']==p['member_id']), None)
-        organized.append({
-            "id": p['id'],
-            "type": "post",
-            "subtype": p.get('type','post'),
-            "title": "",
-            "content": p.get('content',''),
-            "member_id": p['member_id'],
-            "member_name": m.get('fullName','') if m else 'Real Member',
-            "member_photo": m.get('photo','') if m else '',
-            "ministry": m.get('ministry',{}).get('department','') if m else '',
-            "date": p.get('date',''),
-            "likes": sum(p.get('reactions',{}).values()) if p.get('reactions') else 0,
-            "comments": len(p.get('comments',[])),
-            "data": p,
-            "sort_date": p.get('id',0)
-        })
-    for e in mem_events:
-        if e.get('status')!='approved': continue
-        m = next((x for x in members if x['id']==e['member_id']), None)
-        organized.append({
-            "id": e['id'],
-            "type": "member_event",
-            "subtype": "event",
-            "title": e['title'],
-            "content": e.get('description',''),
-            "member_id": e['member_id'],
-            "member_name": m.get('fullName','') if m else 'Real Member',
-            "member_photo": m.get('photo','') if m else '',
-            "date": e.get('created',''),
-            "likes": e.get('likes',0),
-            "comments": len(e.get('comments',[])),
-            "data": e,
-            "sort_date": e.get('id',0)
-        })
-    for ev in church_events:
-        organized.append({
-            "id": ev['id'],
-            "type": "church_event",
-            "subtype": "church_event",
-            "title": ev['title'],
-            "content": ev.get('description',''),
-            "member_id": 0,
-            "member_name": "Church Admin",
-            "member_photo": "/static/uploads/god_key.jpg",
-            "date": ev.get('date',''),
-            "likes": ev.get('likes',0),
-            "comments": len(ev.get('comments',[])),
-            "data": ev,
-            "sort_date": ev.get('id',0)
-        })
-    for g in galleries:
-        if g.get('status')!='approved': continue
-        m = next((x for x in members if x['id']==g['member_id']), None)
-        organized.append({
-            "id": g['id'],
-            "type": "photo",
-            "subtype": "gallery",
-            "title": g['title'],
-            "content": g.get('description',''),
-            "member_id": g['member_id'],
-            "member_name": m.get('fullName','') if m else 'Real Member',
-            "member_photo": m.get('photo','') if m else '',
-            "date": g.get('created',''),
-            "likes": g.get('likes',0),
-            "comments": len(g.get('comments',[])),
-            "data": g,
-            "sort_date": g.get('id',0)
-        })
-    for v in videos:
-        if v.get('status')!='approved': continue
-        m = next((x for x in members if x['id']==v['member_id']), None)
-        organized.append({
-            "id": v['id'],
-            "type": "video",
-            "subtype": v.get('type','memory_verse'),
-            "title": v['title'],
-            "content": v.get('description',''),
-            "member_id": v['member_id'],
-            "member_name": m.get('fullName','') if m else 'Real Member',
-            "member_photo": m.get('photo','') if m else '',
-            "date": v.get('created',''),
-            "likes": v.get('likes',0),
-            "comments": len(v.get('comments',[])),
-            "data": v,
-            "sort_date": v.get('id',0)
-        })
-    organized.sort(key=lambda x: x['sort_date'], reverse=True)
-    return jsonify(organized)
+def api_feed_organized_fixed():
+    try:
+        posts = load_json(COMMUNITY_POSTS_FILE, [])
+        member_events = load_json(MEMBER_EVENTS_FILE, [])
+        galleries = load_json(MEMBER_GALLERIES_FILE, [])
+        videos = load_json(MEMBER_VIDEOS_FILE, [])
+        members = load_json(MEMBERS_FILE, [])
+        church_events = load_json(EVENTS_FILE, []) if 'EVENTS_FILE' in globals() else load_json('data/events.json', [])
+
+        mid = session.get('member_id')
+
+        def get_member_info(m_id):
+            m = next((x for x in members if x.get('id')==m_id), None)
+            if not m:
+                return {"name":"Member","photo":""}
+            return {
+                "name": m.get('personal',{}).get('fullName') or m.get('fullName') or m.get('username') or 'Member',
+                "photo": m.get('photo') or m.get('personal',{}).get('photo') or ''
+            }
+
+        feed = []
+
+        # Posts: show approved for all, plus own pending for author
+        for p in posts:
+            status = p.get('status','approved')
+            if status=='approved' or (mid and p.get('member_id')==mid):
+                info = get_member_info(p.get('member_id'))
+                feed.append({
+                    "id": p.get('id'),
+                    "type": "post",
+                    "subtype": p.get('type','post'),
+                    "content": p.get('content',''),
+                    "title": p.get('content','')[:60] if p.get('content') else 'Post',
+                    "member_id": p.get('member_id'),
+                    "member_name": info["name"],
+                    "member_photo": info["photo"],
+                    "date": p.get('date',''),
+                    "likes": len(p.get('reactions',[])),
+                    "comments": len(p.get('comments',[])),
+                    "data": p,
+                    "status": status
+                })
+
+        # Member events
+        for ev in member_events:
+            status = ev.get('status','approved')
+            if status=='approved' or (mid and ev.get('member_id')==mid):
+                info = get_member_info(ev.get('member_id'))
+                feed.append({
+                    "id": ev.get('id'),
+                    "type": "member_event",
+                    "title": ev.get('title','Event'),
+                    "member_id": ev.get('member_id'),
+                    "member_name": info["name"],
+                    "member_photo": info["photo"],
+                    "date": ev.get('date',''),
+                    "likes": len(ev.get('reactions',[])),
+                    "comments": len(ev.get('comments',[])),
+                    "data": ev,
+                    "status": status
+                })
+
+        # Church events (from admin) - always approved
+        for ev in church_events:
+            feed.append({
+                "id": ev.get('id'),
+                "type": "church_event",
+                "title": ev.get('title','Church Event'),
+                "member_id": 0,
+                "member_name": "South B Police Chapel",
+                "member_photo": "/static/uploads/logoon.jpeg",
+                "date": ev.get('date',''),
+                "likes": 0,
+                "comments": 0,
+                "data": ev,
+                "status": "approved"
+            })
+
+        # Photos
+        for g in galleries:
+            status = g.get('status','approved')
+            if status=='approved' or (mid and g.get('member_id')==mid):
+                info = get_member_info(g.get('member_id'))
+                feed.append({
+                    "id": g.get('id'),
+                    "type": "photo",
+                    "title": g.get('title','Photos'),
+                    "member_id": g.get('member_id'),
+                    "member_name": info["name"],
+                    "member_photo": info["photo"],
+                    "date": g.get('date',''),
+                    "likes": len(g.get('reactions',[])),
+                    "comments": len(g.get('comments',[])),
+                    "data": g,
+                    "status": status
+                })
+
+        # Videos
+        for v in videos:
+            status = v.get('status','approved')
+            if status=='approved' or (mid and v.get('member_id')==mid):
+                info = get_member_info(v.get('member_id'))
+                feed.append({
+                    "id": v.get('id'),
+                    "type": "video",
+                    "title": v.get('title','Video'),
+                    "member_id": v.get('member_id'),
+                    "member_name": info["name"],
+                    "member_photo": info["photo"],
+                    "date": v.get('date',''),
+                    "likes": len(v.get('reactions',[])),
+                    "comments": len(v.get('comments',[])),
+                    "data": v,
+                    "status": status
+                })
+
+        # Sort by date desc, approved first
+        feed.sort(key=lambda x: (x.get('status')!='approved', x.get('id',0)), reverse=True)
+        return jsonify(feed)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify([])
+
+# Fix chat persistence - messages disappear when chat a lot
+@app.route('/api/community/chat/messages/<int:other_id>')
+def api_chat_messages_fixed(other_id):
+    try:
+        chats = load_json(CHATS_FILE, [])
+        mid = session.get('member_id')
+        if not mid:
+            return jsonify([])
+        # Get all messages between mid and other_id, no limit, sorted asc
+        relevant = [c for c in chats if (c.get('from_id')==mid and c.get('to_id')==other_id) or (c.get('from_id')==other_id and c.get('to_id')==mid)]
+        relevant.sort(key=lambda x: x.get('id',0))
+        # Return last 100 to avoid too large, but sorted, so recent 100
+        return jsonify(relevant[-100:])
+    except Exception as e:
+        return jsonify([])
+
+@app.route('/api/community/chat/send', methods=['POST'])
+def api_chat_send_fixed():
+    try:
+        data = request.get_json()
+        mid = session.get('member_id')
+        if not mid:
+            return jsonify({"ok":False, "error":"Not logged in"}), 401
+        to_id = data.get('to_member_id')
+        content = data.get('content','').strip()
+        if not to_id or not content:
+            return jsonify({"ok":False, "error":"Missing"}), 400
+        chats = load_json(CHATS_FILE, [])
+        new_msg = {
+            "id": int(__import__('time').time()*1000),
+            "from_id": mid,
+            "to_id": to_id,
+            "content": content[:500],
+            "date": __import__('datetime').datetime.now().strftime("%Y-%m-%d %H:%M")
+        }
+        chats.append(new_msg)
+        # Keep last 500 messages to prevent file too large, but preserve recent
+        if len(chats) > 500:
+            chats = chats[-500:]
+        save_json(CHATS_FILE, chats)
+        return jsonify({"ok":True, "msg": new_msg})
+    except Exception as e:
+        return jsonify({"ok":False, "error": str(e)}), 500
+
+@app.route('/api/community/chat/conversations')
+def api_chat_conversations_fixed():
+    try:
+        chats = load_json(CHATS_FILE, [])
+        members = load_json(MEMBERS_FILE, [])
+        mid = session.get('member_id')
+        if not mid:
+            return jsonify([])
+        conv_map = {}
+        for c in chats:
+            if c.get('from_id')==mid:
+                other = c.get('to_id')
+            elif c.get('to_id')==mid:
+                other = c.get('from_id')
+            else:
+                continue
+            if other not in conv_map or c.get('id',0) > conv_map[other].get('id',0):
+                conv_map[other] = c
+        
+        result = []
+        for other_id, last_msg in conv_map.items():
+            m = next((x for x in members if x.get('id')==other_id), None)
+            if not m:
+                continue
+            result.append({
+                "member_id": other_id,
+                "fullName": m.get('personal',{}).get('fullName') or m.get('fullName') or 'Member',
+                "photo": m.get('photo') or '',
+                "last_msg": last_msg.get('content','')[:40],
+                "last_id": last_msg.get('id',0),
+                "date": last_msg.get('date','')
+            })
+        result.sort(key=lambda x: x.get('last_id',0), reverse=True)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify([])
+
+
+@app.route('/api/bible/verse-of-the-day')
+def api_bible_verse_of_day():
+    try:
+        # Default verses if file missing
+        default_verses = [
+            {"ref": "John 3:16", "text": "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."},
+            {"ref": "Jeremiah 29:11", "text": "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future."},
+            {"ref": "Philippians 4:13", "text": "I can do all this through him who gives me strength."},
+            {"ref": "Psalm 23:1", "text": "The Lord is my shepherd, I lack nothing."},
+            {"ref": "Isaiah 41:10", "text": "So do not fear, for I am with you; do not be dismayed, for I am your God."},
+            {"ref": "Proverbs 3:5-6", "text": "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight."},
+            {"ref": "Romans 8:28", "text": "And we know that in all things God works for the good of those who love him."},
+            {"ref": "Philippians 4:6", "text": "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God."},
+        ]
+        verses = load_json(BIBLE_VERSES_FILE, default_verses) if 'BIBLE_VERSES_FILE' in globals() else load_json('data/bible_verses.json', default_verses)
+        if not verses or not isinstance(verses, list):
+            verses = default_verses
+        import datetime
+        day = datetime.datetime.now().timetuple().tm_yday
+        verse = verses[day % len(verses)]
+        # Ensure keys exist
+        if 'ref' not in verse and 'verse' in verse:
+            verse['ref'] = verse['verse']
+        return jsonify(verse)
+    except Exception as e:
+        print(f"Bible verse error: {e}")
+        return jsonify({"ref": "John 3:16", "text": "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."})
 
 
 if __name__ == '__main__':

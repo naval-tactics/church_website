@@ -262,7 +262,7 @@ function renderOrganizedFeed(){
     else if(item.type==='church_event'||item.type==='member_event'){ let ev=item.data; cardInner=`<div class="mt-3 flex gap-3"><img src="${ev.image?fixUrl(ev.image):'https://via.placeholder.com/100x100.png?text=Event'}" class="w-24 h-24 rounded-xl object-cover"><div class="flex-1"><p class="font-medium text-sm">${esc(item.title)}</p><p class="text-[11px] text-gray-500 mt-1">${esc(ev.date||'')} ${esc(ev.time||'')} • ${esc(ev.location||'')}</p><p class="text-[11px] mt-2 line-clamp-2">${esc((ev.description||'').substring(0,120))}</p></div></div>`; }
     else if(item.type==='photo'){ let g=item.data; cardInner=`<p class="font-medium text-sm mt-3">${esc(item.title)}</p><div class="mt-3 grid grid-cols-3 gap-2">${(g.images||[]).slice(0,3).map(img=>`<div class="gallery-thumb"><img src="${fixUrl(img)}"></div>`).join('')}${(g.images||[]).length>3?`<div class="gallery-thumb bg-gray-100 flex items-center justify-center text-xs">+${g.images.length-3}</div>`:''}</div>`; }
     else if(item.type==='video'){ let v=item.data; cardInner=`<p class="font-medium text-sm mt-3">${esc(item.title)}</p><div class="mt-3 video-thumb cursor-pointer" onclick="viewVideo(${item.id})">${v.yt?`<img src="https://img.youtube.com/vi/${esc(v.yt)}/hqdefault.jpg"><div class="absolute inset-0 flex items-center justify-center"><div class="bg-black/60 w-12 h-12 rounded-full flex items-center justify-center text-white">▶</div></div>`:v.local_file?`<video src="${fixUrl(v.local_file)}" class="w-full h-full object-cover"></video>`:''}</div>`; }
-    return `<div class="bg-white rounded-2xl border p-4"><div class="flex gap-3"><img src="${fixUrl(item.member_photo)}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1 min-w-0"><div class="flex gap-2 items-center flex-wrap"><span class="font-medium text-xs">${esc(item.member_name)}</span><span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">${badge}</span><span class="text-[10px] text-gray-400">${esc(item.date||'')}</span></div>${cardInner}<div class="mt-3 flex gap-2 text-[11px]"><button onclick="likeItem('${item.type}', ${item.id})" class="bg-gray-50 border px-3 py-1.5 rounded-full">♥ ${item.likes||0}</button><button onclick="openCommentModal('${item.type}', ${item.id})" class="bg-gray-50 border px-3 py-1.5 rounded-full">💬 ${item.comments||0}</button><button onclick="viewItem('${item.type}', ${item.id})" class="bg-[#0f172a] text-white px-3 py-1.5 rounded-full text-[11px]">View</button></div></div></div></div>`;
+    return `<div class="bg-white rounded-2xl border p-4"><div class="flex gap-3"><img src="${fixUrl(item.member_photo)}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1 min-w-0"><div class="flex gap-2 items-center flex-wrap"><span class="font-medium text-xs">${esc(item.member_name)}</span><span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">${badge}${item.status && item.status!="approved" ? " • Pending Approval" : ""}</span><span class="text-[10px] text-gray-400">${esc(item.date||'')}</span></div>${cardInner}<div class="mt-3 flex gap-2 text-[11px]"><button onclick="likeItem('${item.type}', ${item.id})" class="bg-gray-50 border px-3 py-1.5 rounded-full">♥ ${item.likes||0}</button><button onclick="openCommentModal('${item.type}', ${item.id})" class="bg-gray-50 border px-3 py-1.5 rounded-full">💬 ${item.comments||0}</button><button onclick="viewItem('${item.type}', ${item.id})" class="bg-[#0f172a] text-white px-3 py-1.5 rounded-full text-[11px]">View</button></div></div></div></div>`;
   }).join('');
 }
 
@@ -274,32 +274,39 @@ function viewVideo(id){ let item=organizedData.find(x=>x.id===id); if(!item) ret
 
 async function likeItem(type, id){ try{ await fetch('/api/community/react/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'amen'})}); loadOrganizedFeed(); }catch(e){} }
 async function openCommentModal(type, id){ let text=prompt('Write a comment:'); if(!text) return; try{ await fetch('/api/community/comment/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:text, type:type})}); loadOrganizedFeed(); }catch(e){} }
-async function loadBibleVerse(){ try{ let v=await fetch('/api/bible/verse-of-the-day').then(r=>r.json()); document.getElementById('bibleRef').innerText=v.ref||v.verse||'Verse'; document.getElementById('bibleText').innerText='"'+(v.text||'')+'"'; }catch(e){} }
-async function loadNotifications(){ try{ let notifs=await fetch('/api/notifications').then(r=>r.json()).catch(()=>[]); let unread=notifs.filter(n=>!n.read).length; let cnt=document.getElementById('notifCount'); if(cnt){ cnt.innerText=unread; cnt.classList.toggle('hidden', unread===0); } let list=document.getElementById('notifList'); if(list){ list.innerHTML=notifs.length?notifs.slice(0,10).map(n=>`<div class="p-3 border-b"><p class="text-[11px]">${esc(n.content||'')}</p><p class="text-[9px] text-gray-400">${esc(n.date||'')}</p></div>`).join(''):'<p class="text-[10px] text-gray-400 p-3">No notifications</p>'; } }catch(e){} }
+async function loadBibleVerse(){
+  try{
+    let res = await fetch('/api/bible/verse-of-the-day');
+    if(!res.ok) throw new Error('Fetch failed '+res.status);
+    let v = await res.json();
+    document.getElementById('bibleRef').innerText = v.ref || v.verse || 'John 3:16';
+    document.getElementById('bibleText').innerText = '"' + (v.text || 'For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.') + '"';
+  }catch(e){
+    console.error('Bible verse failed', e);
+    document.getElementById('bibleRef').innerText = 'John 3:16';
+    document.getElementById('bibleText').innerText = '"For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."';
+  }
+}
 
-let openChats={};
-function openChat(memberId){
-  if(openChats[memberId]) return;
-  fetch('/api/community/members?q=').then(r=>r.json()).then(members=>{
-    let m=members.find(x=>x.id===memberId); if(!m) return;
-    let win=document.createElement('div');
-    win.id='chat-'+memberId;
-    win.className='bg-white border rounded-t-2xl shadow-2xl w-[300px] h-[350px] flex flex-col';
-    win.innerHTML=`<div class="bg-[#0f172a] text-white p-3 rounded-t-2xl flex justify-between items-center"><div class="flex gap-2 items-center"><img src="${fixUrl(m.photo)}" class="w-7 h-7 rounded-full"><span class="text-xs font-medium">${esc(m.fullName||m.username)}</span></div><button onclick="closeChat(${memberId})" class="text-white text-xs">✕</button></div><div id="msgs-${memberId}" class="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50"></div><div class="p-2 border-t flex gap-2"><input id="input-${memberId}" placeholder="Message..." class="flex-1 border rounded-full px-3 py-2 text-xs outline-none"><button onclick="sendChat(${memberId})" class="bg-[#0f172a] text-white px-3 py-2 rounded-full text-xs">Send</button></div>`;
-    document.getElementById('chatWindows').appendChild(win);
-    openChats[memberId]=true;
-    loadChatMessages(memberId);
-    let interval=setInterval(()=>{ if(!document.getElementById('chat-'+memberId)) clearInterval(interval); else loadChatMessages(memberId); },3000);
-    document.getElementById('input-'+memberId)?.addEventListener('keypress', e=>{ if(e.key==='Enter') sendChat(memberId); });
-  });
-}
 function closeChat(id){ document.getElementById('chat-'+id)?.remove(); delete openChats[id]; }
+let chatCache = {};
 async function loadChatMessages(otherId){
-  let msgs=await fetch('/api/community/chat/messages/'+otherId).then(r=>r.json()).catch(()=>[]);
-  let el=document.getElementById('msgs-'+otherId); if(!el) return;
-  el.innerHTML=msgs.map(m=>`<div class="flex ${m.from_id===curMember?.id?'justify-end':'justify-start'}"><div class="chat-bubble ${m.from_id===curMember?.id?'me':'them'}">${esc(m.content)}</div></div>`).join('');
-  el.scrollTop=el.scrollHeight;
+  try{
+    let msgs = await fetch('/api/community/chat/messages/'+otherId).then(r=>r.json()).catch(()=>[]);
+    if(!Array.isArray(msgs)) msgs = [];
+    if(msgs.length>0){ chatCache[otherId] = msgs; }
+    else if(chatCache[otherId] && chatCache[otherId].length){ msgs = chatCache[otherId]; }
+    let el = document.getElementById('msgs-'+otherId);
+    if(!el) return;
+    if(!msgs.length){
+      el.innerHTML = '<p class="text-[10px] text-gray-400 text-center p-2">No messages yet - say hello</p>';
+      return;
+    }
+    el.innerHTML = msgs.map(m=>`<div class="flex ${m.from_id===curMember?.id?'justify-end':'justify-start'}"><div class="chat-bubble ${m.from_id===curMember?.id?'me':'them'}">${esc(m.content)}<span class="block text-[8px] opacity-50 mt-1">${esc(m.date||'')}</span></div></div>`).join('');
+    el.scrollTop = el.scrollHeight;
+  }catch(e){ console.error('loadChatMessages failed', e); }
 }
+
 async function sendChat(otherId){
   let input=document.getElementById('input-'+otherId); let text=input.value.trim(); if(!text) return;
   await fetch('/api/community/chat/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to_member_id:otherId, content:text})});
