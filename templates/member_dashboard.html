@@ -218,7 +218,7 @@ async function init(){
     document.getElementById('cGreet').innerText = 'Share something, '+(fullName.split(' ')[0]||'')+'?';
     updateOnline(); loadOrganizedFeed(); loadDir(); loadGroups(); loadPrayer(); loadMyUploads(); loadConversations(); loadBibleVerse(); loadNotifications();
     setInterval(updateOnline, 15000); setInterval(loadOrganizedFeed, 8000); setInterval(loadOnlineList, 10000); setInterval(loadConversations, 10000); setInterval(loadNotifications, 15000);
-  }catch(e){ console.error('init failed', e); document.getElementById('organizedFeed').innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-sm">Failed to load - please refresh</p><p class="text-[11px] text-gray-400 mt-1">'+esc(e.message)+'</p></div>'; }
+  }catch(e){ console.error('init failed', e); document.getElementById('organizedFeed').innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-sm">Loading feed...</p><p class="text-[11px] text-gray-400 mt-1">'+esc(e.message)+'</p></div>'; }
 }
 
 async function updateOnline(){ try{ await fetch('/api/community/online',{method:'POST'}); loadOnlineList(); }catch(e){} }

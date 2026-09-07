@@ -2201,33 +2201,163 @@ def api_chat_conversations_fixed():
         return jsonify([])
 
 
+
 @app.route('/api/bible/verse-of-the-day')
-def api_bible_verse_of_day():
+def api_bible_verse_of_day_final():
     try:
-        # Default verses if file missing
         default_verses = [
             {"ref": "John 3:16", "text": "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."},
             {"ref": "Jeremiah 29:11", "text": "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future."},
             {"ref": "Philippians 4:13", "text": "I can do all this through him who gives me strength."},
             {"ref": "Psalm 23:1", "text": "The Lord is my shepherd, I lack nothing."},
             {"ref": "Isaiah 41:10", "text": "So do not fear, for I am with you; do not be dismayed, for I am your God."},
-            {"ref": "Proverbs 3:5-6", "text": "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight."},
-            {"ref": "Romans 8:28", "text": "And we know that in all things God works for the good of those who love him."},
-            {"ref": "Philippians 4:6", "text": "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God."},
         ]
-        verses = load_json(BIBLE_VERSES_FILE, default_verses) if 'BIBLE_VERSES_FILE' in globals() else load_json('data/bible_verses.json', default_verses)
-        if not verses or not isinstance(verses, list):
+        verses = []
+        try:
+            if 'BIBLE_VERSES_FILE' in globals():
+                verses = load_json(BIBLE_VERSES_FILE, default_verses)
+            else:
+                verses = load_json('data/bible_verses.json', default_verses)
+        except:
             verses = default_verses
-        import datetime
-        day = datetime.datetime.now().timetuple().tm_yday
+        if not verses:
+            verses = default_verses
+        import datetime as dt
+        day = dt.datetime.now().timetuple().tm_yday
         verse = verses[day % len(verses)]
-        # Ensure keys exist
         if 'ref' not in verse and 'verse' in verse:
             verse['ref'] = verse['verse']
         return jsonify(verse)
     except Exception as e:
+        return jsonify({"ref": "John 3:16", "text": "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."})
+
+    except Exception as e:
         print(f"Bible verse error: {e}")
         return jsonify({"ref": "John 3:16", "text": "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."})
+
+
+
+@app.route('/api/member/me')
+def api_member_me():
+    try:
+        mid = session.get('member_id')
+        if not mid:
+            return jsonify({"ok":False, "error":"Not logged in"}), 401
+        members = load_json(MEMBERS_FILE, [])
+        if not members and os.path.exists('data/members_seed.json'):
+            members = load_json('data/members_seed.json', [])
+        m = next((x for x in members if x.get('id')==mid), None)
+        if not m:
+            return jsonify({"ok":False, "error":"Member not found"}), 404
+        return jsonify({
+            "ok":True,
+            "id": m.get('id'),
+            "fullName": m.get('fullName') or m.get('personal',{}).get('fullName') or m.get('username'),
+            "username": m.get('username'),
+            "photo": m.get('photo') or '',
+            "ministry": m.get('ministry',{}).get('department') or '',
+            "email": m.get('email') or ''
+        })
+    except Exception as e:
+        return jsonify({"ok":False, "error":str(e)}), 500
+
+@app.route('/api/community/members')
+def api_community_members():
+    try:
+        members = load_json(MEMBERS_FILE, [])
+        if not members and os.path.exists('data/members_seed.json'):
+            members = load_json('data/members_seed.json', [])
+        # Return safe public info only
+        result = []
+        for m in members:
+            if m.get('status')=='approved' or m.get('approved'):
+                result.append({
+                    "id": m.get('id'),
+                    "fullName": m.get('fullName') or m.get('personal',{}).get('fullName') or m.get('username') or 'Member',
+                    "photo": m.get('photo') or '',
+                    "ministry": m.get('ministry',{}).get('department') or m.get('ministry_department') or '',
+                    "username": m.get('username') or ''
+                })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify([])
+
+@app.route('/api/community/online')
+@app.route('/api/online/members')
+def api_online_members():
+    try:
+        online = load_json(ONLINE_FILE, []) if 'ONLINE_FILE' in globals() else load_json('data/online_members.json', [])
+        # Filter last 10 min as online
+        from datetime import datetime, timedelta
+        now = datetime.now()
+        active = []
+        for o in online:
+            try:
+                last = datetime.strptime(o.get('last_seen',''), "%Y-%m-%d %H:%M:%S")
+                if now - last < timedelta(minutes=10):
+                    active.append(o)
+            except:
+                active.append(o)
+        return jsonify(active[-20:])
+    except:
+        return jsonify([])
+
+@app.route('/api/notifications')
+def api_notifications():
+    try:
+        mid = session.get('member_id')
+        if not mid:
+            return jsonify([])
+        notifs = load_json(NOTIFS_FILE, []) if 'NOTIFS_FILE' in globals() else load_json('data/notifications.json', [])
+        my_notifs = [n for n in notifs if n.get('member_id')==mid][-20:]
+        return jsonify(my_notifs)
+    except:
+        return jsonify([])
+
+@app.route('/api/community/feed')
+def api_feed_simple():
+    # Fallback for old dashboard that calls /api/community/feed
+    try:
+        return api_feed_organized_fixed()
+    except:
+        try:
+            return api_feed_organized()
+        except:
+            return jsonify([])
+
+@app.route('/api/community/post', methods=['POST'])
+def api_community_post_create():
+    try:
+        mid = session.get('member_id')
+        if not mid:
+            return jsonify({"ok":False, "error":"Not logged in"}), 401
+        data = request.get_json(silent=True) or {}
+        content = (data.get('content') or '').strip()
+        ptype = data.get('type','post')
+        if not content and ptype=='post':
+            return jsonify({"ok":False, "error":"Content required"}), 400
+        
+        posts = load_json(COMMUNITY_POSTS_FILE, []) if 'COMMUNITY_POSTS_FILE' in globals() else load_json('data/community_posts.json', [])
+        new_id = max([p.get('id',0) for p in posts], default=0) + 1
+        new_post = {
+            "id": new_id,
+            "member_id": mid,
+            "content": content,
+            "type": ptype,
+            "title": data.get('title') or content[:60],
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "status": "approved",
+            "reactions": [],
+            "comments": []
+        }
+        posts.append(new_post)
+        if 'COMMUNITY_POSTS_FILE' in globals():
+            save_json(COMMUNITY_POSTS_FILE, posts)
+        else:
+            save_json('data/community_posts.json', posts)
+        return jsonify({"ok":True, "post": new_post})
+    except Exception as e:
+        return jsonify({"ok":False, "error":str(e)}), 500
 
 
 if __name__ == '__main__':
