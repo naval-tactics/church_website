@@ -9,7 +9,7 @@ from functools import wraps, lru_cache
 import random, json, os, time, re, html, hmac, hashlib, base64
 
 app = Flask(__name__)
-app.permanent_session_lifetime = __import__('datetime').timedelta(days=31)
+app.config['PERMANENT_SESSION_LIFETIME'] = __import__('datetime').timedelta(days=31)
 app.secret_key = os.getenv('SECRET_KEY', 'pentagon-church-secret-2025-ENCRYPTED-@2026#')
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -23,8 +23,7 @@ for sub in ['videos','gallery','notes','sermons','events','members']:
 
 TZ = pytz.timezone('Africa/Nairobi')
 DATA_DIR = 'data'
-QR_SECRET = os.getenv('QR_SECRET', app.permanent_session_lifetime = __import__('datetime').timedelta(days=31)
-app.secret_key)
+QR_SECRET = os.getenv('QR_SECRET', app.secret_key)
 GOOGLE_VERIFICATION = "tY5CbaEWI9pyFRc4Qmr0ya7EXdJqFOA52OX_mbQvXZU"
 
 try:
@@ -533,9 +532,6 @@ def delete_encounter(eid):
 
 # REGISTER - 5 FIELDS WITH PHONE - CLEAN, PRESERVING ALL ACHIEVEMENTS
 
-
-# PATCH: Ensure register saves pending status to both MEMBERS_FILE and data/members.json for admin to see
-
 @app.route('/api/member/register', methods=['POST'])
 def api_member_register():
     try:
@@ -630,70 +626,6 @@ def api_member_register():
         return jsonify({"ok":False, "error": f"Server error: {str(e)[:150]} - try smaller photo"}), 500
 
 
-
-        members = load_json(MEMBERS_FILE, [])
-        if not members and os.path.exists('data/members_seed.json'):
-            members = load_json('data/members_seed.json', [])
-            # Restore
-            try:
-                save_json(MEMBERS_FILE, members)
-            except:
-                pass
-
-        # Find member by username, email, phone, or fullName (case-insensitive)
-        user_lower = username.lower()
-        found = None
-        for m in members:
-            u = (m.get('username') or '').lower()
-            e = (m.get('email') or m.get('personal',{}).get('email') or '').lower()
-            p = (m.get('phone') or m.get('personal',{}).get('phone') or '').lower()
-            fn = (m.get('fullName') or m.get('personal',{}).get('fullName') or '').lower()
-            if user_lower in [u, e, p] or user_lower == fn or username == m.get('username') or username == m.get('phone'):
-                found = m
-                break
-            # Also check contains
-            if u and user_lower in u:
-                found = m
-                break
-
-        if not found:
-            return jsonify({"ok":False, "error":"Account not found - check username or register"}), 404
-
-        # Check password (plain for now, in production hash)
-        stored_pass = found.get('password') or ''
-        if stored_pass != password:
-            return jsonify({"ok":False, "error":"Invalid password"}), 401
-
-        # Check approval
-        status = found.get('status','pending')
-        approved = found.get('approved', False)
-        if status != 'approved' and not approved and status != 'active':
-            # Allow login but mark pending? For now allow but warn
-            # If you want to block pending, uncomment:
-            # return jsonify({"ok":False, "error":"Account not approved yet - pending admin approval"}), 403
-            pass
-
-        # Login success - set session
-        session['member_id'] = found.get('id')
-        session['member_username'] = found.get('username')
-        session['member_logged_in'] = True
-
-        # Update online
-        try:
-            online = load_json(ONLINE_FILE, []) if 'ONLINE_FILE' in globals() else load_json('data/online_members.json', [])
-            # Add or update
-            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            existing = next((x for x in online if x.get('member_id')==found.get('id')), None)
-            if existing:
-                existing['last_seen'] = now
-            else:
-                online.append({"member_id": found.get('id'), "fullName": found.get('fullName') or found.get('personal',{}).get('fullName') or found.get('username'), "photo": found.get('photo') or '', "ministry": found.get('ministry',{}).get('department') or '', "last_seen": now})
-            if 'ONLINE_FILE' in globals():
-                save_json(ONLINE_FILE, online)
-            else:
-                save_json('data/online_members.json', online)
-        except Exception as online_e:
-            print(f"Online update failed: {online_e}")
 
         return jsonify({"ok":True, "member": {"id": found.get('id'), "username": found.get('username'), "fullName": found.get('fullName') or found.get('personal',{}).get('fullName')}})
 
@@ -2349,144 +2281,43 @@ def api_community_post_create():
 
 
 
-@app.route('/api/admin/members')
-def api_admin_members():
-    try:
-        members = load_json(MEMBERS_FILE, [])
-        # If empty, try seed for initial load but not for admin - admin must see real
-        if not members:
-            # Check real file path
-            real_path = os.path.join('data','members.json')
-            if os.path.exists(real_path):
-                members = load_json(real_path, [])
-        # Normalize to ensure frontend finds fields
-        for m in members:
-            if 'personal' not in m:
-                m['personal'] = {'fullName': m.get('fullName',''), 'phone': m.get('phone',''), 'ministry': m.get('ministry_department','')}
-            if 'status' not in m:
-                m['status'] = 'pending' if not m.get('approved') else 'approved'
-        return jsonify(members)
-    except Exception as e:
-        print('admin members error', e)
-        return jsonify([])
-
-@app.route('/api/admin/members/count')
-def api_admin_members_count():
-    try:
-        members = load_json(MEMBERS_FILE, [])
-        if not members:
-            real_path = os.path.join('data','members.json')
-            if os.path.exists(real_path):
-                members = load_json(real_path, [])
-        total = len(members)
-        pending = len([x for x in members if (x.get('status')=='pending' or not x.get('approved'))])
-        approved = total - pending
-        return jsonify({"total": total, "pending": pending, "approved": approved})
-    except Exception as e:
-        return jsonify({"total":0,"pending":0,"approved":0})
-
-@app.route('/api/admin/member/approve/<int:mid>', methods=['POST'])
-def api_admin_member_approve(mid):
-    try:
-        members = load_json(MEMBERS_FILE, [])
-        if not members:
-            members = load_json(os.path.join('data','members.json'), [])
-        for m in members:
-            if m.get('id')==mid:
-                m['status']='approved'
-                m['approved']=True
-                m['approved_at']=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                break
-        save_json(MEMBERS_FILE, members)
-        save_json(os.path.join('data','members.json'), members)
-        # Also update seed if exists so it persists on Free after push
-        try:
-            if os.path.exists('data/members_seed.json'):
-                # Keep seed in sync only for approved to avoid bloat, but include pending for safety
-                save_json('data/members_seed.json', members)
-        except: pass
-        return jsonify({"ok":True})
-    except Exception as e:
-        return jsonify({"ok":False,"error":str(e)}), 500
-
-@app.route('/api/admin/member/delete/<int:mid>', methods=['POST'])
-def api_admin_member_delete(mid):
-    try:
-        members = load_json(MEMBERS_FILE, [])
-        members = [m for m in members if m.get('id')!=mid]
-        save_json(MEMBERS_FILE, members)
-        save_json(os.path.join('data','members.json'), members)
-        try:
-            if os.path.exists('data/members_seed.json'):
-                save_json('data/members_seed.json', members)
-        except: pass
-        return jsonify({"ok":True})
-    except Exception as e:
-        return jsonify({"ok":False,"error":str(e)}), 500
-
-@app.route('/api/admin/member/reject/<int:mid>', methods=['POST'])
-def api_admin_member_reject(mid):
-    try:
-        data = request.get_json(silent=True) or {}
-        reason = data.get('reason','')
-        members = load_json(MEMBERS_FILE, [])
-        for m in members:
-            if m.get('id')==mid:
-                m['status']='rejected'
-                m['reject_reason']=reason
-                break
-        # Remove rejected from list
-        members = [m for m in members if m.get('id')!=mid]
-        save_json(MEMBERS_FILE, members)
-        save_json(os.path.join('data','members.json'), members)
-        try:
-            if os.path.exists('data/members_seed.json'):
-                save_json('data/members_seed.json', members)
-        except: pass
-        return jsonify({"ok":True})
-    except Exception as e:
-        return jsonify({"ok":False,"error":str(e)}), 500
-
-
-
 @app.route('/api/member/me')
-def api_member_me_fixed():
+def api_member_me():
     try:
         mid = session.get('member_id')
         if not mid:
-            return jsonify({"logged_in": False, "ok": False, "error": "Not logged in"}), 401
+            return jsonify({"logged_in": False, "ok": False}), 200
         members = load_json(MEMBERS_FILE, [])
         if not members:
             members = load_json(os.path.join('data','members.json'), [])
-        m = next((x for x in members if str(x.get('id'))==str(mid) or x.get('id')==mid), None)
+        m = next((x for x in members if str(x.get('id'))==str(mid)), None)
         if not m:
-            return jsonify({"logged_in": False, "ok": False, "error": "Member not found"}), 404
-        is_approved = (m.get('status')=='approved') or (m.get('approved')==True)
-        # Normalize
+            session.pop('member_id', None)
+            return jsonify({"logged_in": False, "ok": False}), 200
+        is_approved = (m.get('status')=='approved') or m.get('approved')==True
         full_name = m.get('fullName') or m.get('personal',{}).get('fullName') or m.get('username') or 'Member'
         return jsonify({
             "logged_in": True,
-            "approved": is_approved,
+            "approved": bool(is_approved),
             "ok": True,
             "id": m.get('id'),
             "fullName": full_name,
             "username": m.get('username'),
             "photo": m.get('photo') or '',
-            "ministry": m.get('ministry',{}).get('department') or m.get('ministry_department') or '',
+            "ministry": m.get('ministry',{}).get('department') if isinstance(m.get('ministry'), dict) else m.get('ministry_department',''),
             "member": m
         })
     except Exception as e:
-        print('api_member_me error', e)
-        return jsonify({"logged_in": False, "ok": False, "error": str(e)}), 500
+        print('me error', e)
+        return jsonify({"logged_in": False, "ok": False, "error": str(e)}), 200
 
 @app.route('/api/members/me')
 def api_members_me_alias():
-    return api_member_me_fixed()
-
+    return api_member_me()
 
 
 @app.route('/api/member/login', methods=['POST'])
-def api_member_login_fixed():
+def api_member_login():
     try:
         data = request.get_json(silent=True) or {}
         username = (data.get('username') or data.get('email') or '').strip()
@@ -2496,54 +2327,64 @@ def api_member_login_fixed():
         members = load_json(MEMBERS_FILE, [])
         if not members:
             members = load_json(os.path.join('data','members.json'), [])
-        # Case-insensitive username/email match
         user = None
         for m in members:
-            if (m.get('username','').lower()==username.lower() or m.get('email','').lower()==username.lower()):
+            if m.get('username','').lower()==username.lower() or m.get('email','').lower()==username.lower():
                 user = m
                 break
         if not user:
-            return jsonify({"ok": False, "error": "Member not found"}), 404
-        # Check password - plain or hashed
-        stored_pwd = user.get('password') or ''
-        pwd_ok = False
-        if stored_pwd == password:
-            pwd_ok = True
+            return jsonify({"ok": False, "error": "Member not found. Register first."}), 404
+        stored = user.get('password') or ''
+        ok = False
+        if stored == password:
+            ok = True
         else:
             try:
                 from werkzeug.security import check_password_hash
-                if check_password_hash(stored_pwd, password):
-                    pwd_ok = True
+                if check_password_hash(stored, password):
+                    ok = True
             except:
                 pass
-        if not pwd_ok:
+        if not ok:
             return jsonify({"ok": False, "error": "Wrong password"}), 401
-        # Check status but allow login even if pending - dashboard will show pending message
         session['member_id'] = user.get('id')
-        session.permanent = True
         session['username'] = user.get('username')
-        # Save online
-        try:
-            online_file = ONLINE_FILE if 'ONLINE_FILE' in globals() else os.path.join('data','online_members.json')
-            online = load_json(online_file, [])
-            online = [o for o in online if o.get('member_id')!=user.get('id')]
-            online.append({"member_id": user.get('id'), "fullName": user.get('fullName') or user.get('personal',{}).get('fullName') or user.get('username'), "photo": user.get('photo') or '', "ministry": user.get('ministry',{}).get('department') or '', "last_seen": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
-            save_json(online_file, online[-100:])
-        except Exception as e:
-            print('online save error', e)
-        return jsonify({"ok": True, "id": user.get('id'), "status": user.get('status'), "approved": user.get('status')=='approved' or user.get('approved')})
+        session.permanent = True
+        return jsonify({"ok": True, "id": user.get('id'), "status": user.get('status'), "approved": user.get('status')=='approved' or user.get('approved')==True})
     except Exception as e:
         print('login error', e)
         return jsonify({"ok": False, "error": str(e)}), 500
 
 @app.route('/api/member/logout', methods=['POST','GET'])
-def api_member_logout_fixed():
+def api_member_logout():
+    session.pop('member_id', None)
+    session.pop('username', None)
+    return jsonify({"ok": True})
+
+
+
+@app.route('/api/admin/members')
+def api_admin_members():
     try:
-        session.pop('member_id', None)
-        session.pop('username', None)
-        return jsonify({"ok": True})
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        return jsonify(members)
+    except Exception as e:
+        return jsonify([])
+
+@app.route('/api/admin/members/count')
+def api_admin_members_count():
+    try:
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        total = len(members)
+        pending = len([x for x in members if x.get('status')=='pending' or not x.get('approved')])
+        approved = total - pending
+        return jsonify({"total": total, "pending": pending, "approved": approved})
     except:
-        return jsonify({"ok": True})
+        return jsonify({"total":0,"pending":0,"approved":0})
 
 
 if __name__ == '__main__':
