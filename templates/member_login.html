@@ -26,12 +26,12 @@ body{font-family:Inter,sans-serif}
   <form id="loginForm" class="mt-6 space-y-4">
     <div>
       <label class="text-[11px] font-bold text-gray-700">USERNAME OR EMAIL</label>
-      <input id="username" required placeholder="NelKid" class="input mt-1">
+      <input id="username" required placeholder="NelKid" class="input mt-1" autocomplete="username">
     </div>
     <div>
       <label class="text-[11px] font-bold text-gray-700">PASSWORD</label>
       <div class="relative">
-        <input id="password" type="password" required placeholder="nav7tac$" class="input mt-1 pr-10">
+        <input id="password" type="password" required placeholder="••••••••" class="input mt-1 pr-10" autocomplete="current-password">
         <button type="button" onclick="togglePass()" class="absolute right-3 top-[14px] text-gray-400 text-xs">👁</button>
       </div>
     </div>
@@ -74,10 +74,12 @@ document.getElementById('loginForm').addEventListener('submit', async(e)=>{
     let controller = new AbortController();
     let timeout = setTimeout(()=>controller.abort(), 25000);
 
-    let res = await fetch('/api/member/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({username:document.getElementById('username').value.trim(),password:document.getElementById('password').value})}), {
+    // FIXED: single fetch with credentials same-origin for phone
+    let res = await fetch('/api/member/login', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username, password, email: username}),
+      credentials: 'same-origin',
+      body: JSON.stringify({username: username, password: password, email: username}),
       signal: controller.signal
     });
     clearTimeout(timeout);
@@ -87,13 +89,24 @@ document.getElementById('loginForm').addEventListener('submit', async(e)=>{
     try{ data = JSON.parse(text); }catch{ data = {ok:false, error: text.substring(0,200)}; }
 
     if(res.ok && data.ok){
-      msg.innerText = 'Login success - redirecting to dashboard...';
+      msg.innerText = '✅ Login success - opening dashboard...';
       msg.className = 'text-center text-xs min-h-[20px] text-green-600';
-      setTimeout(()=>{ window.location.href = '/members/dashboard'; }, 800);
+      // Check approval status first
+      try{
+        let me = await fetch('/api/member/me', {credentials:'same-origin'}).then(r=>r.json());
+        if(me && me.approved===false){
+          msg.innerText = '⏳ Account pending approval - contact admin';
+          msg.className = 'text-center text-xs min-h-[20px] text-orange-600';
+          btn.disabled = false;
+          btn.innerText = 'LOGIN AS MEMBER →';
+          return;
+        }
+      }catch(e){}
+      setTimeout(()=>{ window.location.replace('/members/dashboard?v='+Date.now()); }, 600);
     }else{
       let err = data.error || data.message || 'Login failed';
       if(err.toLowerCase().includes('not approved')) err = 'Account pending approval - contact admin';
-      if(err.toLowerCase().includes('not found') || err.toLowerCase().includes('invalid')) err = 'Invalid username or password - check caps';
+      if(err.toLowerCase().includes('not found') || err.toLowerCase().includes('invalid')) err = 'Invalid username or password - check caps (case-insensitive)';
       msg.innerText = '❌ ' + err;
       msg.className = 'text-center text-xs min-h-[20px] text-red-600 font-medium';
       btn.disabled = false;
