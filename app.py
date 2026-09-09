@@ -531,6 +531,9 @@ def delete_encounter(eid):
 
 # REGISTER - 5 FIELDS WITH PHONE - CLEAN, PRESERVING ALL ACHIEVEMENTS
 
+
+# PATCH: Ensure register saves pending status to both MEMBERS_FILE and data/members.json for admin to see
+
 @app.route('/api/member/register', methods=['POST'])
 def api_member_register():
     try:
@@ -2358,6 +2361,106 @@ def api_community_post_create():
         return jsonify({"ok":True, "post": new_post})
     except Exception as e:
         return jsonify({"ok":False, "error":str(e)}), 500
+
+
+
+@app.route('/api/admin/members')
+def api_admin_members():
+    try:
+        members = load_json(MEMBERS_FILE, [])
+        # If empty, try seed for initial load but not for admin - admin must see real
+        if not members:
+            # Check real file path
+            real_path = os.path.join('data','members.json')
+            if os.path.exists(real_path):
+                members = load_json(real_path, [])
+        # Normalize to ensure frontend finds fields
+        for m in members:
+            if 'personal' not in m:
+                m['personal'] = {'fullName': m.get('fullName',''), 'phone': m.get('phone',''), 'ministry': m.get('ministry_department','')}
+            if 'status' not in m:
+                m['status'] = 'pending' if not m.get('approved') else 'approved'
+        return jsonify(members)
+    except Exception as e:
+        print('admin members error', e)
+        return jsonify([])
+
+@app.route('/api/admin/members/count')
+def api_admin_members_count():
+    try:
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            real_path = os.path.join('data','members.json')
+            if os.path.exists(real_path):
+                members = load_json(real_path, [])
+        total = len(members)
+        pending = len([x for x in members if (x.get('status')=='pending' or not x.get('approved'))])
+        approved = total - pending
+        return jsonify({"total": total, "pending": pending, "approved": approved})
+    except Exception as e:
+        return jsonify({"total":0,"pending":0,"approved":0})
+
+@app.route('/api/admin/member/approve/<int:mid>', methods=['POST'])
+def api_admin_member_approve(mid):
+    try:
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        for m in members:
+            if m.get('id')==mid:
+                m['status']='approved'
+                m['approved']=True
+                m['approved_at']=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                break
+        save_json(MEMBERS_FILE, members)
+        save_json(os.path.join('data','members.json'), members)
+        # Also update seed if exists so it persists on Free after push
+        try:
+            if os.path.exists('data/members_seed.json'):
+                # Keep seed in sync only for approved to avoid bloat, but include pending for safety
+                save_json('data/members_seed.json', members)
+        except: pass
+        return jsonify({"ok":True})
+    except Exception as e:
+        return jsonify({"ok":False,"error":str(e)}), 500
+
+@app.route('/api/admin/member/delete/<int:mid>', methods=['POST'])
+def api_admin_member_delete(mid):
+    try:
+        members = load_json(MEMBERS_FILE, [])
+        members = [m for m in members if m.get('id')!=mid]
+        save_json(MEMBERS_FILE, members)
+        save_json(os.path.join('data','members.json'), members)
+        try:
+            if os.path.exists('data/members_seed.json'):
+                save_json('data/members_seed.json', members)
+        except: pass
+        return jsonify({"ok":True})
+    except Exception as e:
+        return jsonify({"ok":False,"error":str(e)}), 500
+
+@app.route('/api/admin/member/reject/<int:mid>', methods=['POST'])
+def api_admin_member_reject(mid):
+    try:
+        data = request.get_json(silent=True) or {}
+        reason = data.get('reason','')
+        members = load_json(MEMBERS_FILE, [])
+        for m in members:
+            if m.get('id')==mid:
+                m['status']='rejected'
+                m['reject_reason']=reason
+                break
+        # Remove rejected from list
+        members = [m for m in members if m.get('id')!=mid]
+        save_json(MEMBERS_FILE, members)
+        save_json(os.path.join('data','members.json'), members)
+        try:
+            if os.path.exists('data/members_seed.json'):
+                save_json('data/members_seed.json', members)
+        except: pass
+        return jsonify({"ok":True})
+    except Exception as e:
+        return jsonify({"ok":False,"error":str(e)}), 500
 
 
 if __name__ == '__main__':
