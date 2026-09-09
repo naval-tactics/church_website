@@ -2373,6 +2373,100 @@ def api_admin_members():
     except Exception as e:
         return jsonify([])
 
+    except:
+        return jsonify({"total":0,"pending":0,"approved":0})
+
+
+
+@app.route('/api/admin/member/approve/<mid>', methods=['POST','GET','OPTIONS'])
+def api_admin_member_approve(mid):
+    try:
+        # Allow both int and string mid
+        mid_str = str(mid).strip()
+        try:
+            mid_int = int(mid)
+        except:
+            mid_int = None
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        found = False
+        for m in members:
+            m_id = m.get('id')
+            if str(m_id)==mid_str or m_id==mid_int:
+                m['status']='approved'
+                m['approved']=True
+                m['approved_at']=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                found = True
+                break
+        if not found:
+            return jsonify({"ok": False, "error": f"Member {mid} not found in {len(members)} members"}), 404
+        # Save to all locations
+        save_json(MEMBERS_FILE, members)
+        save_json(os.path.join('data','members.json'), members)
+        try:
+            # Update seed for Render Free so it persists after deploy
+            if os.path.exists('data/members_seed.json') or True:
+                save_json('data/members_seed.json', members)
+        except Exception as e:
+            print('seed save error', e)
+        return jsonify({"ok": True, "id": mid, "status": "approved"})
+    except Exception as e:
+        print('approve error', e)
+        import traceback; traceback.print_exc()
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+@app.route('/api/admin/member/delete/<mid>', methods=['POST','GET','DELETE','OPTIONS'])
+def api_admin_member_delete(mid):
+    try:
+        mid_str = str(mid).strip()
+        try:
+            mid_int = int(mid)
+        except:
+            mid_int = None
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        orig_len = len(members)
+        members = [m for m in members if not (str(m.get('id'))==mid_str or m.get('id')==mid_int)]
+        if len(members)==orig_len:
+            return jsonify({"ok": False, "error": f"Member {mid} not found"}), 404
+        save_json(MEMBERS_FILE, members)
+        save_json(os.path.join('data','members.json'), members)
+        try:
+            save_json('data/members_seed.json', members)
+        except:
+            pass
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+@app.route('/api/admin/member/reject/<mid>', methods=['POST','GET','OPTIONS'])
+def api_admin_member_reject(mid):
+    try:
+        data = request.get_json(silent=True) or {}
+        reason = data.get('reason','')
+        mid_str = str(mid).strip()
+        try:
+            mid_int = int(mid)
+        except:
+            mid_int = None
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        members = [m for m in members if not (str(m.get('id'))==mid_str or m.get('id')==mid_int)]
+        save_json(MEMBERS_FILE, members)
+        save_json(os.path.join('data','members.json'), members)
+        try:
+            save_json('data/members_seed.json', members)
+        except:
+            pass
+        return jsonify({"ok": True, "reason": reason})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+
 @app.route('/api/admin/members/count')
 def api_admin_members_count():
     try:
@@ -2380,11 +2474,11 @@ def api_admin_members_count():
         if not members:
             members = load_json(os.path.join('data','members.json'), [])
         total = len(members)
-        pending = len([x for x in members if x.get('status')=='pending' or not x.get('approved')])
+        pending = len([x for x in members if (x.get('status') in ['pending', None, ''] or not x.get('approved'))])
         approved = total - pending
         return jsonify({"total": total, "pending": pending, "approved": approved})
-    except:
-        return jsonify({"total":0,"pending":0,"approved":0})
+    except Exception as e:
+        return jsonify({"total":0,"pending":0,"approved":0,"error":str(e)})
 
 
 if __name__ == '__main__':
