@@ -9,6 +9,7 @@ from functools import wraps, lru_cache
 import random, json, os, time, re, html, hmac, hashlib, base64
 
 app = Flask(__name__)
+app.permanent_session_lifetime = __import__('datetime').timedelta(days=31)
 app.secret_key = os.getenv('SECRET_KEY', 'pentagon-church-secret-2025-ENCRYPTED-@2026#')
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -22,7 +23,8 @@ for sub in ['videos','gallery','notes','sermons','events','members']:
 
 TZ = pytz.timezone('Africa/Nairobi')
 DATA_DIR = 'data'
-QR_SECRET = os.getenv('QR_SECRET', app.secret_key)
+QR_SECRET = os.getenv('QR_SECRET', app.permanent_session_lifetime = __import__('datetime').timedelta(days=31)
+app.secret_key)
 GOOGLE_VERIFICATION = "tY5CbaEWI9pyFRc4Qmr0ya7EXdJqFOA52OX_mbQvXZU"
 
 try:
@@ -628,16 +630,6 @@ def api_member_register():
         return jsonify({"ok":False, "error": f"Server error: {str(e)[:150]} - try smaller photo"}), 500
 
 
-
-@app.route('/api/member/login', methods=['POST'])
-def api_member_login():
-    try:
-        data = request.get_json(silent=True) or {}
-        username = (data.get('username') or data.get('email') or request.form.get('username') or request.form.get('email') or '').strip()
-        password = (data.get('password') or request.form.get('password') or '').strip()
-
-        if not username or not password:
-            return jsonify({"ok":False, "error":"Username and password required"}), 400
 
         members = load_json(MEMBERS_FILE, [])
         if not members and os.path.exists('data/members_seed.json'):
@@ -2240,13 +2232,6 @@ def api_bible_verse_of_day_final():
 
 
 
-@app.route('/api/member/me')
-def api_member_me():
-    try:
-        mid = session.get('member_id')
-        if not mid:
-            return jsonify({"ok":False, "error":"Not logged in"}), 401
-        members = load_json(MEMBERS_FILE, [])
         if not members and os.path.exists('data/members_seed.json'):
             members = load_json('data/members_seed.json', [])
         m = next((x for x in members if x.get('id')==mid), None)
@@ -2461,6 +2446,104 @@ def api_admin_member_reject(mid):
         return jsonify({"ok":True})
     except Exception as e:
         return jsonify({"ok":False,"error":str(e)}), 500
+
+
+
+@app.route('/api/member/me')
+def api_member_me_fixed():
+    try:
+        mid = session.get('member_id')
+        if not mid:
+            return jsonify({"logged_in": False, "ok": False, "error": "Not logged in"}), 401
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        m = next((x for x in members if str(x.get('id'))==str(mid) or x.get('id')==mid), None)
+        if not m:
+            return jsonify({"logged_in": False, "ok": False, "error": "Member not found"}), 404
+        is_approved = (m.get('status')=='approved') or (m.get('approved')==True)
+        # Normalize
+        full_name = m.get('fullName') or m.get('personal',{}).get('fullName') or m.get('username') or 'Member'
+        return jsonify({
+            "logged_in": True,
+            "approved": is_approved,
+            "ok": True,
+            "id": m.get('id'),
+            "fullName": full_name,
+            "username": m.get('username'),
+            "photo": m.get('photo') or '',
+            "ministry": m.get('ministry',{}).get('department') or m.get('ministry_department') or '',
+            "member": m
+        })
+    except Exception as e:
+        print('api_member_me error', e)
+        return jsonify({"logged_in": False, "ok": False, "error": str(e)}), 500
+
+@app.route('/api/members/me')
+def api_members_me_alias():
+    return api_member_me_fixed()
+
+
+
+@app.route('/api/member/login', methods=['POST'])
+def api_member_login_fixed():
+    try:
+        data = request.get_json(silent=True) or {}
+        username = (data.get('username') or data.get('email') or '').strip()
+        password = data.get('password') or ''
+        if not username or not password:
+            return jsonify({"ok": False, "error": "Username and password required"}), 400
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        # Case-insensitive username/email match
+        user = None
+        for m in members:
+            if (m.get('username','').lower()==username.lower() or m.get('email','').lower()==username.lower()):
+                user = m
+                break
+        if not user:
+            return jsonify({"ok": False, "error": "Member not found"}), 404
+        # Check password - plain or hashed
+        stored_pwd = user.get('password') or ''
+        pwd_ok = False
+        if stored_pwd == password:
+            pwd_ok = True
+        else:
+            try:
+                from werkzeug.security import check_password_hash
+                if check_password_hash(stored_pwd, password):
+                    pwd_ok = True
+            except:
+                pass
+        if not pwd_ok:
+            return jsonify({"ok": False, "error": "Wrong password"}), 401
+        # Check status but allow login even if pending - dashboard will show pending message
+        session['member_id'] = user.get('id')
+        session.permanent = True
+        session['username'] = user.get('username')
+        # Save online
+        try:
+            online_file = ONLINE_FILE if 'ONLINE_FILE' in globals() else os.path.join('data','online_members.json')
+            online = load_json(online_file, [])
+            online = [o for o in online if o.get('member_id')!=user.get('id')]
+            online.append({"member_id": user.get('id'), "fullName": user.get('fullName') or user.get('personal',{}).get('fullName') or user.get('username'), "photo": user.get('photo') or '', "ministry": user.get('ministry',{}).get('department') or '', "last_seen": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+            save_json(online_file, online[-100:])
+        except Exception as e:
+            print('online save error', e)
+        return jsonify({"ok": True, "id": user.get('id'), "status": user.get('status'), "approved": user.get('status')=='approved' or user.get('approved')})
+    except Exception as e:
+        print('login error', e)
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+@app.route('/api/member/logout', methods=['POST','GET'])
+def api_member_logout_fixed():
+    try:
+        session.pop('member_id', None)
+        session.pop('username', None)
+        return jsonify({"ok": True})
+    except:
+        return jsonify({"ok": True})
 
 
 if __name__ == '__main__':
