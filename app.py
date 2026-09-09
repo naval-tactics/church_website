@@ -9,6 +9,9 @@ from functools import wraps, lru_cache
 import random, json, os, time, re, html, hmac, hashlib, base64
 
 app = Flask(__name__)
+app.config['SESSION_COOKIE_SAMESITE']='Lax'
+app.config['SESSION_COOKIE_SECURE']=False
+app.config['SESSION_COOKIE_HTTPONLY']=True
 app.config['PERMANENT_SESSION_LIFETIME'] = __import__('datetime').timedelta(days=31)
 app.secret_key = os.getenv('SECRET_KEY', 'pentagon-church-secret-2025-ENCRYPTED-@2026#')
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024

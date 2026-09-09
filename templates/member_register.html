@@ -46,8 +46,10 @@ body{font-family:Inter,sans-serif}
           <img id="photoPreview" src="https://via.placeholder.com/110x110.png?text=Photo" class="photo-preview">
           <div class="flex-1 min-w-[240px]">
             <label class="text-xs font-medium">Photo *</label>
-            <input id="photo" type="file" accept="image/*" capture="user" required class="w-full mt-2 text-xs bg-white p-2.5 rounded-xl border">
-            <p id="photoInfo" class="text-[10px] text-gray-500 mt-2">Clear face photo. Max 5MB. On phone, will be compressed to ~100KB automatically.</p>
+            <input id="photo" type="file" accept="image/*,image/jpeg,image/png,image/jpg,.jpg,.jpeg,.png"  required class="w-full mt-2 text-xs bg-white p-2.5 rounded-xl border">
+            <p id="photoInfo" class="text-[10px] text-gray-500 mt-2">On phone: you can Take Photo OR Choose from Files. Auto compressed to ~100KB to avoid Network error.</p>
+            <div class="flex gap-2 mt-2"><button type="button" onclick="document.getElementById('photo').click()" class="bg-gray-100 border px-3 py-1.5 rounded-full text-[10px]">📁 Choose from Files</button><button type="button" onclick="document.getElementById('photoCamera').click()" class="bg-[#0f172a] text-white px-3 py-1.5 rounded-full text-[10px]">📷 Take Photo</button></div>
+            <input id="photoCamera" type="file" accept="image/*" capture="environment" class="hidden">
           </div>
         </div>
 
@@ -208,7 +210,8 @@ function compressImage(file, maxWidth, quality){
   });
 }
 
-document.getElementById('photo').addEventListener('change', async e=>{
+document.getElementById('photoCamera').addEventListener('change', async e=>{ if(e.target.files[0]){ document.getElementById('photo').files = e.target.files; document.getElementById('photo').dispatchEvent(new Event('change')); } });
+ document.getElementById('photo').addEventListener('change', async e=>{
   const f=e.target.files[0];
   if(!f) return;
   let info = document.getElementById('photoInfo');

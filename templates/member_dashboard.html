@@ -180,7 +180,7 @@ function fixUrl(u){if(!u) return 'https://via.placeholder.com/200x200.png?text=P
 let curMember=null, currentFilter='all', organizedData=[], lastCount=0;
 function openModal(id){document.getElementById(id).classList.remove('hidden')}
 function closeModal(id){document.getElementById(id).classList.add('hidden')}
-function logout(){fetch('/api/member/logout',{method:'POST'}).then(()=>location.href='/')}
+function logout(){fetch('/api/member/logout',{method:'POST',credentials:'same-origin'},{method:'POST'}).then(()=>location.href='/')}
 function tab(name){
   document.getElementById('organizedFeed').classList.add('hidden');
   document.getElementById('dirView').classList.toggle('hidden', name!=='dir');
@@ -194,7 +194,7 @@ function setFilter(type){ currentFilter=type; document.querySelectorAll('[id^=f-
 
 async function init(){
   try{
-    let me = await fetch('/api/member/me').then(r=>r.json());
+    let me = await fetch('/api/member/me',{credentials:'same-origin'}).then(r=>r.json());
     console.log('me', me);
     if(!me.logged_in){ location.href='/members/login'; return; }
     if(!me.approved){ alert('Your account pending approval'); location.href='/'; return; }
@@ -221,9 +221,9 @@ async function init(){
   }catch(e){ console.error('init failed', e); document.getElementById('organizedFeed').innerHTML='<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-sm">Loading feed...</p><p class="text-[11px] text-gray-400 mt-1">'+esc(e.message)+'</p></div>'; }
 }
 
-async function updateOnline(){ try{ await fetch('/api/community/online',{method:'POST'}); loadOnlineList(); }catch(e){} }
+async function updateOnline(){ try{ await fetch('/api/community/online',{method:'POST',credentials:'same-origin'},{method:'POST'}); loadOnlineList(); }catch(e){} }
 async function loadOnlineList(){
-  let online = await fetch('/api/community/online/list').then(r=>r.json()).catch(()=>[]);
+  let online = await fetch('/api/community/online/list',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>[]);
   document.getElementById('onlineCount').innerText = online.length + ' online';
   let onlineNowCountEl=document.getElementById('onlineNowCount'); if(onlineNowCountEl) onlineNowCountEl.innerText=online.length;
   let leftEl=document.getElementById('onlineListLeft');
@@ -235,7 +235,7 @@ async function loadOnlineList(){
 
 async function loadOrganizedFeed(){
   try{
-    let feed = await fetch('/api/community/feed/organized').then(r=>r.json());
+    let feed = await fetch('/api/community/feed/organized',{credentials:'same-origin'}).then(r=>r.json());
     organizedData = feed;
     if(feed.length > lastCount && lastCount!==0){ /* new */ }
     lastCount = feed.length;
@@ -321,7 +321,7 @@ async function loadConversations(){
 async function createPost(){ let content=document.getElementById('postContent').value.trim(); let type=document.getElementById('postType').value; if(!content) return; let res=await fetch('/api/community/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content, type, visibility:'church'})}); let data=await res.json(); if(data.ok){ document.getElementById('postContent').value=''; loadOrganizedFeed(); } }
 async function createPostModal(){ let content=document.getElementById('modalPostContent').value.trim(); let type=document.getElementById('modalPostType').value; if(!content) return; let res=await fetch('/api/community/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content, type, visibility:'church'})}); let data=await res.json(); if(data.ok){ closeModal('postModal'); document.getElementById('modalPostContent').value=''; loadOrganizedFeed(); } }
 async function loadDir(){ let q=document.getElementById('dirSearch')?.value||''; let members=await fetch('/api/community/members?q='+encodeURIComponent(q)).then(r=>r.json()).catch(()=>[]); let cnt=document.getElementById('dirCnt'); if(cnt) cnt.innerText=members.length; let grid=document.getElementById('dirGrid'); if(grid) grid.innerHTML=members.length?members.map(m=>`<div class="bg-gray-50 border rounded-xl p-3 flex gap-3"><img src="${fixUrl(m.photo)}" class="w-12 h-12 rounded-full object-cover"><div class="flex-1 min-w-0"><p class="font-medium text-xs truncate">${esc(m.fullName||m.username)}</p><p class="text-[10px] text-gray-500">${esc(m.ministry||'')}</p><button onclick="openChat(${m.id})" class="mt-1 bg-[#0f172a] text-white px-2 py-0.5 rounded-full text-[9px]">Chat</button></div></div>`).join(''):'<p class="text-xs text-gray-400">No members</p>'; }
-async function loadMyUploads(){ let feed=await fetch('/api/community/feed/organized').then(r=>r.json()).catch(()=>[]); let my=feed.filter(x=>x.member_id===curMember?.id); let myView=document.getElementById('myView'); if(myView) myView.innerHTML=my.length?'<div class="bg-white rounded-2xl border p-4"><h2 class="font-medium text-sm">My Uploads</h2><div class="mt-4 space-y-2">'+my.map(i=>`<div class="bg-gray-50 border rounded-xl p-3 flex justify-between items-center"><div><p class="text-xs font-medium">${esc(i.type)}: ${esc(i.title||i.content?.substring(0,40)||'')}</p><p class="text-[10px] text-gray-500">${esc(i.date||'')}</p></div><button onclick="deleteItem('${i.type}', ${i.id})" class="bg-white border border-red-200 text-red-500 px-3 py-1 rounded-full text-[10px]">Delete</button></div>`).join('')+'</div></div>':'<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs">No uploads yet</p></div>'; }
+async function loadMyUploads(){ let feed=await fetch('/api/community/feed/organized',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>[]); let my=feed.filter(x=>x.member_id===curMember?.id); let myView=document.getElementById('myView'); if(myView) myView.innerHTML=my.length?'<div class="bg-white rounded-2xl border p-4"><h2 class="font-medium text-sm">My Uploads</h2><div class="mt-4 space-y-2">'+my.map(i=>`<div class="bg-gray-50 border rounded-xl p-3 flex justify-between items-center"><div><p class="text-xs font-medium">${esc(i.type)}: ${esc(i.title||i.content?.substring(0,40)||'')}</p><p class="text-[10px] text-gray-500">${esc(i.date||'')}</p></div><button onclick="deleteItem('${i.type}', ${i.id})" class="bg-white border border-red-200 text-red-500 px-3 py-1 rounded-full text-[10px]">Delete</button></div>`).join('')+'</div></div>':'<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-xs">No uploads yet</p></div>'; }
 async function loadPrayer(){ let prayers=await fetch('/api/community/prayers').then(r=>r.json()).catch(()=>[]); let list=document.getElementById('prayerList'); if(list) list.innerHTML=prayers.length?prayers.map(p=>`<div class="bg-gray-50 border rounded-xl p-3"><p class="font-medium text-xs">${esc(p.fullName||'')}</p><p class="text-[12px] mt-1">${esc(p.content||'')}</p></div>`).join(''):'<p class="text-xs text-gray-400">No prayers</p>'; }
 async function loadGroups(){ let groups=await fetch('/api/community/groups').then(r=>r.json()).catch(()=>[]); let grid=document.getElementById('groupsGrid'); if(grid) grid.innerHTML=groups.length?groups.map(g=>`<div class="bg-gray-50 border rounded-xl p-4"><h3 class="font-medium text-xs">${esc(g.name)}</h3><p class="text-[10px] text-gray-500 mt-1">${g.members?.length||0} members</p><button onclick="joinGroup(${g.id})" class="mt-2 bg-[#0f172a] text-white px-3 py-1 rounded-full text-[10px]">${g.members.includes(curMember?.id)?'Joined':'Join'}</button></div>`).join(''):'<p class="text-xs">No groups</p>'; }
 async function joinGroup(id){ await fetch('/api/community/groups/'+id+'/join',{method:'POST'}); loadGroups(); }
