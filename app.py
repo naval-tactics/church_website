@@ -9,10 +9,13 @@ from functools import wraps, lru_cache
 import random, json, os, time, re, html, hmac, hashlib, base64
 
 app = Flask(__name__)
+
 app.config['SESSION_COOKIE_SAMESITE']='Lax'
 app.config['SESSION_COOKIE_SECURE']=False
-app.config['SESSION_COOKIE_HTTPONLY']=True
-app.config['PERMANENT_SESSION_LIFETIME'] = __import__('datetime').timedelta(days=31)
+app.config['SESSION_COOKIE_HTTPONLY']=False
+app.config['SESSION_COOKIE_PATH']='/'
+app.config['PERMANENT_SESSION_LIFETIME']=__import__('datetime').timedelta(days=31)
+
 app.secret_key = os.getenv('SECRET_KEY', 'pentagon-church-secret-2025-ENCRYPTED-@2026#')
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -2284,12 +2287,6 @@ def api_community_post_create():
 
 
 
-@app.route('/api/member/me')
-def api_member_me():
-    try:
-        mid = session.get('member_id')
-        if not mid:
-            return jsonify({"logged_in": False, "ok": False}), 200
         members = load_json(MEMBERS_FILE, [])
         if not members:
             members = load_json(os.path.join('data','members.json'), [])
@@ -2314,55 +2311,9 @@ def api_member_me():
         print('me error', e)
         return jsonify({"logged_in": False, "ok": False, "error": str(e)}), 200
 
-@app.route('/api/members/me')
 def api_members_me_alias():
     return api_member_me()
 
-
-@app.route('/api/member/login', methods=['POST'])
-def api_member_login():
-    try:
-        data = request.get_json(silent=True) or {}
-        username = (data.get('username') or data.get('email') or '').strip()
-        password = data.get('password') or ''
-        if not username or not password:
-            return jsonify({"ok": False, "error": "Username and password required"}), 400
-        members = load_json(MEMBERS_FILE, [])
-        if not members:
-            members = load_json(os.path.join('data','members.json'), [])
-        user = None
-        for m in members:
-            if m.get('username','').lower()==username.lower() or m.get('email','').lower()==username.lower():
-                user = m
-                break
-        if not user:
-            return jsonify({"ok": False, "error": "Member not found. Register first."}), 404
-        stored = user.get('password') or ''
-        ok = False
-        if stored == password:
-            ok = True
-        else:
-            try:
-                from werkzeug.security import check_password_hash
-                if check_password_hash(stored, password):
-                    ok = True
-            except:
-                pass
-        if not ok:
-            return jsonify({"ok": False, "error": "Wrong password"}), 401
-        session['member_id'] = user.get('id')
-        session['username'] = user.get('username')
-        session.permanent = True
-        return jsonify({"ok": True, "id": user.get('id'), "status": user.get('status'), "approved": user.get('status')=='approved' or user.get('approved')==True})
-    except Exception as e:
-        print('login error', e)
-        return jsonify({"ok": False, "error": str(e)}), 500
-
-@app.route('/api/member/logout', methods=['POST','GET'])
-def api_member_logout():
-    session.pop('member_id', None)
-    session.pop('username', None)
-    return jsonify({"ok": True})
 
 
 
@@ -2483,6 +2434,80 @@ def api_admin_members_count():
     except Exception as e:
         return jsonify({"total":0,"pending":0,"approved":0,"error":str(e)})
 
+
+
+@app.route('/api/member/login', methods=['POST'])
+def api_member_login():
+    try:
+        data = request.get_json(silent=True) or {}
+        username = (data.get('username') or data.get('email') or '').strip()
+        password = data.get('password') or ''
+        if not username or not password:
+            return jsonify({"ok": False, "error": "Username and password required"}), 400
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        user = None
+        for m in members:
+            if m.get('username','').lower()==username.lower() or m.get('email','').lower()==username.lower() or m.get('fullName','').lower()==username.lower():
+                user = m
+                break
+        if not user:
+            return jsonify({"ok": False, "error": "Member not found. Register first."}), 404
+        stored = user.get('password') or ''
+        ok = False
+        if stored == password:
+            ok = True
+        else:
+            try:
+                from werkzeug.security import check_password_hash
+                if check_password_hash(stored, password):
+                    ok = True
+            except:
+                pass
+        if not ok:
+            return jsonify({"ok": False, "error": "Wrong password - check caps"}), 401
+        session['member_id'] = user.get('id')
+        session['username'] = user.get('username')
+        session.permanent = True
+        # Force cookie save
+        resp = make_response(jsonify({"ok": True, "id": user.get('id'), "status": user.get('status'), "approved": user.get('status')=='approved' or user.get('approved')==True, "fullName": user.get('fullName') or user.get('personal',{}).get('fullName') or user.get('username')}))
+        return resp
+    except Exception as e:
+        print('login error', e)
+        import traceback; traceback.print_exc()
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+
+@app.route('/api/member/me')
+def api_member_me():
+    try:
+        mid = session.get('member_id')
+        if not mid:
+            return jsonify({"logged_in": False, "ok": False, "member": None}), 200
+        members = load_json(MEMBERS_FILE, [])
+        if not members:
+            members = load_json(os.path.join('data','members.json'), [])
+        m = next((x for x in members if str(x.get('id'))==str(mid)), None)
+        if not m:
+            session.pop('member_id', None)
+            return jsonify({"logged_in": False, "ok": False, "member": None}), 200
+        is_approved = (m.get('status')=='approved') or m.get('approved')==True
+        return jsonify({
+            "logged_in": True,
+            "approved": bool(is_approved),
+            "ok": True,
+            "id": m.get('id'),
+            "fullName": m.get('fullName') or m.get('personal',{}).get('fullName') or m.get('username'),
+            "member": m
+        }), 200
+    except Exception as e:
+        return jsonify({"logged_in": False, "ok": False, "error": str(e)}), 200
+
+@app.route('/api/members/me')
+def api_members_me_alias():
+    return api_member_me()
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
